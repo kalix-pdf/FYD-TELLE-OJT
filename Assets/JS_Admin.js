@@ -734,11 +734,6 @@ function selectThis(selectedType, selectedId, selectedCode) {
 
 }
 
-//remove selected item
-function removeSelected(Specialization_id) {
-  console.log("Remove ID: " + Specialization_id);
-}
-
 
 // CLOSE DOCTOR - SEARCH
 function closeSearch(closeId) {
@@ -1401,6 +1396,11 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
   });
 }
 
+function removeClickableList(element) {
+    element.parentElement.remove();
+    selectedItems(selectedIds,selectedId,selectedCode);
+}
+
 //EDIT SUB-SPECIALIZATION - FUNCTION 
 function EditSubSpecialization(EditSubSpecialization_ID) {
   $(".Modal-Sidebar").css("display", "flex");
@@ -1453,8 +1453,4 @@ function Yes_EditSubSpecialization(Yes_EditSubSpecialization_ID) {
       $("#Pop-Message").html("The data has successfully updated!");
     },
   });
-}
-// Remove the parent .ClickableList div
-function removeClickableList(element) {
-    element.parentElement.remove();
 }

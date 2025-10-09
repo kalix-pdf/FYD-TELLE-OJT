@@ -768,7 +768,6 @@ if (isset($_POST["ViewEdit_ID"])) {
                   <div class='InputFieldForm-i-div'>
                     <div class='hiddenInformationField' id='hiddenInformationFieldIDSpecs'>
                       <!-- Function -->
-
                         "; 
                           $DoctorSpecsFetchQuery = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$ViewEdit_ID'";
                           $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
@@ -777,16 +776,14 @@ if (isset($_POST["ViewEdit_ID"])) {
                             while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
                               $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
                               echo" 
-                                <div class='ClickableList'>
-                                  <i class='fa-solid fa-trash' onclick=\"removeSelected('$specName')\"></i>
+                                <div class='ClickableList' >
+                                  <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$specName')\"></i>
                                   <p>$specName</p>
                                 </div>
                               ";
                             }
                           }
                         echo "
-
-                        
                     </div>
                   </div>
                 </div>
