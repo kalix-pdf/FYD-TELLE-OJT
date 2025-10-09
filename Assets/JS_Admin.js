@@ -319,16 +319,22 @@ function HidePromptMessage() {
 
 // PROMPT MESSAGE / ADD NEW DOCTOR
 function AddNewDoctor() {
-  var DocInput1 = $("#DoctorsFirstName").val();
-  var DocInput2 = $("#DoctorsMiddleName").val();
-  var DocInput3 = $("#DoctorsLastName").val();
-  var DocInput4 = $("#DoctorGender").val();
-  var DocInput5 = $("#DoctorCategory").val();
-  if(DocInput1 != "" & DocInput3 != "" & DocInput4 != "" & DocInput5 != ""){
-    $(".Prompt-Message").css("display", "flex");
-    $(".Prompt-AddNewDoctor").css("display", "flex");
-    $(".Prompt-AddNewDoctor").siblings().css("display", "none");
-  }
+    var DocInput1 = $("#DoctorsFirstName").val();
+    var DocInput2 = $("#DoctorsMiddleName").val();
+    var DocInput3 = $("#DoctorsLastName").val();
+    var DocInput4 = $("#DoctorGender").val();
+    var DocInput5 = $("#DoctorCategory").val();
+    
+    if(DocInput1 == "" || DocInput3 == "" || DocInput4 == "-" || DocInput5 == "" || DocInput5 == "-"){
+      $("#AddNewDoctorMessage").html("Please fill out all required fields.");
+    } else {
+      if(DocInput1 != "" & DocInput3 != "" & DocInput4 != "" & DocInput5 != ""){
+        $(".Prompt-Message").css("display", "flex");
+        $(".Prompt-AddNewDoctor").css("display", "flex");
+        $(".Prompt-AddNewDoctor").siblings().css("display", "none");
+      }
+    }
+    
 }
 
 // PROMPT MESSAGE / UPDATE DOCTOR

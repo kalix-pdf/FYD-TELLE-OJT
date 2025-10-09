@@ -42,6 +42,12 @@
   color: white;
 }
 
+#AddNewDoctorMessage {
+  color: red;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .tooltip::before {
   content: attr(data-title);
   position: absolute;

@@ -837,6 +837,7 @@
                 <div class="Modal-Sidebar-Main">
                   <div class="AddDoctorDivContainer-Form"> 
                     <h4>Doctor Information</h4>
+                    <span id="AddNewDoctorMessage"></span>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">First Name:</i>
                       <input type="text" placeholder="First Name" class="CT1" id="DoctorsFirstName" required>
@@ -868,7 +869,6 @@
                       </select>
                     </div>
                     <br>
-
 
                     <h4>Specialization</h4>
                     <div class='InputFieldForm'>
@@ -926,9 +926,6 @@
                       </div>
                     </div>
 
-
- 
-
                     <br>
                     <hr>
                     <br>
@@ -971,11 +968,6 @@
                         <!-- Function -->
                       </div>
                     </div>
-  
-
-
-
-
 
                     <h4>Room</h4>
                     <div class='InputFieldForm'>
@@ -1005,7 +997,6 @@
                       </div>
                     </div>
 
-
                     <br>
                     <h4>Teleconsultaion</h4>
                     <div class="InputFieldForm">
@@ -1013,7 +1004,6 @@
                       <input type="text" id="DoctorsTeleConsult" placeholder="Teleconsultaion" class="CT1">
                     </div>
                     <br>
-
 
                     <br>
                     <h4>HMO Accreditation</h4>
@@ -1053,7 +1043,6 @@
                       <textarea name="" id="DoctorsRemarks" class="DoctorRemarks" placeholder="Input Notes"></textarea>
                     </div>
                     <br>
-
 
                     <br>
                     <hr>
@@ -1106,7 +1095,6 @@
                         <!-- Function -->
                       </div>
                     </div>
-
 
                   </div>
                 </div>
