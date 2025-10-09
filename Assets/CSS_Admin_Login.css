@@ -1,0 +1,228 @@
+body{
+  background-image: url("../Assets/Images/EACMed_Bloom\ 1.png");
+  background-size: cover;
+  background-attachment: fixed;
+  
+}
+
+.Admin-LoginPage{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.InputText1 {
+  border: 1px solid var(--Color6);
+}
+
+.InputText1 i{
+  color: var(--Color1);
+  min-width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.InputText1:hover i{
+  color: var(--Color1);
+}
+
+.InputText1 input{
+  color: var(--Color1);
+  border-left: 1px solid var(--Color1);
+}
+
+.RemoveIcon input {
+  border: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.Admin-LoginDiv{
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+  margin-top: -100px;
+}
+
+.Admin-LoginLogo img{
+  height: 90px;
+  margin-bottom: 15px;
+  z-index: -1;
+  filter: drop-shadow(7px 7px 7px #00000037);
+  /* -webkit-filter: drop-shadow(7px 7px 7px #666666); */
+  
+  animation-name: Admin-LoginLogo;
+  animation-duration: 1.5s;
+}
+
+@keyframes Admin-LoginLogo {
+  0%{opacity: 0;};
+} 
+
+.Admin-LoginPageForm{
+  z-index: 1;
+  height: auto;
+  width: 500px;
+  border-radius: 10px;
+  border: 1px solid var(--BorderColor1);
+  background-color: var(--BGColor4);
+  border: var(--BorderColor1);
+  /* box-shadow: -2px 5px 25px #00000017; */
+  box-shadow: -2px 5px 25px #000000df;
+  padding: 40px;
+  border: 1px solid #ffffff00;
+  color: var(--Color1);
+  transition: 0.4s;
+  /* animation-name: Admin-LoginPageForm;
+  animation-duration: 1s; */
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.Admin-SetupPasswordPageForm{
+  z-index: 1;
+  height: auto;
+  width: 500px;
+  border-radius: 10px;
+  border: 1px solid var(--BorderColor1);
+  background-color: var(--BGColor4);
+  border: var(--BorderColor1);
+  box-shadow: -2px 5px 25px #000000df;
+  padding: 40px;
+  border: 1px solid #ffffff00;
+  color: var(--Color1);
+  transition: 0.4s;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px; 
+}
+
+@keyframes Admin-LoginPageForm {
+  0%{margin-bottom: -100px; opacity: 0;};
+}
+
+.Admin-LoginPageForm:hover{
+  /* box-shadow: -2px 5px 25px #000000df; */
+  border: 1px solid #ffffff9a;
+  box-shadow: -2px 5px 25px #00000053;
+}
+
+.Admin-LoginPageForm button{
+  width: 100%;
+  background-color: var(--Color1);
+  color: black;
+}
+.Admin-LoginPageForm button:hover{
+  background-color: var(--Color3);
+  color: white  ;
+}
+
+.Admin-LoginPageForm:hover{
+  /* box-shadow: -2px 5px 25px #000000df; */
+  border: 1px solid #ffffff9a;
+  box-shadow: -2px 5px 25px #00000053;
+}
+
+.Admin-LoginPageForm button{
+  width: 100%;
+  background-color: var(--Color1);
+  color: black;
+}
+.Admin-LoginPageForm button:hover{
+  background-color: var(--Color3);
+  color: white  ;
+}
+
+
+
+
+
+
+
+/* */
+.Admin-SetupPasswordPageForm:hover{
+  /* box-shadow: -2px 5px 25px #000000df; */
+  border: 1px solid #ffffff9a;
+  box-shadow: -2px 5px 25px #00000053;
+}
+
+.Admin-SetupPasswordPageForm button{
+  width: 100%;
+  background-color: var(--Color1);
+  color: black;
+}
+.Admin-SetupPasswordPageForm button:hover{
+  background-color: var(--Color3);
+  color: white  ;
+}
+
+.Admin-SetupPasswordPageForm:hover{
+  /* box-shadow: -2px 5px 25px #000000df; */
+  border: 1px solid #ffffff9a;
+  box-shadow: -2px 5px 25px #00000053;
+}
+
+.Admin-SetupPasswordPageForm button{
+  width: 100%;
+  background-color: var(--Color1);
+  color: black;
+}
+.Admin-SetupPasswordPageForm button:hover{
+  background-color: var(--Color3);
+  color: white  ;
+}
+
+
+
+
+
+
+
+
+
+
+.Checkbox-Div{
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.Checkbox-Div label{
+  cursor: pointer;
+}
+
+.PopUpMessage{
+  display: flex;
+  margin-top: 10px;
+  animation-name: PopUpMessage;
+  animation-duration: 1s;
+}
+
+@keyframes PopUpMessage {
+  0%{margin-left: -50px; opacity: 0;};
+}
+
+.Overlay-Background{
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  /* background-color: #ffffff59; */
+  /* background-color: #ffffff4b; */
+  background-color: #00000082;
+}

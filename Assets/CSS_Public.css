@@ -1,0 +1,412 @@
+
+@font-face {
+  font-family: Poppins_Bold;
+  src: url(./Poppins/Poppins-Bold.ttf);
+}
+
+@font-face {
+  font-family: Poppins_ExtraLight;
+  src: url(./Poppins/Poppins-ExtraLight.ttf);
+}
+
+@font-face {
+  font-family: Poppins_LightItalic;
+  src: url(./Poppins/Poppins-LightItalic.ttf);
+}
+
+@font-face {
+  font-family: Poppins_Regular;
+  src: url(./Poppins/Poppins-Regular.ttf);
+}
+
+@font-face {
+  font-family: Poppins_Light;
+  src: url(./Poppins/Poppins-Light.ttf);
+}
+
+:root{
+  --Color1: #ffffff;
+  --Color2: #eeeeee;
+  --Color3: #E0544F;
+  --Color4: #277540;
+  --Color5: #CC1C16;
+  --Color6: #318499;
+  --Color6A: #3184997d;
+  --Color7: #3184996b;
+  --Color8: #9acd32;
+
+  --BGColor1: #ffffff;
+  --BGColor2: #eeeeee;
+  --BGColor3: #1f1f1f;
+  --BGColor4: #013220;
+  --BGColor5: #00000036;
+
+  --FontColor1: #ffffff;
+  --FontColor2: #1f1f1f;
+  --FontColor3: #277540;
+
+  --Border1: 1px solid #00000036;
+  --Border2: 1px solid #00000026;
+  --Border3: 1px solid #ffffff;
+  --Border4: 1px solid #000000c6;
+  --Border5: 2px solid #000000c6;
+  --Border6: 2px solid var(--Color6);
+  --BorderColor1: #00000036;
+
+  --BoxShadow: 0 0 5px #00000046;
+  --BoxShadow1: 0 0 10px #00000050;
+
+  --Font1_PoppinsBold: Poppins_Bold;
+  --Font2_PoppinsExtraLight: Poppins_ExtraLight;
+  --Font3_PoppinsLightItalic: Poppins_LightItalic;
+  --Font4_PoppinsRegular: Poppins_Regular; 
+  --Font5_PoppinsLight: Poppins_Light;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-track {
+  background: #97979700; 
+}
+::-webkit-scrollbar-thumb {
+  background: #bdbdbd7a;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1c1c1ca7; 
+}
+
+
+
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--Font4_PoppinsRegular);
+  outline: none;
+  scroll-behavior: smooth;
+  text-decoration-color: yellow;
+}
+
+h1, h3 {
+  font-family: var(--Font1_PoppinsBold)
+}
+
+h4, p, h2{
+  font-family: var(--Font2_PoppinsExtraLight)
+}
+
+.Text-Trans-Upper{
+  text-transform: uppercase;
+}
+
+option{
+  padding: 5px;
+}
+
+.lord-icon{
+  height: 40px;
+  width: 40px;
+}
+
+img{
+  height: 100%;
+}
+input {
+  padding: 5px;
+  border: 1px solid #000000aa;
+}
+
+select{
+  width: 100%;
+  padding: 5px;
+  border: none;
+}
+
+
+/* INPUT */
+.InputText1{
+  border: 1px solid #0000004f;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+}
+.SearchDoctor input,.SearchDoctor i{
+  background-color:#00000000;
+  z-index: 1;
+}
+.HoverP{
+  position: absolute;
+  top: 0;
+  color: #181818;
+  height: 100%;
+  padding: 0 5px;
+  background-color: var(--BGColor1);
+  transition: 0.4s;
+  display: flex;
+  align-items: center;
+  margin: 0 40px;
+  z-index: 0;
+}
+
+.Flex{
+  display: flex;
+  gap: 10px;
+}
+
+.InputText1:hover{
+  border: 1px solid var(--Color6);
+}
+
+.InputText1:hover i{
+  color: var(--Color6);
+}
+
+.InputText1 input{
+  border: none;
+  border-left: 1px solid #00000047;
+  padding-left: 10px;
+  margin-left: 5px;
+  width: 100%;
+}
+
+.SearchBorder{
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid #00000000;
+}
+
+.InputText2{
+  border:1px solid var(--BorderColor1);
+  min-width: 200px;
+  padding: 10px 10px;
+}
+
+.InputText3{
+  border: var(--Border2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0px 6px;
+}
+
+.InputText3 input{
+  border: none;
+  border-right: var(--Border1);
+}
+.InputText3 i{
+  opacity: .6;
+}
+
+.InputText3 i:hover{
+  opacity: 1;
+  color: var(--Color6);
+}
+
+/* BUTTON */
+button{
+  padding: 5px 10px;
+  border: var(--Border2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+button:hover{
+  box-shadow: var(--BoxShadow1);
+  border-radius: 5px;
+}
+
+button i{
+  color: var(--Color1);
+}
+
+.BtnFocus{
+  background-color: var(--Color6);
+  color: var(--Color1);
+}
+
+.Btn_1{
+  background-color: var(--Color6);
+  color: var(--Color1);
+  display: flex;
+  gap: 5px;
+  border: var(--Border3);
+  box-shadow: var(--BoxShadow);
+  text-shadow: 0 0 1px black;
+  transition: .4s;
+}
+
+.Btn_1 i{
+  color: var(--Color1);
+}
+
+.Btn_2{
+  background-color: var(--Color3);
+  color: var(--Color1);
+  display: flex;
+  gap: 5px;
+  border: var(--Border3);
+  box-shadow: var(--BoxShadow);
+  text-shadow: 0 0 1px black;
+  transition: .4s;
+}
+
+.Btn_2 i{
+  color: var(--Color1);
+}
+
+.Btn_3{
+  background-color: var(--Color4);
+  color: var(--Color1);
+  display: flex;
+  gap: 5px;
+  border: var(--Border3);
+  box-shadow: var(--BoxShadow);
+  text-shadow: 0 0 1px black;
+  transition: .4s;
+}
+
+.Btn_3 i{
+  color: var(--Color1);
+}
+
+
+.CircleDiv{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--BorderColor1);
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.CircleDiv:hover{
+  background-color: var(--Color3);
+  color: var(--Color1);
+}
+.CircleDiv:hover i{
+  color: var(--Color1);
+}
+
+.Flex{
+  display: flex;
+}
+
+
+table{
+  border-collapse: collapse;
+  width: 100%;
+  background-color: var(--BGColor1);
+}
+
+.TCenter{
+  text-align: center;
+  justify-content: center;
+}
+
+thead{
+  position: sticky;
+  top: 0;
+  background-color: var(--BGColor1);
+  /* box-shadow: 0 0 5px black; */
+  box-shadow: 0 0 0px 3px var(--Color6);
+  padding: 10px;
+}
+
+tbody{
+  overflow: auto;
+  padding: 10px;
+}
+
+th{
+  background-color: var(--BGColor1);
+  text-align: left; 
+  padding: 4px;
+}
+
+li{
+  padding: 6px 2px;
+  text-wrap: nowrap;
+  font-family: var(--Font4_PoppinsRegular);
+}
+
+td{
+  padding:4px 10px;
+  white-space: nowrap; 
+  overflow: hidden;
+  max-width: 100px;
+  text-overflow: ellipsis; 
+  font-family: var(--Font4_PoppinsRegular);
+  border-bottom: var(--Border1);
+}
+
+.Table-Div{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  box-shadow: var(--BoxShadow);
+  border-radius: 10px;
+}
+
+.Table-Div .fa-solid{
+  color: #272727;
+}
+
+.XCursor{
+  cursor: pointer;
+  opacity: .6;
+}
+.XCursor:hover{
+  opacity: 1;
+}
+
+
+/* ANIMATION */
+.D1{
+  animation-name: D1;
+  animation-duration: 1s;
+}
+@keyframes D1 {
+  0%{opacity: 0;}
+}
+
+.SDiv{
+  display: none;
+}
+
+.Italic{
+  font-family: var(--Font3_PoppinsLightItalic);
+}
+
+
+@media only screen and (max-width: 600px) {
+  .HDiv{
+    display: none;
+  }
+  .SDiv{
+    display: flex;
+  }
+  
+  
+}
+
+
+.Btn_2 .fa-trash-arrow-up{
+  color: var(--Color1);
+}
