@@ -774,8 +774,13 @@ if (isset($_POST["ViewEdit_ID"])) {
                           $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
                           if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                           if ($DoctorSpecsFetchQuery->num_rows > 0) {
-                            while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-                                <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['doctor_specialization_name']."</p></div>
+                            while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+                              $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
+                              echo" 
+                                <div class='ClickableList'>
+                                  <i class='fa-solid fa-trash' onclick=\"removeSelected('$specName')\"></i>
+                                  <p>$specName</p>
+                                </div>
                               ";
                             }
                           }

@@ -592,7 +592,7 @@
                           <div class='td-div'>
                             <button class='Btn_1' onclick='ViewDoctor(`ArchivedView`,`".$row['doctor_account_id']."`)'><i class='fa-regular fa-eye'></i>View</button>
                             <button class='Btn_2 green' onclick='PromptDoctor(`RestoreDoctor`,`".$row['doctor_account_id']."`)'><i class='fa-solid fa-trash-arrow-up'></i>Activate</button>
-                            <button class='Btn_2' onclick='PromptDoctor(`RestoreDoctor`,`".$row['doctor_account_id']."`)'><i class='fa-solid fa-trash-arrow-up'></i>Delete</button>
+                            <button class='Btn_2' onclick='PromptDoctor(`RemoveDoctor`,`".$row['doctor_account_id']."`)'><i class='fa-solid fa-trash-arrow-up'></i>Delete</button>
                           </div>
                         </td>
                       </tr>
@@ -837,7 +837,7 @@
                 <div class="Modal-Sidebar-Main">
                   <div class="AddDoctorDivContainer-Form"> 
                     <h4>Doctor Information</h4>
-                    <span id="AddNewDoctorMessage"></span>
+                    <span id="AddNewDoctorMessage"></span> 
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">First Name:</i>
                       <input type="text" placeholder="First Name" class="CT1" id="DoctorsFirstName" required>
@@ -934,6 +934,7 @@
                       <i class='InputFieldForm-i'>Schedule:</i>
                       <div class='InputFieldForm-div'>
                         <div class="InputFieldFormSchedule">
+                          <span id="warningSchedule"></span>
                           <div class='InputFieldForm-schedule'>
                           <p>Select Day</p>
                           <select id='day-select' name='day-select'>
@@ -964,7 +965,7 @@
                     </div>
                     <div class='InputFieldForm'>
                       <i class='InputFieldForm-i'></i>
-                      <div class='InformationField InformationFieldAddSchedule'>
+                      <div class='InformationField InformationFieldAddSchedule' id="informationFieldAddSchedule">
                         <!-- Function -->
                       </div>
                     </div>
@@ -972,6 +973,7 @@
                     <h4>Room</h4>
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
+                        <span id="warningRoom"></span>
                         <i class='InputFieldForm-i'>Room:</i>
                         <button class='Btn_1' onclick="AddItems('Room')">Add Room</button>
                       </div>

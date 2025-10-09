@@ -320,21 +320,31 @@ function HidePromptMessage() {
 // PROMPT MESSAGE / ADD NEW DOCTOR
 function AddNewDoctor() {
     var DocInput1 = $("#DoctorsFirstName").val();
-    var DocInput2 = $("#DoctorsMiddleName").val();
     var DocInput3 = $("#DoctorsLastName").val();
     var DocInput4 = $("#DoctorGender").val();
     var DocInput5 = $("#DoctorCategory").val();
-    
-    if(DocInput1 == "" || DocInput3 == "" || DocInput4 == "-" || DocInput5 == "" || DocInput5 == "-"){
-      $("#AddNewDoctorMessage").html("Please fill out all required fields.");
+    var DocInputsSpecs = $("#hiddenInformationFieldIDSpecs").text().trim();
+    var DocInputSchedule = $("#informationFieldAddSchedule").text().trim();
+    var DocInputsRoom = $("#hiddenInformationFieldIDRoom").text().trim();
+
+    if (
+        DocInput1 === "" ||
+        DocInput3 === "" ||
+        DocInput4 === "-" ||
+        DocInput5 === "" ||
+        DocInput5 === "-" ||
+        DocInputsSpecs === "" ||
+        DocInputSchedule === "" ||
+        DocInputsRoom === ""
+    ) {
+        $("#AddNewDoctorMessage").html("Please fill out all required fields.");
+        $("#warningRoom").html("Please add at least one room.");
+        $("#warningSchedule").html("Please add at least one Schedule.");
     } else {
-      if(DocInput1 != "" & DocInput3 != "" & DocInput4 != "" & DocInput5 != ""){
         $(".Prompt-Message").css("display", "flex");
         $(".Prompt-AddNewDoctor").css("display", "flex");
         $(".Prompt-AddNewDoctor").siblings().css("display", "none");
-      }
     }
-    
 }
 
 // PROMPT MESSAGE / UPDATE DOCTOR
@@ -722,6 +732,11 @@ function selectThis(selectedType, selectedId, selectedCode) {
   }
 
 
+}
+
+//remove selected item
+function removeSelected(Specialization_id) {
+  console.log("Remove ID: " + Specialization_id);
 }
 
 
