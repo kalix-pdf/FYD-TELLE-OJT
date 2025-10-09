@@ -577,7 +577,7 @@
 
                 <tbody class="tbody-archived">
                   <?php
-                  $FetchDoctor = "SELECT DISTINCT * FROM doctor WHERE doctor_archive_status = 'HIDDEN' AND doctor_status = 'INACTIVE' ORDER BY doctor_id DESC";
+                  $FetchDoctor = "SELECT DISTINCT * FROM doctor WHERE doctor_archive_status = 'VISIBLE' AND doctor_status = 'INACTIVE' ORDER BY doctor_id DESC";
                   $FetchDoctor = mysqli_query($connMysqli, $FetchDoctor);
                   while ($row = mysqli_fetch_assoc($FetchDoctor)) {
                     $Status = $row['doctor_status'];
