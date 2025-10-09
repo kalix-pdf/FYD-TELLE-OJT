@@ -1529,17 +1529,16 @@ if (isset($_POST["UpdateDoctorType"])) {
   }else{echo "Nothing Found";}
 
   if($UpdateDoctorType == "Delete"){
-    $query = "DELETE FROM `doctor` WHERE `doctor_account_id	` = $DoctorID'";
+    $query = "DELETE FROM `doctor` WHERE `doctor_account_id` = '$DoctorID'";
     mysqli_query($connMysqli, $query);
     $EventType = "Remove Doctor";
     $EditDetails = "Removed Doctor: Dr. ".$DocFullName;
-    // echo "Account Deactivated.";
+    // echo "Account Deleted.";
 
   }
 
   if($UpdateDoctorType == "Deactivate"){
-
-    $query = "UPDATE doctor SET `doctor_status` = 'INACTIVE', `doctor_archive_status` = 'HIDDEN' WHERE doctor_account_id  = '$DoctorID'";
+    $query = "UPDATE doctor SET `doctor_status` = 'INACTIVE', `doctor_archive_status` = 'VISIBLE' WHERE doctor_account_id  = '$DoctorID'";
     mysqli_query($connMysqli, $query);
     $EventType = "Remove Doctor";
     $EditDetails = "Deactivated Doctor: Dr. ".$DocFullName;
