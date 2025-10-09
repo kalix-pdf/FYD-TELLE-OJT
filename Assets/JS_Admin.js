@@ -1439,3 +1439,7 @@ function Yes_EditSubSpecialization(Yes_EditSubSpecialization_ID) {
     },
   });
 }
+// Remove the parent .ClickableList div
+function removeClickableList(element) {
+    element.parentElement.remove();
+}

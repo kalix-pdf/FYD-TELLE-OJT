@@ -775,7 +775,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                           if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                           if ($DoctorSpecsFetchQuery->num_rows > 0) {
                             while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-                                <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['doctor_specialization_name']."</p></div>
+                                <div class='ClickableList'><i class='fa-solid fa-trash'onclick='removeClickableList(this)'></i> <p>".$SpecsRow['doctor_specialization_name']."</p></div>
                               ";
                             }
                           }
@@ -819,7 +819,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                               if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                               if ($DoctorSpecsFetchQuery->num_rows > 0) {
                                 while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-                                  <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['doctor_sub_specialization_name']."</p></div>
+                                  <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['doctor_sub_specialization_name']."</p></div>
                               ";
                             }
                           }
@@ -907,7 +907,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                                   if ($DoctorRoomFetchQuery->num_rows > 0) {
                                     while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {
                                     echo" 
-                                      <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$RoomRow['doctor_room_number']."</p></div>
+                                      <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$RoomRow['doctor_room_number']."</p></div>
                                     ";
                                 }
                               }
@@ -947,7 +947,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                             if ($DoctorHMOFetchQuery->num_rows > 0) {
                               while ($HMORow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
                                 echo" 
-                                   <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$HMORow['doctor_hmo_name']."</p></div>
+                                   <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$HMORow['doctor_hmo_name']."</p></div>
                                 ";
                               }
                             }
@@ -1176,7 +1176,7 @@ if (isset($_POST["functionSelectedItems"])) {
       if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
         while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-            <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['specialization_name']."</p></div>
+            <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['specialization_name']."</p></div>
           ";
         }
       }
@@ -1206,7 +1206,7 @@ if (isset($_POST["functionSelectedItems2"])) {
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-          <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['sub_specialization_name']."</p></div>
+          <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['sub_specialization_name']."</p></div>
         ";
       }
     }
@@ -1232,7 +1232,7 @@ if (isset($_POST["functionSelectedItems3"])) {
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
-          <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['room_floor_name']."</p></div>
+          <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['room_floor_name']."</p></div>
         ";
       }
     }
@@ -1259,7 +1259,7 @@ if (isset($_POST["functionSelectedItems4"])) {
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-          <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['hmo_name']."</p></div>
+          <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['hmo_name']."</p></div>
         ";
       }
     }
@@ -1481,7 +1481,7 @@ if (isset($_POST["AddSchedule"])) {
   $arr = implode(",", $AddSchedule);
   foreach ($AddSchedule as $schedule) {
     echo "
-      <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>". htmlspecialchars($schedule) ."</p></div>
+      <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>". htmlspecialchars($schedule) ."</p></div>
     ";
   }
 }
@@ -1497,7 +1497,7 @@ if (isset($_POST["AddSecretary"])) {
           echo "
           <div class='SecretaryCard'>
               <ul>
-                  <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash'></i></div></li>
+                  <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i></div></li>
                   <li>" . htmlspecialchars($remarks['network']) . " - " . htmlspecialchars($remarks['number']) . "</li>
                   <li>" . htmlspecialchars($remarks['network2']) . " - " . htmlspecialchars($remarks['number2']) . "</li>
               </ul>
