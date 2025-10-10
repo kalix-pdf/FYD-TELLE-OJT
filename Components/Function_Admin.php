@@ -1236,7 +1236,7 @@ if (isset($_POST["functionSelectedItems3"])) {
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
-          <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['room_floor_name']."</p></div>
+          <div class='ClickableList' data-id='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'Room')\"></i> <p>".$SpecsRow['room_floor_name']."</p></div>
         ";
       }
     }
@@ -1263,7 +1263,7 @@ if (isset($_POST["functionSelectedItems4"])) {
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-          <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['hmo_name']."</p></div>
+          <div class='ClickableList' data-id='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'HMO')\"></i> <p>".$SpecsRow['hmo_name']."</p></div>
         ";
       }
     }
@@ -1484,8 +1484,9 @@ if (isset($_POST["AddSchedule"])) {
 
   $arr = implode(",", $AddSchedule);
   foreach ($AddSchedule as $schedule) {
+    $value = $schedule;
     echo "
-      <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>". htmlspecialchars($schedule) ."</p></div>
+      <div class='ClickableList' ><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$value', 'schedule')\"></i> <p>". htmlspecialchars($value) ."</p></div>
     ";
   }
 }

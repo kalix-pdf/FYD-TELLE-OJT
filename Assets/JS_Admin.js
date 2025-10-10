@@ -1399,8 +1399,23 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
     },
   });
 }
-
+function isValidDayTime(value) {
+  // Checks for: Day (Monday-Sunday) and time (HH:MM AM/PM)
+  const dayPattern = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s\d{1,2}:\d{2}\s?(AM|PM)$/i;
+  console.log(value, dayPattern.test(value));
+  return dayPattern.test(value);
+}
 function removeSelected(iconElement, specId, arrayType) {
+  if(isValidDayTime(specId)===true){
+    console.log("Removing schedule item:", specId);
+    if (arrayType === "schedule") {
+      const index = scheduleArr.indexOf(specId);
+      if (index !== -1) {
+        scheduleArr.splice(index, 1);
+        console.log("Removed ID:", specId, "from schedule");
+      }
+    }
+  }
   specId = parseInt(specId, 10);
   console.log("Removing ID:", specId, "from", arrayType);
 
@@ -1412,13 +1427,27 @@ function removeSelected(iconElement, specId, arrayType) {
     if (index !== -1) {
       selectedIds2.splice(index, 1);
     }
-  } else if (arrayType === "Specs") {
+    } else if (arrayType === "Specs") {
       const index = selectedIds.indexOf(specId);
       if (index !== -1) {
         selectedIds.splice(index, 1);
       }
-  }
-
+    } else if (arrayType === "Room") {
+      const index = roomArr.indexOf(specId);
+      if (index !== -1) {
+        roomArr.splice(index, 1);
+      }
+    } else if (arrayType === "HMO") {
+      const index = hmoArr.indexOf(specId);
+      if (index !== -1) {
+        hmoArr.splice(index, 1);
+      }
+    }else if (arrayType === "schedule") {
+      const index = scheduleArr.indexOf(specId);
+      if (index !== -1) {
+        scheduleArr.splice(index, 1);
+      }
+    }
   console.log("Removed ID:", specId);
   console.log("Updated selectedIds:", selectedIds);
 
