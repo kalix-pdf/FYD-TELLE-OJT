@@ -1400,24 +1400,24 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
   });
 }
 function isValidDayTime(value) {
-  // Checks for: Day (Monday-Sunday) and time (HH:MM AM/PM)
-  const dayPattern = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s\d{1,2}:\d{2}\s?(AM|PM)$/i;
-  console.log(value, dayPattern.test(value));
-  return dayPattern.test(value);
+  const regex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)\s-\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)$/i;
+  return regex.test(value);
+
 }
 function removeSelected(iconElement, specId, arrayType) {
-  if(isValidDayTime(specId)===true){
-    console.log("Removing schedule item:", specId);
+  console.log("Attempting to remove ID:", specId, "from", arrayType);
+
+  if (isValidDayTime(specId) === true) {
     if (arrayType === "schedule") {
       const index = scheduleArr.indexOf(specId);
       if (index !== -1) {
         scheduleArr.splice(index, 1);
-        console.log("Removed ID:", specId, "from schedule");
       }
     }
+  } else {
+    specId = parseInt(specId, 10);
+    console.log("Removing ID:", specId, "from", arrayType);
   }
-  specId = parseInt(specId, 10);
-  console.log("Removing ID:", specId, "from", arrayType);
 
   const itemDiv = iconElement.closest(".ClickableList");
   if (itemDiv) itemDiv.remove();
@@ -1448,8 +1448,8 @@ function removeSelected(iconElement, specId, arrayType) {
         scheduleArr.splice(index, 1);
       }
     }
-  console.log("Removed ID:", specId);
-  console.log("Updated selectedIds:", selectedIds);
+  // console.log("Removed ID:", specId);
+  // console.log("Updated selectedIds:", selectedIds);
 
 }
 
