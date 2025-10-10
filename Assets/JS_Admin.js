@@ -1396,10 +1396,25 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
   });
 }
 
-function removeClickableList(element) {
-    element.parentElement.remove();
-    selectedItems(selectedIds,selectedId,selectedCode);
+function removeSelected(iconElement, specId) {
+  specId = parseInt(specId, 10);
+
+  const itemDiv = iconElement.closest(".ClickableList");
+  if (itemDiv) itemDiv.remove();
+
+  const index = selectedIds.indexOf(specId);
+  if (index !== -1) {
+    selectedIds.splice(index, 1);
+  }
+
+  console.log("Removed ID:", specId);
+  console.log("Updated selectedIds:", selectedIds);
+
+  if (selectedIds.length === 0) {
+    $("#hiddenInformationFieldIDSpecs").css("display", "none");
+  }
 }
+
 
 //EDIT SUB-SPECIALIZATION - FUNCTION 
 function EditSubSpecialization(EditSubSpecialization_ID) {

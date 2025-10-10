@@ -821,7 +821,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                               if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                               if ($DoctorSpecsFetchQuery->num_rows > 0) {
                                 while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-                                  <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['doctor_sub_specialization_name']."</p></div>
+                                  <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['doctor_sub_specialization_name']."</p></div>
                               ";
                             }
                           }
@@ -909,7 +909,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                                   if ($DoctorRoomFetchQuery->num_rows > 0) {
                                     while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {
                                     echo" 
-                                      <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$RoomRow['doctor_room_number']."</p></div>
+                                      <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$RoomRow['doctor_room_number']."</p></div>
                                     ";
                                 }
                               }
@@ -949,7 +949,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                             if ($DoctorHMOFetchQuery->num_rows > 0) {
                               while ($HMORow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
                                 echo" 
-                                   <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$HMORow['doctor_hmo_name']."</p></div>
+                                   <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$HMORow['doctor_hmo_name']."</p></div>
                                 ";
                               }
                             }
@@ -1177,8 +1177,13 @@ if (isset($_POST["functionSelectedItems"])) {
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
       if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
-        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-            <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['specialization_name']."</p></div>
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
+          echo" 
+            <div class='ClickableList' data-id='{$SpecsRow['specialization_id']}'>
+              <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}')\"></i>
+              <p>$specName</p>
+            </div>
           ";
         }
       }
