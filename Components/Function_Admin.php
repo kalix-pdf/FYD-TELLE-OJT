@@ -742,11 +742,6 @@ if (isset($_POST["ViewEdit_ID"])) {
                 <hr>
                 <br>
 
-
-
-
-
-
                 <div class='InputFieldForm'>
                   <div class='InputFieldFormChild1'>
                     <i class='InputFieldForm-i'>Specialization:</i>
@@ -787,9 +782,6 @@ if (isset($_POST["ViewEdit_ID"])) {
                     </div>
                   </div>
                 </div>
-
-
-
 
                 <br>
 
@@ -1181,7 +1173,7 @@ if (isset($_POST["functionSelectedItems"])) {
           $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
           echo" 
             <div class='ClickableList' data-id='{$SpecsRow['specialization_id']}'>
-              <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}')\"></i>
+              <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}', 'Specs')\"></i>
               <p>$specName</p>
             </div>
           ";
@@ -1212,9 +1204,14 @@ if (isset($_POST["functionSelectedItems2"])) {
     $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
-      while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-          <div class='ClickableList'><i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i> <p>".$SpecsRow['sub_specialization_name']."</p></div>
-        ";
+      while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+        $specSubName = htmlspecialchars($SpecsRow['sub_specialization_name'], ENT_QUOTES, 'UTF-8');
+        echo" 
+            <div class='ClickableList' data-id='{$SpecsRow['sub_specialization_id']}'>
+              <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['sub_specialization_id']}', 'SubSpecs')\"></i>
+              <p>$specSubName</p>
+            </div>
+          ";
       }
     }
     else{

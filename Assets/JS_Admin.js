@@ -456,6 +456,9 @@ function InsertNewDoctor(InsertDoctor) {
       clearText();
       if(response == "Doctor have been successfully inserted!"){
         PopMessages(response);
+        setTimeout(function() {
+            location.reload();
+          }, delayInMilliseconds);
       }
     },
   });
@@ -485,6 +488,7 @@ function InsertNewDoctor(InsertDoctor) {
   $(".Prompt-Message").css("display","none");
 
 }
+
 
 
 
@@ -1396,23 +1400,28 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
   });
 }
 
-function removeSelected(iconElement, specId) {
+function removeSelected(iconElement, specId, arrayType) {
   specId = parseInt(specId, 10);
+  console.log("Removing ID:", specId, "from", arrayType);
 
   const itemDiv = iconElement.closest(".ClickableList");
   if (itemDiv) itemDiv.remove();
 
-  const index = selectedIds.indexOf(specId);
-  if (index !== -1) {
-    selectedIds.splice(index, 1);
+  if (arrayType === "SubSpecs") {
+    const index = selectedIds2.indexOf(specId);
+    if (index !== -1) {
+      selectedIds2.splice(index, 1);
+    }
+  } else if (arrayType === "Specs") {
+      const index = selectedIds.indexOf(specId);
+      if (index !== -1) {
+        selectedIds.splice(index, 1);
+      }
   }
 
   console.log("Removed ID:", specId);
   console.log("Updated selectedIds:", selectedIds);
 
-  if (selectedIds.length === 0) {
-    $("#hiddenInformationFieldIDSpecs").css("display", "none");
-  }
 }
 
 
