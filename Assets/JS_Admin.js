@@ -1467,11 +1467,6 @@ function removeSelected(iconElement, specId, arrayType) {
   }
   
 }
-//function to remove secretary from the list and array
-// function removeAddsec(iconElement, specId, arrayType) {
-
-  
-// }
 
 function EditSubSpecialization(EditSubSpecialization_ID) {
   $(".Modal-Sidebar").css("display", "flex");
