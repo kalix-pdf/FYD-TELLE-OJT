@@ -1395,12 +1395,26 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
     },
   });
 }
+//REGEX FOR DAY AND TIME VALIDATION
+function isValidDayTime(value) {
+  const regex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)\s-\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)$/i;
+  return regex.test(value);
 
-// REMOVE SELECTED SPECS/SUBSPECS
-let removeSelectedSpecializationID = [];
-
+}
+//funtion to remove selected items from the list and array
 function removeSelected(iconElement, specId, arrayType) {
-  specId = parseInt(specId, 10);
+  console.log("Attempting to remove ID:", specId, "from", arrayType);
+
+  if (isValidDayTime(specId) === true) {
+    if (arrayType === "schedule") {
+      const index = scheduleArr.indexOf(specId);
+      if (index !== -1) {
+        scheduleArr.splice(index, 1);
+      }
+    }
+  } else {
+    specId = parseInt(specId, 10);
+  }
 
   const itemDiv = iconElement.closest(".ClickableList");
   if (itemDiv) itemDiv.remove();
@@ -1410,16 +1424,45 @@ function removeSelected(iconElement, specId, arrayType) {
     if (index !== -1) {
       selectedIds2.splice(index, 1);
     }
-  } else if (arrayType === "Specs") {
+    } else if (arrayType === "Specs") {
       const index = selectedIds.indexOf(specId);
       if (index !== -1) {
         selectedIds.splice(index, 1);
       }
+    } else if (arrayType === "Room") {
+      const index = roomArr.indexOf(specId);
+      if (index !== -1) {
+        roomArr.splice(index, 1);
+      }
+    } else if (arrayType === "HMO") {
+      const index = hmoArr.indexOf(specId);
+      if (index !== -1) {
+        hmoArr.splice(index, 1);
+      }
+    }else if (arrayType === "schedule") {
+      const index = scheduleArr.indexOf(specId);
+      if (index !== -1) {
+        scheduleArr.splice(index, 1);
+      }
+    }
+  // console.log("Removed ID:", specId);
+  // console.log("Updated selectedIds:", selectedIds);
+
+}
+//function to remove secretary from the list and array
+function removeAddsec(iconElement, specId, arrayType) {
+
+  // Find the index of the secretary whose number matches specId
+  const index = secretaryArr.findIndex(secretary => secretary.number == specId);
+
+  // If found, remove that secretary from the array
+  if (index !== -1) {
+    secretaryArr.splice(index, 1);
   }
 
-  console.log("Removed ID:", specId);
-  console.log("Updated selectedIds:", selectedIds);
-
+  // Remove the div from the DOM
+  const itemDiv = iconElement.closest(".SecretaryCard");
+  if (itemDiv) itemDiv.remove();
 }
 
 // function removeSpecsFromEdit(iconElement, specId) {
