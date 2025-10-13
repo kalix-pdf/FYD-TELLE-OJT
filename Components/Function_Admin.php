@@ -761,7 +761,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'></i>
                   <div class='InputFieldForm-i-div'>
-                    <div class='hiddenInformationField' id='hiddenInformationFieldIDSpecs'>
+                    <div class='hiddenInformationField' id='hiddenInformationFieldIDSpecsEdit'>
                       <!-- Function -->
                         "; 
                           $DoctorSpecsFetchQuery = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$ViewEdit_ID'";
@@ -1057,17 +1057,26 @@ if (isset($_POST["searchId"])) {
     if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
-        if($SearchType == "Edit"){
-          echo" 
-            <li onclick='selectThis(`Specs`,".$SpecsRow['specialization_id'].",`InsertEditSpecs`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['specialization_name']."</p></li>
+        $specID = htmlspecialchars($SpecsRow['specialization_id'], ENT_QUOTES, 'UTF-8');
+        $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
+        if ($SearchType == "Edit") {
+          echo "
+            <li onclick='selectThis(\"Specs\", $specID, \"$SearchType\")'>
+              <i class='fa-solid fa-plus'></i>
+              <p>$specName</p>
+            </li>
           ";
         }
-        else{
-          echo" 
-            <li onclick='selectThis(`Specs`,".$SpecsRow['specialization_id'].",`InsertSpecs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['specialization_name']."</p></li>
+        else {
+          echo "
+            <li onclick='selectThis(\"Specs\", $specID, \"$SearchType\")'>
+              <i class='fa-solid fa-plus'></i>
+              <p>$specName</p>
+            </li>
           ";
         }
       }
+
     }
     else{
       echo "Nothing Found!";
@@ -1083,12 +1092,12 @@ if (isset($_POST["searchId"])) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if($SearchType == "Edit") {
           echo" 
-            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].",`Specs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
+            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
           ";
         }
         else { 
           echo" 
-            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].",`Specs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
+            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
           ";
         }
       }
@@ -1107,12 +1116,12 @@ if (isset($_POST["searchId"])) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if ($SearchType == "Edit") {
           echo "
-             <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].",`Specs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
+             <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
           ";
         }
         else {
           echo" 
-            <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].",`Specs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
+            <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
           ";
         }
       }
@@ -1131,12 +1140,12 @@ if (isset($_POST["searchId"])) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if($SearchType == "Edit") { 
           echo" 
-            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].",`Specs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
+            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
           ";
         }
         else {
           echo" 
-            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].",`Specs1`)'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
+            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
           ";
         }
       }
@@ -1148,22 +1157,39 @@ if (isset($_POST["searchId"])) {
 
 }
 
-
 // SELECT SPECS
 if (isset($_POST["functionSelectedItems"])) {
   global $connMysqli;
+  $selectedCode = $_POST["selectedCode"];
   $functionSelectedArrayItems = $_POST["functionSelectedItems"];
   $selectedId = $_POST["selectedId"];
-  $selectedCode = $_POST["selectedCode"];
   $selectedDoctorID = $_POST["selectedDoctorID"];
 
-  if($selectedCode == "InsertEditSpecs"){
-      $InsertEditSpecs = $connPDO->prepare("INSERT INTO `doctor_specialization`(specialization_doctor_id, specialization_id_2, doctor_specialization_name) VALUES(?,?,?)");
-      $InsertEditSpecs->execute([$selectedDoctorID, $selectedId, 'Updated']);
+  if ($selectedCode == "Edit") {
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
+          echo" 
+            <div class='ClickableList' data-id='{$SpecsRow['specialization_id']}'>
+              <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}', 'EditSpecs')\"></i>
+              <p>$specName</p>
+            </div>
+          ";
+        }
+      }
+      else{
+        echo "Nothing Found!";
+      }
+    } else {
+        echo "No valid items selected.";
+    }
       
-      echo "Insert new Edit Specs";
-  }
-  else{
+  } else {
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
       $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
       $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
@@ -1187,7 +1213,6 @@ if (isset($_POST["functionSelectedItems"])) {
         echo "No valid items selected.";
     }
   }
-
 
 }
 
@@ -1572,7 +1597,6 @@ if (isset($_POST["UpdateDoctorType"])) {
     $EditMiddlename = $_POST["EditMiddlename"];
     $EditGender = $_POST["EditGender"];
     $EditCategory = $_POST["EditCategory"];
-    $EditSpecs = $_POST["EditSpecialization"];
 
     $query = "UPDATE doctor SET 
     doctor_lastname = '$EditLastname', 
@@ -1592,6 +1616,21 @@ if (isset($_POST["UpdateDoctorType"])) {
         mysqli_query($connMysqli, $deleteQuery);
       }
     }
+    if (!empty($_POST['EditedNewSpecs'])) {
+      $EditedNewSpecs = json_decode($_POST['EditedNewSpecs'], true); 
+
+      foreach ($EditedNewSpecs as $selectedId) {
+        $InsertEditSpecs = $connPDO->prepare("
+            INSERT INTO doctor_specialization (specialization_doctor_id, specialization_id_2, doctor_specialization_name)
+            SELECT ?, specialization_id, specialization_name
+            FROM specialization
+            WHERE specialization_id = ?
+        ");
+        $InsertEditSpecs->execute([$DoctorID, $selectedId]);
+    }
+    } 
+
+   
 
     $EventType = "Update Doctor";
     $EditDetails = "Updated Doctor Information of Dr. ".$DocFullName;

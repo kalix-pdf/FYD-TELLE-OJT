@@ -635,6 +635,7 @@ function editSearch(SearchType, searchId) {
 
   else if(SearchType == "Edit"){
     const searchElement = $("#edit_Search" + searchId);
+    
     if (searchElement.val().length === 0) {
       searchElement.parent().siblings().css("display", "none");
     } else {
@@ -672,17 +673,29 @@ const scheduleArr = [];
 const secretaryArr = [];
 const roomArr = [];
 const hmoArr = [];
-function selectThis(selectedType, selectedId, selectedCode) {
+
+const EditSpecializationArr = [];
+
+function selectThis(selectedType, selectedId, SearchType) {
   const selectedElementId = $("#hiddenInformationFieldID" + selectedType);
   if (selectedType === "Specs") {
     selectedElementId.css("display", "flex");
 
-    if (!selectedIds.includes(selectedId)) {
-      selectedIds.push(selectedId);
-    }  
+    if (SearchType === "Edit") {
+      if (!EditSpecializationArr.includes(selectedId)) {
+        EditSpecializationArr.push(selectedId);
+      }  
+      selectedItems(EditSpecializationArr, selectedId, SearchType);
+
+    } else {
+      if (!selectedIds.includes(selectedId)) {
+        selectedIds.push(selectedId);
+      }  
+      selectedItems(selectedIds,selectedId, SearchType);
+    }
+    
     closeSearch(selectedId);
   
-    selectedItems(selectedIds,selectedId,selectedCode);
     
     $("#editSearch1").val("");
     $(".hiddenContainer").css("display", "none");
@@ -744,24 +757,21 @@ function closeSearch(closeId) {
 }
 
 let selectedDoctorID = "";
-function selectedItems(selectedIds,selectedId,selectedCode){
-  console.log("Doctor ID: " + selectedDoctorID);
+function selectedItems(selectedIds,selectedId, SearchType){
   var data = {
-    functionSelectedItems: selectedIds,
+    functionSelectedItems: SearchType == "Edit" ? EditSpecializationArr : selectedIds,
     selectedId: selectedId,
-    selectedCode: selectedCode,
+    selectedCode: SearchType,
     selectedDoctorID: selectedDoctorID,
-  };
+  }; 
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
     data: data,
     success: function (response) {
-      // console.log(response);
-      if(selectedCode === "InsertEditSpecs"){
-        
-      }
-      else{
+      if (SearchType == "Edit") {
+        $("#hiddenInformationFieldIDSpecsEdit").append(response);
+      } else {
         $("#hiddenInformationFieldIDSpecs").html(response);
       }
     },
@@ -1020,7 +1030,8 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     EditGender: EditGender,
     EditCategory: EditCategory,
     RemovedSpecs: JSON.stringify(RemovedSpecsFromEdit),
-  };
+    EditedNewSpecs: JSON.stringify(EditSpecializationArr)
+  }; console.log(data);
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
@@ -1465,7 +1476,13 @@ function removeSelected(iconElement, specId, arrayType) {
   else if (arrayType === "RemoveFromEdit") {
     RemovedSpecsFromEdit.push(specId);
   }
-  
+
+  else if (arrayType === "EditSpecs") {
+    const index = EditSpecializationArr.indexOf(specId);
+    if (index !== -1) {
+        EditSpecializationArr.splice(index, 1);
+      }
+  }
 }
 //function to remove secretary from the list and array
 // function removeAddsec(iconElement, specId, arrayType) {
