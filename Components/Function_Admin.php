@@ -770,9 +770,10 @@ if (isset($_POST["ViewEdit_ID"])) {
                           if ($DoctorSpecsFetchQuery->num_rows > 0) {
                             while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
                               $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
+                              $specID = htmlspecialchars($SpecsRow['doctor_specialization_id'], ENT_QUOTES, 'UTF-8');
                               echo" 
                                 <div class='ClickableList' >
-                                  <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$specName')\"></i>
+                                  <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$specID', 'RemoveFromEdit')\"></i>
                                   <p>$specName</p>
                                 </div>
                               ";
@@ -1569,6 +1570,7 @@ if (isset($_POST["UpdateDoctorType"])) {
     $EditMiddlename = $_POST["EditMiddlename"];
     $EditGender = $_POST["EditGender"];
     $EditCategory = $_POST["EditCategory"];
+    $EditSpecs = $_POST["EditSpecialization"];
 
     $query = "UPDATE doctor SET 
     doctor_lastname = '$EditLastname', 
@@ -1578,6 +1580,23 @@ if (isset($_POST["UpdateDoctorType"])) {
     doctor_category = '$EditCategory'
     WHERE doctor_account_id  = '$DoctorID'";
     mysqli_query($connMysqli, $query);
+
+    // REMOVE PREVIOUS SPECS
+    if (!empty($EditSpecs)) {
+      $query = "DELETE FROM `doctor_specialization` WHERE `specialization_doctor_id` = '$DoctorID'";
+      mysqli_query($connMysqli, $query);
+      $ids = implode(",", array_map('intval', $EditSpecs));
+    
+      $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
+      $stmt = $connPDO->query($DoctorSpecsFetchQuery);
+      $fetchedSpecializations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `doctor_specialization` (specialization_doctor_id, specialization_id_2, doctor_specialization_name) VALUES (?,?,?)");
+
+      foreach ($fetchedSpecializations as $spec) {
+          $InsertDoctorSpecs->execute([$doctorAccountId, $spec['specialization_id'], $spec['specialization_name']]);
+      }
+    } 
 
     $EventType = "Update Doctor";
     $EditDetails = "Updated Doctor Information of Dr. ".$DocFullName;
@@ -1801,53 +1820,65 @@ if (isset($_POST["AddSpecialization"])) {
 
 //EDIT SPECIALIZATION
 if (isset($_POST["EditSpecialization_ID"])) {
-  global $connMysqli;
-  $Specialization_ID = $_POST["EditSpecialization_ID"];
+    global $connMysqli;
+    $Specialization_ID = intval($_POST["EditSpecialization_ID"]); // prevent SQL injection
 
-  $FetchQuery = "SELECT * from specialization
-  WHERE specialization_id = '$Specialization_ID'";
-  $FetchQuery = mysqli_query($connMysqli, $FetchQuery);
+    // Fetch specialization data
+    $FetchQuery = "
+        SELECT * FROM specialization
+        WHERE specialization_id = $Specialization_ID
+    ";
+    $result = mysqli_query($connMysqli, $FetchQuery);
 
-  if (!$FetchQuery) {
-    die('MySQL ErrorL ' . mysqli_error($conn));
-  }
-  if ($FetchQuery->num_rows > 0) {
-    while ($row1 = mysqli_fetch_assoc($FetchQuery)) {
-      echo " 
+    if (!$result) {
+        die('MySQL Error: ' . mysqli_error($connMysqli));
+    }
+
+    if ($result->num_rows > 0) {
+        while ($row1 = mysqli_fetch_assoc($result)) {
+            $specializationName = htmlspecialchars($row1['specialization_name']);
+            $specializationID = htmlspecialchars($row1['specialization_id']);
+
+            echo "
             <div class='Modal-Sidebar-Top'>
-              <i class='fa-solid fa-user-tie'></i>
-              <h4>Edit Specialization</h4>
+                <i class='fa-solid fa-user-tie'></i>
+                <h4>Edit Specialization</h4>
             </div>
+
             <div class='Modal-Sidebar-Main'>
-              <div class='ModalSidebar-Container AddDoctorDivContainer-Form'>
+                <div class='ModalSidebar-Container AddDoctorDivContainer-Form'>
+                    <label>Details</label>
 
-                <label for=''> Details </label>
+                    <div class='InputFieldForm'>
+                        <i class='InputFieldForm-i'>Specialization Name</i>
+                        <div class='InputFieldForm-Info'>
+                            <span>$specializationName</span>
+                        </div>
+                    </div>
 
-                <div class='InputFieldForm'>
-                  <i class='InputFieldForm-i'>Specialization Name</i>
-                  <div class='InputFieldForm-Info'> <span> " . $row1['specialization_name'] . " </span> </div>
+                    <label>Edit Section</label>
+
+                    <div class='InputFieldForm'>
+                        <i class='InputFieldForm-i'>New Specialization Name:</i>
+                        <input type='text' 
+                               id='EditSpecializationName' 
+                               placeholder='Current: $specializationName' 
+                               value='$specializationName'>
+                    </div>
                 </div>
-              
-                <label for=''> Edit Section </label>
-                
-
-                <div class='InputFieldForm'>
-                  <i class='InputFieldForm-i'>New Specialization Name: </i>
-                  <input type='text' id='EditSpecializationName' placeholder='Current: ".$row1['specialization_name']."' value=''>
-                </div>
-
-              </div>
             </div>
-            <div class='Modal-Sidebar-Bottom'>
-              <button class='Btn_1' onclick='PromptSpecialization(" . $row1['specialization_id'] . ")'>Edit</button>
-              <button class='Btn_2' onclick='ModalSidebarExit()'>Cancel</button>
-            </div> ";
-    };
-  } else {
-    echo "No Data Found";
-  }
 
+            <div class='Modal-Sidebar-Bottom'>
+                <button class='Btn_1' onclick='PromptSpecialization($specializationID)'>Edit</button>
+                <button class='Btn_2' onclick='ModalSidebarExit()'>Cancel</button>
+            </div>
+            ";
+        }
+    } else {
+        echo "No Data Found";
+    }
 }
+
 
 //IF YES EDIT SPECIALIZATION
 if (isset($_POST["Yes_EditSpecialization_ID"])) { 
@@ -1913,85 +1944,97 @@ if (isset($_POST["AddSubSpecialization"])) {
 
 //EDIT SUB-SPECIALIZATION
 if (isset($_POST["EditSubSpecialization_ID"])) {
-  global $connMysqli;
-  $SubSpecialization_ID = $_POST["EditSubSpecialization_ID"];
+    global $connMysqli;
+    $SubSpecialization_ID = intval($_POST["EditSubSpecialization_ID"]); // Prevent SQL injection
 
-  $FetchQuery = "SELECT * from sub_specialization
-  INNER JOIN specialization ON sub_specialization.sub_specs_id = specialization.specialization_id
-  WHERE sub_specialization_id = $SubSpecialization_ID";
-  $FetchQuery = mysqli_query($connMysqli, $FetchQuery);
+    $FetchQuery = "
+        SELECT 
+            sub_specialization.*, 
+            specialization.specialization_name 
+        FROM sub_specialization
+        INNER JOIN specialization 
+            ON sub_specialization.sub_specs_id = specialization.specialization_id
+        WHERE sub_specialization_id = $SubSpecialization_ID
+    ";
 
-  if (!$FetchQuery) {
-    die('MySQL ErrorL ' . mysqli_error($conn));
-  }
-  if ($FetchQuery->num_rows > 0) {
-    while ($row1 = mysqli_fetch_assoc($FetchQuery)) {
-      echo " 
+    $result = mysqli_query($connMysqli, $FetchQuery);
+
+    if (!$result) {
+        die('MySQL Error: ' . mysqli_error($connMysqli));
+    }
+
+    if ($result->num_rows > 0) {
+        while ($row1 = mysqli_fetch_assoc($result)) {
+            echo "
             <div class='Modal-Sidebar-Top'>
               <i class='fa-solid fa-user-tie'></i>
               <h4>Edit Sub-specialization</h4>
             </div>
+
             <div class='Modal-Sidebar-Main'>
               <div class='ModalSidebar-Container AddDoctorDivContainer-Form'>
-
-                <label for=''> Details </label>
+                <label>Details</label>
 
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>Sub-specialization Name</i>
-                  <div class='InputFieldForm-Info'> <span> " . $row1['sub_specialization_name'] . " </span> </div>
+                  <div class='InputFieldForm-Info'>
+                    <span>" . htmlspecialchars($row1['sub_specialization_name']) . "</span>
+                  </div>
                 </div>
 
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>Specialization Name</i>
-                  <div class='InputFieldForm-Info'> 
-                    <span> 
-                    ". $row1['specialization_name'] ."
-                    </span> 
+                  <div class='InputFieldForm-Info'>
+                    <span>" . htmlspecialchars($row1['specialization_name']) . "</span>
                   </div>
                 </div>
-              
-                <label for=''> Edit Section </label>
-                
+
+                <label>Edit Section</label>
+
                 <div class='InputFieldForm'>
-                  <i class='InputFieldForm-i'>New Specialization Name: </i>
-                  <select name='NewSpecForSubSpec' id='NewSpecForSubSpec'> ";
-                  $sub_specs_id = $row1['sub_specs_id']; 
+                  <i class='InputFieldForm-i'>New Specialization Name:</i>
+                  <select name='NewSpecForSubSpec' id='NewSpecForSubSpec'>
+            ";
 
-                  $query = "SELECT * FROM specialization"; 
-                  $query = mysqli_query($connMysqli, $query);
+            // Fetch specialization options
+            $sub_specs_id = $row1['sub_specs_id'];
+            $specQuery = "SELECT * FROM specialization ORDER BY specialization_name ASC";
+            $specResult = mysqli_query($connMysqli, $specQuery);
 
-                  if($query->num_rows > 0) {
-                    while($row2 = mysqli_fetch_assoc($query)) {
-                        $NewSelectedSpecialization = ($row2['specialization_id'] == $sub_specs_id) ? "selected" : "";
-                        echo "<option value='" . htmlspecialchars($row2['specialization_id']) . "' $NewSelectedSpecialization>" . htmlspecialchars($row2['specialization_name']) . "</option>";
-                    };
-                  }  
-                          
-                  else {
-                        echo "No data found";     
-                  }
+            if ($specResult && $specResult->num_rows > 0) {
+                while ($row2 = mysqli_fetch_assoc($specResult)) {
+                    $selected = ($row2['specialization_id'] == $sub_specs_id) ? "selected" : "";
+                    echo "<option value='" . htmlspecialchars($row2['specialization_id']) . "' $selected>" . htmlspecialchars($row2['specialization_name']) . "</option>";
+                }
+            } else {
+                echo "<option disabled>No specialization found</option>";
+            }
 
-                echo "
+            echo "
                   </select>
                 </div>
 
                 <div class='InputFieldForm'>
-                  <i class='InputFieldForm-i'>New Sub-specialization Name: </i>
-                  <input type='text' id='EditSubSpecializationName' placeholder='Current: ".$row1['sub_specialization_name']."' value='".$row1['sub_specialization_name']."'>
+                  <i class='InputFieldForm-i'>New Sub-specialization Name:</i>
+                  <input type='text' 
+                         id='EditSubSpecializationName' 
+                         placeholder='Current: " . htmlspecialchars($row1['sub_specialization_name']) . "' 
+                         value='" . htmlspecialchars($row1['sub_specialization_name']) . "'>
                 </div>
-
               </div>
             </div>
-            <div class='Modal-Sidebar-Bottom'>
-              <button class='Btn_1' onclick='PromptSubSpecialization(" . $row1['sub_specialization_id'] . ")'>Edit</button>
-              <button class='Btn_2' onclick='ModalSidebarExit()'>Cancel</button>
-            </div> ";
-    };
-  } else {
-    echo "No Data Found";
-  }
 
+            <div class='Modal-Sidebar-Bottom'>
+              <button class='Btn_1' onclick='PromptSubSpecialization(" . htmlspecialchars($row1['sub_specialization_id']) . ")'>Edit</button>
+              <button class='Btn_2' onclick='ModalSidebarExit()'>Cancel</button>
+            </div>
+            ";
+        }
+    } else {
+        echo "No Data Found";
+    }
 }
+
 
 //IF YES EDIT SUB-SPECIALIZATION
 if (isset($_POST["Yes_EditSubSpecialization_ID"])) { 

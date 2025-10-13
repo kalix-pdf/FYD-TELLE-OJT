@@ -728,11 +728,8 @@ function selectThis(selectedType, selectedId, selectedCode) {
     $(".hiddenContainer").css("display", "none");
   }
 
-
-
-
   else if(selectedType === "EditSpecs"){
-
+    
   }
 
 
@@ -1006,14 +1003,13 @@ function AddSecretary() {
 }
 
 
-
-
 function UpdateDoctorDB(UpdateType, DoctorID){
   var EditLastname = $("#EditLastName").val();
   var EditFirstname = $("#EditFirstName").val();
   var EditMiddlename = $("#EditMiddleName").val();
   var EditGender = $("#EditGender").val();
   var EditCategory = $("#EditCategory").val();
+  
   var data = {
     UpdateDoctorType: UpdateType,
     DoctorID: DoctorID,
@@ -1400,9 +1396,11 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
   });
 }
 
+// REMOVE SELECTED SPECS/SUBSPECS
+let removeSelectedSpecializationID = [];
+
 function removeSelected(iconElement, specId, arrayType) {
   specId = parseInt(specId, 10);
-  console.log("Removing ID:", specId, "from", arrayType);
 
   const itemDiv = iconElement.closest(".ClickableList");
   if (itemDiv) itemDiv.remove();
@@ -1424,8 +1422,29 @@ function removeSelected(iconElement, specId, arrayType) {
 
 }
 
+// function removeSpecsFromEdit(iconElement, specId) {
+//   specId = parseInt(specId, 10);
+
+//   const itemDiv = iconElement.closest(".ClickableList");
+//   if (itemDiv) itemDiv.remove();
+
+//   if (arrayType === "SubSpecs") {
+//     const index = selectedIds2.indexOf(specId);
+//     if (index !== -1) {
+//       selectedIds2.splice(index, 1);
+//     }
+//   } else if (arrayType === "Specs") {
+//       const index = selectedIds.indexOf(specId);
+//       if (index !== -1) {
+//         selectedIds.splice(index, 1);
+//       }
+//   }
+// }
+
 
 //EDIT SUB-SPECIALIZATION - FUNCTION 
+
+
 function EditSubSpecialization(EditSubSpecialization_ID) {
   $(".Modal-Sidebar").css("display", "flex");
   $(".Modal-EditSubSpecialization").css("display", "flex");
