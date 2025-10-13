@@ -1019,6 +1019,7 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     EditMiddlename: EditMiddlename,
     EditGender: EditGender,
     EditCategory: EditCategory,
+    RemovedSpecs: JSON.stringify(RemovedSpecsFromEdit),
   };
   $.ajax({
     url: "../Components/Function_Admin.php",
@@ -1395,6 +1396,9 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
     },
   });
 }
+
+let RemovedSpecsFromEdit = [];
+
 //REGEX FOR DAY AND TIME VALIDATION
 function isValidDayTime(value) {
   const regex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)\s-\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)$/i;
@@ -1424,69 +1428,50 @@ function removeSelected(iconElement, specId, arrayType) {
     if (index !== -1) {
       selectedIds2.splice(index, 1);
     }
-    } else if (arrayType === "Specs") {
-      const index = selectedIds.indexOf(specId);
-      if (index !== -1) {
+  } 
+  else if (arrayType === "Specs") {
+    const index = selectedIds.indexOf(specId);
+    if (index !== -1) {
         selectedIds.splice(index, 1);
       }
-    } else if (arrayType === "Room") {
+  } 
+  else if (arrayType === "Room") {
       const index = roomArr.indexOf(specId);
       if (index !== -1) {
         roomArr.splice(index, 1);
       }
-    } else if (arrayType === "HMO") {
+  }
+  else if (arrayType === "HMO") {
       const index = hmoArr.indexOf(specId);
       if (index !== -1) {
         hmoArr.splice(index, 1);
       }
-    }else if (arrayType === "schedule") {
+  }
+  else if (arrayType === "schedule") {
       const index = scheduleArr.indexOf(specId);
       if (index !== -1) {
         scheduleArr.splice(index, 1);
       }
+  }
+  else if (arrayType === "addsec") {
+    const index = secretaryArr.findIndex(secretary => secretary.number == specId);
+    if (index !== -1) {
+      secretaryArr.splice(index, 1);
     }
-  // console.log("Removed ID:", specId);
-  // console.log("Updated selectedIds:", selectedIds);
-
+    const itemDiv = iconElement.closest(".SecretaryCard");
+    if (itemDiv) itemDiv.remove();
+  }
+  // for edit function
+  else if (arrayType === "RemoveFromEdit") {
+    RemovedSpecsFromEdit.push(specId);
+  }
+  
 }
 //function to remove secretary from the list and array
-function removeAddsec(iconElement, specId, arrayType) {
+// function removeAddsec(iconElement, specId, arrayType) {
 
-  // Find the index of the secretary whose number matches specId
-  const index = secretaryArr.findIndex(secretary => secretary.number == specId);
-
-  // If found, remove that secretary from the array
-  if (index !== -1) {
-    secretaryArr.splice(index, 1);
-  }
-
-  // Remove the div from the DOM
-  const itemDiv = iconElement.closest(".SecretaryCard");
-  if (itemDiv) itemDiv.remove();
-}
-
-// function removeSpecsFromEdit(iconElement, specId) {
-//   specId = parseInt(specId, 10);
-
-//   const itemDiv = iconElement.closest(".ClickableList");
-//   if (itemDiv) itemDiv.remove();
-
-//   if (arrayType === "SubSpecs") {
-//     const index = selectedIds2.indexOf(specId);
-//     if (index !== -1) {
-//       selectedIds2.splice(index, 1);
-//     }
-//   } else if (arrayType === "Specs") {
-//       const index = selectedIds.indexOf(specId);
-//       if (index !== -1) {
-//         selectedIds.splice(index, 1);
-//       }
-//   }
+  
 // }
-
-
-//EDIT SUB-SPECIALIZATION - FUNCTION 
-
 
 function EditSubSpecialization(EditSubSpecialization_ID) {
   $(".Modal-Sidebar").css("display", "flex");

@@ -770,7 +770,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                           if ($DoctorSpecsFetchQuery->num_rows > 0) {
                             while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
                               $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
-                              $specID = htmlspecialchars($SpecsRow['doctor_specialization_id'], ENT_QUOTES, 'UTF-8');
+                              $specID = htmlspecialchars($SpecsRow['specialization_id_2'], ENT_QUOTES, 'UTF-8');
                               echo" 
                                 <div class='ClickableList' >
                                   <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$specID', 'RemoveFromEdit')\"></i>
@@ -1504,7 +1504,7 @@ if (isset($_POST["AddSecretary"])) {
           echo "
           <div class='SecretaryCard'>
               <ul>
-                  <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash' onclick=\"removeAddsec(this, '$name', 'addsec')\"></i></div></li>
+                  <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$name', 'addsec')\"></i></div></li>
                   <li>" . htmlspecialchars($remarks['network']) . " - " . htmlspecialchars($remarks['number']) . "</li>
                   <li>" . htmlspecialchars($remarks['network2']) . " - " . htmlspecialchars($remarks['number2']) . "</li>
               </ul>
@@ -1584,21 +1584,14 @@ if (isset($_POST["UpdateDoctorType"])) {
     mysqli_query($connMysqli, $query);
 
     // REMOVE PREVIOUS SPECS
-    if (!empty($EditSpecs)) {
-      $query = "DELETE FROM `doctor_specialization` WHERE `specialization_doctor_id` = '$DoctorID'";
-      mysqli_query($connMysqli, $query);
-      $ids = implode(",", array_map('intval', $EditSpecs));
-    
-      $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
-      $stmt = $connPDO->query($DoctorSpecsFetchQuery);
-      $fetchedSpecializations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-      $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `doctor_specialization` (specialization_doctor_id, specialization_id_2, doctor_specialization_name) VALUES (?,?,?)");
-
-      foreach ($fetchedSpecializations as $spec) {
-          $InsertDoctorSpecs->execute([$doctorAccountId, $spec['specialization_id'], $spec['specialization_name']]);
+    if (!empty($_POST['RemovedSpecs'])) {
+      $RemovedSpecs = json_decode($_POST['RemovedSpecs'], true);
+      foreach ($RemovedSpecs as $specId) {
+        $specId = intval($specId);
+        $deleteQuery = "DELETE FROM doctor_specialization WHERE specialization_doctor_id = '$DoctorID' AND specialization_id_2 = '$specId'";
+        mysqli_query($connMysqli, $deleteQuery);
       }
-    } 
+    }
 
     $EventType = "Update Doctor";
     $EditDetails = "Updated Doctor Information of Dr. ".$DocFullName;
