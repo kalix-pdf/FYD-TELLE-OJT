@@ -1453,18 +1453,8 @@ function removeSelected(iconElement, specId, arrayType) {
   // console.log("Updated selectedIds:", selectedIds);
 
 }
-// function removeAddsec(iconElement, specId, arrayType) {
-//   console.log("Attempting to remove ID:", specId, "from", arrayType);
-//   specNum = secretaryArr.some(secretary => secretary.number == specId);
-
-//   const index = secretaryArr.indexOf(specNum);
-//   if (index !== -1) {
-//     secretaryArr.splice(index, 1);
-//   }
-//   console.log("update array:", secretaryArr, "from", arrayType);
-// }
+//function to remove secretary from the list and array
 function removeAddsec(iconElement, specId, arrayType) {
-  console.log("Attempting to remove ID:", specId, "from", arrayType);
 
   // Find the index of the secretary whose number matches specId
   const index = secretaryArr.findIndex(secretary => secretary.number == specId);
@@ -1477,8 +1467,6 @@ function removeAddsec(iconElement, specId, arrayType) {
   // Remove the div from the DOM
   const itemDiv = iconElement.closest(".SecretaryCard");
   if (itemDiv) itemDiv.remove();
-
-  console.log("Updated array:", secretaryArr, "from", arrayType);
 }
 
 
