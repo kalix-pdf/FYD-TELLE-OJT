@@ -1399,11 +1399,13 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
     },
   });
 }
+//REGEX FOR DAY AND TIME VALIDATION
 function isValidDayTime(value) {
   const regex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)\s-\s(0?[1-9]|1[0-2]):[0-5][0-9](AM|PM)$/i;
   return regex.test(value);
 
 }
+//funtion to remove selected items from the list and array
 function removeSelected(iconElement, specId, arrayType) {
   console.log("Attempting to remove ID:", specId, "from", arrayType);
 
@@ -1416,7 +1418,6 @@ function removeSelected(iconElement, specId, arrayType) {
     }
   } else {
     specId = parseInt(specId, 10);
-    console.log("Removing ID:", specId, "from", arrayType);
   }
 
   const itemDiv = iconElement.closest(".ClickableList");
@@ -1451,6 +1452,33 @@ function removeSelected(iconElement, specId, arrayType) {
   // console.log("Removed ID:", specId);
   // console.log("Updated selectedIds:", selectedIds);
 
+}
+// function removeAddsec(iconElement, specId, arrayType) {
+//   console.log("Attempting to remove ID:", specId, "from", arrayType);
+//   specNum = secretaryArr.some(secretary => secretary.number == specId);
+
+//   const index = secretaryArr.indexOf(specNum);
+//   if (index !== -1) {
+//     secretaryArr.splice(index, 1);
+//   }
+//   console.log("update array:", secretaryArr, "from", arrayType);
+// }
+function removeAddsec(iconElement, specId, arrayType) {
+  console.log("Attempting to remove ID:", specId, "from", arrayType);
+
+  // Find the index of the secretary whose number matches specId
+  const index = secretaryArr.findIndex(secretary => secretary.number == specId);
+
+  // If found, remove that secretary from the array
+  if (index !== -1) {
+    secretaryArr.splice(index, 1);
+  }
+
+  // Remove the div from the DOM
+  const itemDiv = iconElement.closest(".SecretaryCard");
+  if (itemDiv) itemDiv.remove();
+
+  console.log("Updated array:", secretaryArr, "from", arrayType);
 }
 
 

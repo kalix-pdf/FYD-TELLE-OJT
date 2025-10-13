@@ -1499,10 +1499,11 @@ if (isset($_POST["AddSecretary"])) {
 
   foreach ($AddSecretary as $remarks) {
       if (is_array($remarks) && isset($remarks['name'], $remarks['number'], $remarks['network'])) {
+        $name = htmlspecialchars($remarks['number'], ENT_QUOTES, 'UTF-8');
           echo "
           <div class='SecretaryCard'>
               <ul>
-                  <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash' onclick='removeClickableList(this)'></i></div></li>
+                  <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash' onclick=\"removeAddsec(this, '$name', 'addsec')\"></i></div></li>
                   <li>" . htmlspecialchars($remarks['network']) . " - " . htmlspecialchars($remarks['number']) . "</li>
                   <li>" . htmlspecialchars($remarks['network2']) . " - " . htmlspecialchars($remarks['number2']) . "</li>
               </ul>
