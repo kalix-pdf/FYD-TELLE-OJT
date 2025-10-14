@@ -982,6 +982,10 @@ tr:hover {
   font-size: 12px;
   font-weight: 300;
 }
+.edit-schedule{
+  border:none;
+  max-width: 100%;
+}
 
 
 .table-doctor-schedule{
