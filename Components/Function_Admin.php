@@ -877,11 +877,12 @@ if (isset($_POST["ViewEdit_ID"])) {
                             $scheduleID = htmlspecialchars($ScheduleRow['doctor_schedule_id'], ENT_QUOTES, 'UTF-8');
                             echo" 
                               <tr class='ClickableList'>
-                                <td>".$ScheduleDay."</td> 
-                                <td>".$ScheduleTime."</td> 
                                 <td>
                                   <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$scheduleID', 'RemoveFromEditSchedule')\"></i>
                                 </td>
+                                <td>".$ScheduleDay."</td> 
+                                <td>".$ScheduleTime."</td> 
+                                
                               </tr>
                             ";
                           }
