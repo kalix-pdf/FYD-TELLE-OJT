@@ -82,34 +82,37 @@ function editNav(navId){
 
 // Dashboard Chart
 var chart;
-function FuncChart(data) {
-  var inputChartName1 = $("#chartInputSpecs-Names1").val();
-  var inputChartName2 = $("#chartInputSpecs-Names2").val();
-  var inputChartName3 = $("#chartInputSpecs-Names3").val();
-  var inputChartName4 = $("#chartInputSpecs-Names4").val();
-  var inputChartName5 = $("#chartInputSpecs-Names5").val();
+function FuncChart(data = []) {
+  var inputChartName1 = $("#chartInputSpecs-Names1").val() || "";
+  var inputChartName2 = $("#chartInputSpecs-Names2").val() || "";
+  var inputChartName3 = $("#chartInputSpecs-Names3").val() || "";
+  var inputChartName4 = $("#chartInputSpecs-Names4").val() || "";
+  var inputChartName5 = $("#chartInputSpecs-Names5").val() || "";
+
+  var categories = [inputChartName1, inputChartName2, inputChartName3, inputChartName4, inputChartName5]
+    .filter(name => name !== ""); // remove empty names
 
   var options = {
-    series: [{ data: data }],
-    chart: { type: "bar", height: 250, dropShadow: { enabled: true, top: 0, left: 0, blur: 2, opacity: 0.2 } },
-    plotOptions: { bar: { borderRadius: 4, borderRadiusApplication: "end", horizontal: true } },
+    series: [{ data: Array.isArray(data) ? data : [] }], // ensure it's always an array
+    chart: {
+      type: "bar",
+      height: 250,
+      dropShadow: { enabled: true, top: 0, left: 0, blur: 2, opacity: 0.2 }
+    },
+    plotOptions: {
+      bar: { borderRadius: 4, borderRadiusApplication: "end", horizontal: true }
+    },
     fill: { colors: ["#318499"] },
     dataLabels: { enabled: false },
-    labels: {
-      show: true,
-      rotate: -45,
-      rotateAlways: false,
-      hideOverlappingLabels: true,
-      showDuplicates: false,
-      trim: false,
-      minHeight: undefined,
-      maxHeight: 120,
-    },
-    xaxis: { categories: [inputChartName1, inputChartName2, inputChartName3, inputChartName4, inputChartName5] },
+    xaxis: { categories: categories.length ? categories : ["No Data"] } // fallback label
   };
+
+  if (chart) chart.destroy();
+
   chart = new ApexCharts(document.querySelector("#chart"), options);
   chart.render();
 }
+
 
 
 var inputSpecsChart1 = $("#chartInputSpecs-IDs1").val();
@@ -124,7 +127,6 @@ function updateChartData() {
   chart.updateSeries([{ data: newData2 }]);
 }
 
-// var inputChart = $("#chartInput").val();
 var initialData = [inputSpecsChart1, inputSpecsChart2, inputSpecsChart3, inputSpecsChart4, inputSpecsChart5];
 FuncChart(initialData);
 
@@ -132,43 +134,67 @@ FuncChart(initialData);
 
 // Dashboard Chart 2
 var chart2;
-function FuncChart2(data) {
-  var inputChartName1 = $("#chartInputHMO-Names1").val();
-  var inputChartName2 = $("#chartInputHMO-Names2").val();
-  var inputChartName3 = $("#chartInputHMO-Names3").val();
-  var inputChartName4 = $("#chartInputHMO-Names4").val();
-  var inputChartName5 = $("#chartInputHMO-Names5").val();
+var chart2; // define globally so you can destroy/re-render later
+
+function FuncChart2(data = []) {
+  var inputChartName1 = $("#chartInputHMO-Names1").val() || "";
+  var inputChartName2 = $("#chartInputHMO-Names2").val() || "";
+  var inputChartName3 = $("#chartInputHMO-Names3").val() || "";
+  var inputChartName4 = $("#chartInputHMO-Names4").val() || "";
+  var inputChartName5 = $("#chartInputHMO-Names5").val() || "";
+
+  var categories = [
+    inputChartName1,
+    inputChartName2,
+    inputChartName3,
+    inputChartName4,
+    inputChartName5
+  ].filter(name => name !== "");
+
+  if (categories.length === 0) categories = ["No Data"];
+
+  if (!Array.isArray(data)) {
+    console.warn("FuncChart2(): Invalid data argument, expected array. Got:", data);
+    data = [];
+  }
 
   var options = {
-    series: [{ data: data }],
-    chart: { type: "bar", height: 250, dropShadow: { enabled: true, top: 0, left: 0, blur: 2, opacity: 0.2 } },
-    plotOptions: { bar: { borderRadius: 4, borderRadiusApplication: "end", horizontal: true } },
+    series: [{
+      data: data
+    }],
+    chart: {
+      type: "bar",
+      height: 250,
+      dropShadow: {
+        enabled: true,
+        top: 0,
+        left: 0,
+        blur: 2,
+        opacity: 0.2
+      }
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 4,
+        borderRadiusApplication: "end",
+        horizontal: true
+      }
+    },
     fill: { colors: ["#318499"] },
     dataLabels: { enabled: false },
-    labels: {
-      show: true,
-      rotate: -45,
-      rotateAlways: false,
-      hideOverlappingLabels: true,
-      showDuplicates: false,
-      trim: false,
-      minHeight: undefined,
-      maxHeight: 120,
-      minWidth: 400,
-    },
     xaxis: {
-      categories: [
-        inputChartName1,
-        inputChartName2,
-        inputChartName3,
-        inputChartName4,
-        inputChartName5,
-      ],
-    },
+      categories: categories
+    }
   };
+
+  if (chart2) {
+    chart2.destroy();
+  }
+
   chart2 = new ApexCharts(document.querySelector("#chart2"), options);
   chart2.render();
 }
+
 
 
 
@@ -186,9 +212,6 @@ function updateChartData2() {
 }
 var initialData2 = [inputChart1, inputChart2, inputChart3, inputChart4, inputChart5];
 FuncChart2(initialData2);
-
-
-
 
 
 
