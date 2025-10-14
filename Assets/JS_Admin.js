@@ -241,9 +241,20 @@ $(document).ready(function () {
   });
 });
 
+let EditSpecializationArr = [];
+let EditSubSpecializationArr = [];
+let EditNewRoomarr = [];
+let EditNewHMOarr = [];
+let EditNewScheduleArr = [];
 // ============= AJAX =============
 // HIDE MODAL
 function ModalSidebarExit() {
+  EditSpecializationArr = [];
+  EditSubSpecializationArr = [];
+  EditNewRoomarr = [];
+  EditNewHMOarr = [];
+  EditNewScheduleArr = [];
+
   $(".Modal-Sidebar").css("display", "none");
 }
 
@@ -674,7 +685,6 @@ const secretaryArr = [];
 const roomArr = [];
 const hmoArr = [];
 
-const EditSpecializationArr = [];
 
 function selectThis(selectedType, selectedId, SearchType) {
   const selectedElementId = $("#hiddenInformationFieldID" + selectedType);
@@ -696,33 +706,47 @@ function selectThis(selectedType, selectedId, SearchType) {
     
     closeSearch(selectedId);
   
-    
     $("#editSearch1").val("");
     $(".hiddenContainer").css("display", "none");
   }
 
   else if(selectedType === "SubSpecs"){
     selectedElementId.css("display", "flex");
+    if (SearchType === "Edit") {
+      if (!EditSubSpecializationArr.includes(selectedId)) {
+        EditSubSpecializationArr.push(selectedId);
+      }  
+      selectedItems2(EditSubSpecializationArr, SearchType);
 
-    if (!selectedIds2.includes(selectedId)) {
-      selectedIds2.push(selectedId);
-    }  
+    } else {
+      if (!selectedIds2.includes(selectedId)) {
+        selectedIds2.push(selectedId);
+      }  
+      selectedItems2(selectedIds2, SearchType);
+    }
+    
     closeSearch(selectedId);
   
-    selectedItems2(selectedIds2);
-    
     $("#editSearch2").val("");
     $(".hiddenContainer").css("display", "none");
   }
   else if(selectedType === "Room"){
     selectedElementId.css("display", "flex");
 
-    if (!roomArr.includes(selectedId)) {
-      roomArr.push(selectedId);
-    }  
+    if (SearchType === "Edit") {
+      if (!EditNewRoomarr.includes(selectedId)) {
+        EditNewRoomarr.push(selectedId);
+      }
+      selectedItems3(EditNewRoomarr, SearchType);
+    
+    } else {
+      if (!roomArr.includes(selectedId)) {
+        roomArr.push(selectedId);
+      }
+      selectedItems3(roomArr, SearchType);
+    }
+      
     closeSearch(selectedId);
-  
-    selectedItems3(roomArr);
     
     $("#editSearch3").val("");
     $(".hiddenContainer").css("display", "none");
@@ -730,19 +754,23 @@ function selectThis(selectedType, selectedId, SearchType) {
   else if(selectedType === "HMO"){
     selectedElementId.css("display", "flex");
 
-    if (!hmoArr.includes(selectedId)) {
-      hmoArr.push(selectedId);
-    }  
-    closeSearch(selectedId);
-  
-    selectedItems4(hmoArr);
+    if (SearchType === "Edit") {
+      if (!EditNewHMOarr.includes(selectedId)) {
+        EditNewHMOarr.push(selectedId);
+      }
+      selectedItems4(EditNewHMOarr, SearchType);
+    }
+    else {
+      if (!hmoArr.includes(selectedId)) {
+        hmoArr.push(selectedId);
+      }
+      selectedItems4(hmoArr, SearchType);
+    }
+      
+    closeSearch(selectedId);  
     
     $("#editSearch4").val("");
     $(".hiddenContainer").css("display", "none");
-  }
-
-  else if(selectedType === "EditSpecs"){
-    
   }
 
 
@@ -769,59 +797,97 @@ function selectedItems(selectedIds,selectedId, SearchType){
     type: "post",
     data: data,
     success: function (response) {
-      if (SearchType == "Edit") {
-        $("#hiddenInformationFieldIDSpecsEdit").append(response);
+      var newItem = $(response);
+
+      if (SearchType === "Edit") {
+        EditSpecializationArr.forEach(function (specId) {
+
+          if ($("#hiddenInformationFieldIDSpecsEdit").find("[data-specid='" + specId + "']").length === 0) {
+            $("#hiddenInformationFieldIDSpecsEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+          }
+        });
       } else {
         $("#hiddenInformationFieldIDSpecs").html(response);
+      }
+      
+    },
+  });
+}
+
+function selectedItems2(selectedIds, SearchType){
+  var data = {
+    functionSelectedItems2: SearchType == "Edit" ?  EditSubSpecializationArr : selectedIds,
+    selectedCode: SearchType,
+  };
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      var newItem = $(response);
+
+      if (SearchType === "Edit") {
+          EditSubSpecializationArr.forEach(function (specId) {
+
+          if ($("#hiddenInformationFieldIDSubSpecsEdit").find("[data-specid='" + specId + "']").length === 0) {
+            $("#hiddenInformationFieldIDSubSpecsEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+          }
+        });
+      } else {
+        $("#hiddenInformationFieldIDSubSpecs").html(response);
       }
     },
   });
 }
 
-function selectedItems2(selectedIds){
-  // console.log(selectedIds);
-  var data = {
-    functionSelectedItems2: selectedIds,
-  };
-  $.ajax({
-    url: "../Components/Function_Admin.php",
-    type: "post",
-    data: data,
-    success: function (response) {
-      // console.log(response);
-      $("#hiddenInformationFieldIDSubSpecs").html(response);
-    },
-  });
-}
-
-function selectedItems3(selectedIds){
-  // console.log(selectedIds);
+function selectedItems3(selectedIds, SearchType){
   var data = {
     functionSelectedItems3: selectedIds,
-  };
+    selectedCode: SearchType,
+  }; 
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
     data: data,
     success: function (response) {
-      // console.log(response);
-      $("#hiddenInformationFieldIDRoom").html(response);
+      var newItem = $(response);
+
+      if (SearchType === "Edit") {
+          EditNewRoomarr.forEach(function (specId) {
+          
+            if ($("#hiddenInformationFieldIDRoomEdit").find("[data-specid='" + specId + "']").length === 0) {
+              $("#hiddenInformationFieldIDRoomEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+            }
+          });
+      } else {
+        $("#hiddenInformationFieldIDRoom").html(response);
+      }
     },
   });
 }
 
-function selectedItems4(selectedIds){
-  // console.log(selectedIds);
+function selectedItems4(selectedIds, SearchType){
   var data = {
     functionSelectedItems4: selectedIds,
-  };
+    selectedCode: SearchType,
+  }; console.log(data);
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
     data: data,
     success: function (response) {
-      // console.log(response);
-      $("#hiddenInformationFieldIDHMO").html(response);
+      var newItem = $(response);
+
+      if (SearchType === "Edit") {
+          EditNewHMOarr.forEach(function (specId) {
+          
+            if ($("#hiddenInformationFieldIDHMOEdit").find("[data-specid='" + specId + "']").length === 0) {
+              $("#hiddenInformationFieldIDHMOEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+            }
+          });
+      } else {
+        $("#hiddenInformationFieldIDHMO").html(response);
+      }
     },
   });
 }
@@ -905,11 +971,6 @@ function SearchAddSpecs(InsertDataSpecsName){
 }
 
 
-
-
-
-
-
 function selectThisAddSubSpecs(selectThisAddSubSpecsName,selectThisAddSubSpecsID){
   $("#InsertDataSpecsName").val(selectThisAddSubSpecsName);
   $("#InsertDataID").val(selectThisAddSubSpecsID);
@@ -919,11 +980,12 @@ function selectThisAddSubSpecs(selectThisAddSubSpecsName,selectThisAddSubSpecsID
 
 
 
+function AddSchedule(Type) {
 
-function AddSchedule() {
-  const addDay = $("#day-select").val();
-  const addIn = $("#pick-timeIn").val();
-  const addOut = $("#pick-timeOut").val();
+  const addDay = Type === "FromEdit" ? $("#day-selectEdit").val() : $("#day-select").val();
+  const addIn = Type === "FromEdit" ? $("#pick-timeInEdit").val() : $("#pick-timeIn").val();;
+  const addOut = Type === "FromEdit" ? $("#pick-timeOutEdit").val() : $("#pick-timeOut").val();;
+
   if (!addDay || !addIn || !addOut) {
     console.error("Please select all fields before adding to the schedule.");
     return;
@@ -933,15 +995,18 @@ function AddSchedule() {
 
   const together = `${addDay}, ${formattedIn} - ${formattedOut}`;
 
-  if (!scheduleArr.includes(together)) {
-    scheduleArr.push(together);
-    // console.log("Schedule added:", together);
+  if (Type === "FromEdit") {
+    if (!EditNewScheduleArr.includes(together)) {
+      EditNewScheduleArr.push(together);
+    }
   } else {
-    // console.warn("This schedule already exists:", together);
+    if (!scheduleArr.includes(together)) {
+      scheduleArr.push(together);
+    }
   }
 
   var data = {
-    AddSchedule: scheduleArr,
+    AddSchedule: Type === "FromEdit" ? EditNewScheduleArr : scheduleArr,
     together: together,
   };
   $.ajax({
@@ -949,8 +1014,18 @@ function AddSchedule() {
     type: "post",
     data: data,
     success: function (response) {
-      // console.log(response);
-      $(".InformationFieldAddSchedule").html(response);
+      var newItem = $(response);
+
+      if (Type === "FromEdit") {
+        EditNewScheduleArr.forEach(function (specId) {
+          if ($("#InformationFieldDoctorScheduleEdit").find("[data-specid='" + specId + "']").length === 0) {
+            $("#InformationFieldDoctorScheduleEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+          }
+        });
+      }
+      else {
+        $(".InformationFieldAddSchedule").html(response);
+      }
     },
   });
 }
@@ -1012,7 +1087,6 @@ function AddSecretary() {
   });
 }
 
-
 function UpdateDoctorDB(UpdateType, DoctorID){
   var EditLastname = $("#EditLastName").val();
   var EditFirstname = $("#EditFirstName").val();
@@ -1030,7 +1104,15 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     EditGender: EditGender,
     EditCategory: EditCategory,
     RemovedSpecs: JSON.stringify(RemovedSpecsFromEdit),
-    EditedNewSpecs: JSON.stringify(EditSpecializationArr)
+    RemovedSubSpecs: JSON.stringify(RemovedSubSpecsFromEdit),
+    RemovedRoom: JSON.stringify(RemovedRoom),
+    RemovedHMO: JSON.stringify(RemovedHMO),
+    RemovedSchedule: JSON.stringify(RemovedSchedule),
+    EditedNewSpecs: JSON.stringify(EditSpecializationArr),
+    EditNewSubSpecs: JSON.stringify(EditSubSpecializationArr),
+    EditedNewRoom: JSON.stringify(EditNewRoomarr),
+    EditedNewHMO: JSON.stringify(EditNewHMOarr),
+    EditedNewSchedule: JSON.stringify(EditNewScheduleArr),
   }; console.log(data);
   $.ajax({
     url: "../Components/Function_Admin.php",
@@ -1044,6 +1126,9 @@ function UpdateDoctorDB(UpdateType, DoctorID){
       // reloadDiv('UpdateDiv');
       $("#Pop-Message").html("Restored successfully!");
       location.reload();
+      // setTimeout(function() {
+      //   location.reload();
+      // }, 10000);
     },
   });
 }
@@ -1066,12 +1151,6 @@ function reloadDiv(UpdateDiv){
   // console.log(UpdateDiv);
   // $("#DIV").load(location.href + " #DashCount-7");
 }
-
-
-
-
-
-
 
 // VIEW ACTIVITY LOGS SIDEBAR
 
@@ -1408,7 +1487,12 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
   });
 }
 
+//FOR REMOVAL OF EXISITING DATA ARRAY
 let RemovedSpecsFromEdit = [];
+let RemovedSubSpecsFromEdit = [];
+let RemovedRoom = [];
+let RemovedHMO = [];
+let RemovedSchedule = [];
 
 //REGEX FOR DAY AND TIME VALIDATION
 function isValidDayTime(value) {
@@ -1418,21 +1502,25 @@ function isValidDayTime(value) {
 }
 //funtion to remove selected items from the list and array
 function removeSelected(iconElement, specId, arrayType) {
-  console.log("Attempting to remove ID:", specId, "from", arrayType);
+
+  const itemDiv = iconElement.closest(".ClickableList");
+  if (itemDiv) itemDiv.remove();
 
   if (isValidDayTime(specId) === true) {
     if (arrayType === "schedule") {
       const index = scheduleArr.indexOf(specId);
+      const indexEdit = EditNewScheduleArr.indexOf(specId);
+      if (indexEdit !== -1) {
+        EditNewScheduleArr.splice(indexEdit, 1);
+      }
       if (index !== -1) {
         scheduleArr.splice(index, 1);
       }
-    }
+    } 
+    return; 
   } else {
     specId = parseInt(specId, 10);
   }
-
-  const itemDiv = iconElement.closest(".ClickableList");
-  if (itemDiv) itemDiv.remove();
 
   if (arrayType === "SubSpecs") {
     const index = selectedIds2.indexOf(specId);
@@ -1476,13 +1564,45 @@ function removeSelected(iconElement, specId, arrayType) {
   else if (arrayType === "RemoveFromEdit") {
     RemovedSpecsFromEdit.push(specId);
   }
+  else if (arrayType === "RemoveFromEditSubSpecs") {
+    RemovedSubSpecsFromEdit.push(specId);
+  }
+  else if (arrayType === "RemoveFromEditRoom") {
+    RemovedRoom.push(specId);
+  }
+  else if (arrayType === "RemoveFromEditHMO") {
+    RemovedHMO.push(specId);
+  }
+  else if (arrayType === "RemoveFromEditSchedule") {
+    RemovedSchedule.push(specId);
+  }
 
+  //for removed from existing data
   else if (arrayType === "EditSpecs") {
     const index = EditSpecializationArr.indexOf(specId);
     if (index !== -1) {
         EditSpecializationArr.splice(index, 1);
       }
   }
+  else if (arrayType === "EditSubSpecs") {
+    const index = EditSubSpecializationArr.indexOf(specId);
+    if (index !== -1) {
+        EditSubSpecializationArr.splice(index, 1);
+      }
+  }
+  else if (arrayType === "EditRoom") { 
+    const index = EditNewRoomarr.indexOf(specId);
+    if (index !== -1) {
+        EditNewRoomarr.splice(index, 1);
+      }
+  }
+  else if (arrayType === "EditHMO") {
+    const index = EditNewHMOarr.indexOf(specId);
+    if (index !== -1) {
+        EditNewHMOarr.splice(index, 1);
+      }
+  }
+
 }
 
 function EditSubSpecialization(EditSubSpecialization_ID) {

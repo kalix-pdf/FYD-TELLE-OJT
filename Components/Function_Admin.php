@@ -772,7 +772,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                               $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
                               $specID = htmlspecialchars($SpecsRow['specialization_id_2'], ENT_QUOTES, 'UTF-8');
                               echo" 
-                                <div class='ClickableList' >
+                                <div class='ClickableList' data-specid='$specID'>
                                   <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$specID', 'RemoveFromEdit')\"></i>
                                   <p>$specName</p>
                                 </div>
@@ -806,24 +806,26 @@ if (isset($_POST["ViewEdit_ID"])) {
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'></i>
                   <div class='InputFieldForm-i-div'>
-                    <div class='hiddenInformationField' id='hiddenInformationFieldIDSubSpecs'>
+                    <div class='hiddenInformationField' id='hiddenInformationFieldIDSubSpecsEdit'>
                           <!-- Function -->
                           "; 
                               $DoctorSpecsFetchQuery = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$ViewEdit_ID'";
                               $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
                               if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                               if ($DoctorSpecsFetchQuery->num_rows > 0) {
-                                while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-                                  <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$SpecsRow['doctor_sub_specialization_name']."</p></div>
-                              ";
+                                while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+                                  $SubSpecName = htmlspecialchars($SpecsRow['doctor_sub_specialization_name'], ENT_QUOTES, 'UTF-8');
+                                  $SubSpecID = htmlspecialchars($SpecsRow['sub_specialization_id_2'], ENT_QUOTES, 'UTF-8');
+                                  echo" 
+                                    <div class='ClickableList'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$SubSpecID', 'RemoveFromEditSubSpecs')\"></i> 
+                                    <p>".$SubSpecName."</p></div>
+                                  ";
                             }
                           }
                         echo "
                     </div>
                   </div>
                 </div>
-
-
 
                 <br>
                 <hr>
@@ -833,7 +835,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                   <div class='InputFieldForm-div'>
                     <div class='InputFieldForm-schedule'>
                       <p>Select Day</p>
-                      <select id='day-select' name='day-select'>
+                      <select id='day-selectEdit' name='day-select'>
                         <option value='Monday'>Monday</option>
                         <option value='Tuesday'>Tuesday</option>
                         <option value='Wednesday'>Wednesday</option>
@@ -846,14 +848,14 @@ if (isset($_POST["ViewEdit_ID"])) {
                     <div class='InputFieldForm-divFlexColumn'>
                       <div class='InputFieldForm-schedule'>
                         <p>Time Start</p>
-                        <input type='time' id='pick-time' name='pick-time'>
+                        <input type='time' id='pick-timeInEdit' name='pick-time'>
                       </div>
                       <div class='InputFieldForm-schedule'>
                         <p>Time End</p>
-                        <input type='time' id='pick-time' name='pick-time'>
+                        <input type='time' id='pick-timeOutEdit' name='pick-time'>
                       </div>
                       <div class='InputFieldForm-schedule'>
-                        <button class='Btn_1'>Add</button>
+                        <button onclick=\"AddSchedule('FromEdit')\" class='Btn_1'>Add</button>
                       </div>
                     </div>
                   </div>
@@ -861,17 +863,36 @@ if (isset($_POST["ViewEdit_ID"])) {
 
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'></i>
-                  <div class='InformationField'></div>
+                  <div class='InformationField' id='InformationFieldDoctorScheduleEdit'>
+                    <table class='table-doctor-edit-schedule'>
+                      ";
+                        $DoctorScheduleFetchQuery = "SELECT * from doctor_schedule
+                        WHERE schedule_doctor_id = '$ViewEdit_ID'";
+                        $DoctorScheduleFetchQuery = mysqli_query($connMysqli, $DoctorScheduleFetchQuery);
+                        if (!$DoctorScheduleFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+                        if ($DoctorScheduleFetchQuery->num_rows > 0) {
+                          while ($ScheduleRow = mysqli_fetch_assoc($DoctorScheduleFetchQuery)) {
+                            $ScheduleTime = htmlspecialchars($ScheduleRow['doctor_schedule_time'], ENT_QUOTES, 'UTF-8');
+                            $ScheduleDay = htmlspecialchars($ScheduleRow['doctor_schedule_day'], ENT_QUOTES, 'UTF-8');
+                            $scheduleID = htmlspecialchars($ScheduleRow['doctor_schedule_id'], ENT_QUOTES, 'UTF-8');
+                            echo" 
+                              <tr class='ClickableList'>
+                                <td>".$ScheduleDay."</td> 
+                                <td>".$ScheduleTime."</td> 
+                                <td>
+                                  <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$scheduleID', 'RemoveFromEditSchedule')\"></i>
+                                </td>
+                              </tr>
+                            ";
+                          }
+                        }
+                      echo"
+                    </table>
+                  </div>
                 </div>
  
- 
- 
- 
 
-
-
-
-                
+                <br>
                 <div class='InputFieldForm'>
                   <div class='InputFieldFormChild1'>
                     <i class='InputFieldForm-i'>Room:</i>
@@ -893,7 +914,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'></i>
                     <div class='InputFieldForm-i-div'>
-                      <div class='hiddenInformationField' id='hiddenInformationFieldIDSubSpecs'>
+                      <div class='hiddenInformationField' id='hiddenInformationFieldIDRoomEdit'>
                         <!-- Function -->
                           "; 
                               $DoctorRoomFetchQuery = "SELECT * FROM doctor_room WHERE room_doctor_id = '$ViewEdit_ID'";
@@ -901,9 +922,12 @@ if (isset($_POST["ViewEdit_ID"])) {
                                   if (!$DoctorRoomFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                                   if ($DoctorRoomFetchQuery->num_rows > 0) {
                                     while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {
-                                    echo" 
-                                      <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$RoomRow['doctor_room_number']."</p></div>
-                                    ";
+                                      $RoomName = htmlspecialchars($RoomRow['doctor_room_number'], ENT_QUOTES, 'UTF-8');
+                                      $RoomID = htmlspecialchars($RoomRow['doctor_room_id'], ENT_QUOTES, 'UTF-8');
+                                      echo" 
+                                        <div class='ClickableList'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$RoomID', 'RemoveFromEditRoom')\"></i> 
+                                        <p>".$RoomName."</p></div>
+                                      ";
                                 }
                               }
                           echo "
@@ -932,7 +956,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'></i>
                   <div class='InputFieldForm-i-div'>
-                    <div class='hiddenInformationField' id='hiddenInformationFieldIDHMO'>
+                    <div class='hiddenInformationField' id='hiddenInformationFieldIDHMOEdit'>
                       <!-- Function -->
                         ";
                             $DoctorHMOFetchQuery = "SELECT * from doctor_hmo
@@ -941,8 +965,11 @@ if (isset($_POST["ViewEdit_ID"])) {
                             if (!$DoctorHMOFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
                             if ($DoctorHMOFetchQuery->num_rows > 0) {
                               while ($HMORow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
+                                $HMOName = htmlspecialchars($HMORow['doctor_hmo_name'], ENT_QUOTES, 'UTF-8');
+                                $HMO_ID = htmlspecialchars($HMORow['hmo_id_2'], ENT_QUOTES, 'UTF-8');
                                 echo" 
-                                   <div class='ClickableList'><i class='fa-solid fa-trash'></i> <p>".$HMORow['doctor_hmo_name']."</p></div>
+                                   <div class='ClickableList'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$HMO_ID', 'RemoveFromEditHMO')\"></i> 
+                                   <p>".$HMOName."</p></div>
                                 ";
                               }
                             }
@@ -1092,12 +1119,12 @@ if (isset($_POST["searchId"])) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if($SearchType == "Edit") {
           echo" 
-            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
+            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
           ";
         }
         else { 
           echo" 
-            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
+            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
           ";
         }
       }
@@ -1116,12 +1143,12 @@ if (isset($_POST["searchId"])) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if ($SearchType == "Edit") {
           echo "
-             <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
+             <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
           ";
         }
         else {
           echo" 
-            <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
+            <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
           ";
         }
       }
@@ -1140,12 +1167,12 @@ if (isset($_POST["searchId"])) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if($SearchType == "Edit") { 
           echo" 
-            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
+            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
           ";
         }
         else {
           echo" 
-            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
+            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
           ";
         }
       }
@@ -1175,7 +1202,7 @@ if (isset($_POST["functionSelectedItems"])) {
         while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
           $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
           echo" 
-            <div class='ClickableList' data-id='{$SpecsRow['specialization_id']}'>
+            <div class='ClickableList' data-specid='{$SpecsRow['specialization_id']}'>
               <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}', 'EditSpecs')\"></i>
               <p>$specName</p>
             </div>
@@ -1188,7 +1215,8 @@ if (isset($_POST["functionSelectedItems"])) {
     } else {
         echo "No valid items selected.";
     }
-      
+    return;
+
   } else {
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
       $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
@@ -1220,58 +1248,112 @@ if (isset($_POST["functionSelectedItems"])) {
 // SELECT SUB SPECS
 if (isset($_POST["functionSelectedItems2"])) {
   global $connMysqli;
+  $selectedCode = $_POST["selectedCode"];
   $functionSelectedArrayItems = $_POST["functionSelectedItems2"];
 
-  if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
-    $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
-    $DoctorSpecsFetchQuery = "SELECT * FROM sub_specialization WHERE sub_specialization_id IN ($ids)";
-    // echo $DoctorSpecsFetchQuery; 
+  if ($selectedCode == "Edit") {
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM sub_specialization WHERE sub_specialization_id IN ($ids)";
 
-    $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-    if ($DoctorSpecsFetchQuery->num_rows > 0) {
-      while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
-        $specSubName = htmlspecialchars($SpecsRow['sub_specialization_name'], ENT_QUOTES, 'UTF-8');
-        echo" 
-            <div class='ClickableList' data-id='{$SpecsRow['sub_specialization_id']}'>
-              <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['sub_specialization_id']}', 'SubSpecs')\"></i>
-              <p>$specSubName</p>
-            </div>
-          ";
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          $specSubName = htmlspecialchars($SpecsRow['sub_specialization_name'], ENT_QUOTES, 'UTF-8');
+          echo" 
+              <div class='ClickableList' data-specid='{$SpecsRow['sub_specialization_id']}'>
+                <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['sub_specialization_id']}', 'EditSubSpecs')\"></i>
+                <p>$specSubName</p>
+              </div>
+            ";
+        }
       }
+      else{
+        echo "Nothing Found!";
+      }
+    } else {
+        echo "No valid items selected.";
     }
-    else{
-      echo "Nothing Found!";
-    }
+    return;
+
   } else {
-      echo "No valid items selected.";
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM sub_specialization WHERE sub_specialization_id IN ($ids)";
+
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          $specSubName = htmlspecialchars($SpecsRow['sub_specialization_name'], ENT_QUOTES, 'UTF-8');
+          echo" 
+              <div class='ClickableList' data-id='{$SpecsRow['sub_specialization_id']}'>
+                <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['sub_specialization_id']}', 'SubSpecs')\"></i>
+                <p>$specSubName</p>
+              </div>
+            ";
+        }
+      }
+      else{
+        echo "Nothing Found!";
+      }
+    } else {
+        echo "No valid items selected.";
+    }
   }
+  
 }
 
 // SELECT ROOM
 if (isset($_POST["functionSelectedItems3"])) {
   global $connMysqli;
   $functionSelectedArrayItems = $_POST["functionSelectedItems3"];
+  $selectedCode = $_POST["selectedCode"];
 
-  if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
-    $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
-    $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
-    // echo $DoctorSpecsFetchQuery; 
+  if ($selectedCode == "Edit") {
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
 
-    $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-    if ($DoctorSpecsFetchQuery->num_rows > 0) {
-      while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
-          <div class='ClickableList' data-id='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'Room')\"></i> <p>".$SpecsRow['room_floor_name']."</p></div>
-        ";
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
+            <div class='ClickableList' data-specid='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'EditRoom')\"></i> 
+            <p>".$SpecsRow['room_floor_name']."</p></div>
+          ";
+        }
       }
+      else{
+        echo "Nothing Found!";
+      }
+    } else {
+        echo "No valid items selected.";
     }
-    else{
-      echo "Nothing Found!";
-    }
+    return;
+
   } else {
-      echo "No valid items selected.";
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+        $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+        $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
+
+        $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+        if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+        if ($DoctorSpecsFetchQuery->num_rows > 0) {
+          while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
+              <div class='ClickableList' data-id='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'Room')\"></i> <p>".$SpecsRow['room_floor_name']."</p></div>
+            ";
+          }
+        }
+        else{
+          echo "Nothing Found!";
+        }
+      } else {
+          echo "No valid items selected.";
+      }
   }
+  
 }
 
 
@@ -1279,25 +1361,50 @@ if (isset($_POST["functionSelectedItems3"])) {
 if (isset($_POST["functionSelectedItems4"])) {
   global $connMysqli;
   $functionSelectedArrayItems = $_POST["functionSelectedItems4"];
+  $selectedCode = $_POST["selectedCode"]; 
 
-  if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
-    $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
-    $DoctorSpecsFetchQuery = "SELECT * FROM hmo WHERE hmo_id IN ($ids)";
-    // echo $DoctorSpecsFetchQuery; 
+  if ($selectedCode == "Edit") {
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM hmo WHERE hmo_id IN ($ids)";
 
-    $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-    if ($DoctorSpecsFetchQuery->num_rows > 0) {
-      while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-          <div class='ClickableList' data-id='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'HMO')\"></i> <p>".$SpecsRow['hmo_name']."</p></div>
-        ";
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
+            <div class='ClickableList' data-specid='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'EditHMO')\"></i> 
+            <p>".$SpecsRow['hmo_name']."</p></div>
+          ";
+        }
       }
+      else{
+        echo "Nothing Found!";
+      }
+    } else {
+        echo "No valid items selected.";
     }
-    else{
-      echo "Nothing Found!";
-    }
+    return;
+
   } else {
-      echo "No valid items selected.";
+
+    if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM hmo WHERE hmo_id IN ($ids)";
+
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
+            <div class='ClickableList' data-id='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'HMO')\"></i> <p>".$SpecsRow['hmo_name']."</p></div>
+          ";
+        }
+      }
+      else{
+        echo "Nothing Found!";
+      }
+    } else {
+        echo "No valid items selected.";
+    }
   }
 }
 
@@ -1510,9 +1617,12 @@ if (isset($_POST["AddSchedule"])) {
 
   $arr = implode(",", $AddSchedule);
   foreach ($AddSchedule as $schedule) {
-    $value = $schedule;
+    $value = htmlspecialchars($schedule, ENT_QUOTES, 'UTF-8');
     echo "
-      <div class='ClickableList' ><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$value', 'schedule')\"></i> <p>". htmlspecialchars($value) ."</p></div>
+      <div class='ClickableList' data-specid='$value'>
+        <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$value', 'schedule')\"></i> 
+        <p>$value</p>
+      </div>
     ";
   }
 }
@@ -1615,7 +1725,7 @@ if (isset($_POST["UpdateDoctorType"])) {
         $deleteQuery = "DELETE FROM doctor_specialization WHERE specialization_doctor_id = '$DoctorID' AND specialization_id_2 = '$specId'";
         mysqli_query($connMysqli, $deleteQuery);
       }
-    }
+    } // insert new EDIT SPECS
     if (!empty($_POST['EditedNewSpecs'])) {
       $EditedNewSpecs = json_decode($_POST['EditedNewSpecs'], true); 
 
@@ -1627,10 +1737,95 @@ if (isset($_POST["UpdateDoctorType"])) {
             WHERE specialization_id = ?
         ");
         $InsertEditSpecs->execute([$DoctorID, $selectedId]);
-    }
+      }
+    } 
+    // REMOVE PREVIOUS SUB SPECS
+    if (!empty($_POST['RemovedSubSpecs'])) {
+      $RemovedSubSpecs = json_decode($_POST['RemovedSubSpecs'], true);
+      foreach ($RemovedSubSpecs as $specId) {
+        $specId = intval($specId);
+        $deleteQuery = "DELETE FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DoctorID' AND sub_specialization_id_2 = '$specId'";
+        mysqli_query($connMysqli, $deleteQuery);
+      }
+    } // insert new EDIT SPECS
+    if (!empty($_POST['EditNewSubSpecs'])) {
+      $EditedNewSubSpecs = json_decode($_POST['EditNewSubSpecs'], true); 
+
+      foreach ($EditedNewSubSpecs as $selectedId) {
+        $InsertEditSpecs = $connPDO->prepare("
+            INSERT INTO doctor_sub_specialization (sub_specialization_doctor_id, sub_specialization_id_2, doctor_sub_specialization_name)
+            SELECT ?, sub_specialization_id, sub_specialization_name
+            FROM sub_specialization
+            WHERE sub_specialization_id = ?
+        ");
+        $InsertEditSpecs->execute([$DoctorID, $selectedId]);
+      }
     } 
 
-   
+    // REMOVE PREVIOUS ROOM
+    if (!empty($_POST['RemovedRoom'])) {
+      $RemovedRoom = json_decode($_POST['RemovedRoom'], true);
+      foreach ($RemovedRoom as $specId) {
+        $specId = intval($specId);
+        $deleteQuery = "DELETE FROM doctor_room WHERE room_doctor_id = '$DoctorID' AND doctor_room_id = '$specId'";
+        mysqli_query($connMysqli, $deleteQuery);
+      }
+    } // insert new EDIT SPECS
+    if (!empty($_POST['EditedNewRoom'])) {
+      $EditedNewRoom = json_decode($_POST['EditedNewRoom'], true); 
+
+      foreach ($EditedNewRoom as $selectedId) {
+        $InsertEditSpecs = $connPDO->prepare("
+            INSERT INTO doctor_room (room_doctor_id, room_id_2, doctor_room_number)
+            SELECT ?, room_id, room_floor_name
+            FROM room
+            WHERE room_id = ?
+        ");
+        $InsertEditSpecs->execute([$DoctorID, $selectedId]);
+      }
+    } 
+
+    //REMOVE PREVIOUS HMO
+    if (!empty($_POST['RemovedHMO'])) {
+      $RemovedHMO = json_decode($_POST['RemovedHMO'], true);
+      foreach ($RemovedHMO as $specId) {
+        $specId = intval($specId);
+        $deleteQuery = "DELETE FROM doctor_hmo WHERE hmo_doctor_id = '$DoctorID' AND hmo_id_2 = '$specId'";
+        mysqli_query($connMysqli, $deleteQuery);
+      }
+    } // insert new EDIT SPECS
+    if (!empty($_POST['EditedNewHMO'])) {
+      $EditedNewHMO = json_decode($_POST['EditedNewHMO'], true); 
+
+      foreach ($EditedNewHMO as $selectedId) {
+        $InsertEditSpecs = $connPDO->prepare("
+            INSERT INTO doctor_hmo (hmo_doctor_id, hmo_id_2, doctor_hmo_name)
+            SELECT ?, hmo_id, hmo_name
+            FROM hmo
+            WHERE hmo_id = ?
+        ");
+        $InsertEditSpecs->execute([$DoctorID, $selectedId]);
+      }
+    } 
+
+    //REMOVE PREVIOUS SCHEDULE
+    if (!empty($_POST['RemovedSchedule'])) {
+      $RemovedSchedule = json_decode($_POST['RemovedSchedule'], true);
+      foreach ($RemovedSchedule as $schedule) {
+        $deleteQuery = "DELETE FROM doctor_schedule WHERE schedule_doctor_id = '$DoctorID' AND doctor_schedule_id = '$schedule'";
+        mysqli_query($connMysqli, $deleteQuery);
+      }
+    } // insert new EDIT SCHEDULE
+    if (!empty($_POST['EditedNewSchedule'])) {
+      $EditedNewSchedule = json_decode($_POST['EditedNewSchedule'], true); 
+
+      foreach ($EditedNewSchedule as $schedule) {
+          [$doctor_schedule_day, $doctor_schedule_time] = explode(", ", $schedule);
+          $InsertDoctorSchedule = $connPDO->prepare("INSERT INTO `doctor_schedule` (schedule_doctor_id, doctor_schedule_day, doctor_schedule_time) VALUES (?, ?, ?)");
+          $InsertDoctorSchedule->execute([$DoctorID, $doctor_schedule_day, $doctor_schedule_time]);
+      }
+    } 
+
 
     $EventType = "Update Doctor";
     $EditDetails = "Updated Doctor Information of Dr. ".$DocFullName;

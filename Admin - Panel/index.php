@@ -957,7 +957,7 @@
                             <input type='time' id='pick-timeOut' name='pick-time'>
                           </div>
                           <div class='InputFieldForm-schedule'>
-                            <button class='Btn_1' onclick="AddSchedule()">Add</button>
+                            <button class='Btn_1' onclick="AddSchedule('FromInsert')">Add</button>
                           </div>
                         </div>
                         </div>

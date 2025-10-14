@@ -978,7 +978,10 @@ tr:hover {
 
 /* end France 2024/07/24 */
 
-
+.table-doctor-edit-schedule{
+  font-size: 12px;
+  font-weight: 300;
+}
 
 
 .table-doctor-schedule{
