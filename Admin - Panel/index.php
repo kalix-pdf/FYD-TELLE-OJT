@@ -34,8 +34,9 @@
     }
 
     //COUNT
-    $CountTotalDoctor = mysqli_query($connMysqli, "SELECT * FROM doctor ");
-    $CountTotalDoctor = mysqli_num_rows($CountTotalDoctor);
+    $CountTotalDoctorQuery = mysqli_query($connMysqli, "SELECT * FROM doctor ");
+    $CountTotalDoctorRow = mysqli_num_rows($CountTotalDoctorQuery);
+    $CountTotalDoctor = $CountTotalDoctorRow;
 
     $CountTotalActiveDoctor = mysqli_query($connMysqli, "SELECT * FROM doctor WHERE doctor_status = 'ACTIVE' ");
     $CountTotalActiveDoctor = mysqli_num_rows($CountTotalActiveDoctor);

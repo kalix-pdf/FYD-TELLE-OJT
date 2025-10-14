@@ -112,6 +112,7 @@ function FuncChart(data) {
 }
 
 
+
 var inputSpecsChart1 = $("#chartInputSpecs-IDs1").val();
 var inputSpecsChart2 = $("#chartInputSpecs-IDs2").val();
 var inputSpecsChart3 = $("#chartInputSpecs-IDs3").val();
@@ -684,6 +685,7 @@ const scheduleArr = [];
 const secretaryArr = [];
 const roomArr = [];
 const hmoArr = [];
+let RemovedSpecsFromEdit = [];
 
 
 function selectThis(selectedType, selectedId, SearchType) {
@@ -1488,7 +1490,7 @@ function Yes_AddSubSpecialization(AddSubSpecialization) {
 }
 
 //FOR REMOVAL OF EXISITING DATA ARRAY
-let RemovedSpecsFromEdit = [];
+
 let RemovedSubSpecsFromEdit = [];
 let RemovedRoom = [];
 let RemovedHMO = [];
