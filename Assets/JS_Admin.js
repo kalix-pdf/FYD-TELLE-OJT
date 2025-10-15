@@ -83,6 +83,7 @@ function editNav(navId){
 // Dashboard Chart
 var chart;
 function FuncChart(data = []) {
+
   var inputChartName1 = $("#chartInputSpecs-Names1").val() || "";
   var inputChartName2 = $("#chartInputSpecs-Names2").val() || "";
   var inputChartName3 = $("#chartInputSpecs-Names3").val() || "";
@@ -115,19 +116,41 @@ function FuncChart(data = []) {
 
 
 
-var inputSpecsChart1 = $("#chartInputSpecs-IDs1").val();
-var inputSpecsChart2 = $("#chartInputSpecs-IDs2").val();
-var inputSpecsChart3 = $("#chartInputSpecs-IDs3").val();
-var inputSpecsChart4 = $("#chartInputSpecs-IDs4").val();
-var inputSpecsChart5 = $("#chartInputSpecs-IDs5").val();
-function updateChartData() {
-  var newData = [0, 0, 0, 0, 0];
-  var newData2 = [inputSpecsChart1, inputSpecsChart2, inputSpecsChart3, inputSpecsChart4, inputSpecsChart5];
-  chart.updateSeries([{ data: newData }]);
-  chart.updateSeries([{ data: newData2 }]);
+function updateChartData(resetToZero = false) {
+  var inputSpecsChart1 = Number($("#chartInputSpecs-IDs1").val()) || 0;
+  var inputSpecsChart2 = Number($("#chartInputSpecs-IDs2").val()) || 0;
+  var inputSpecsChart3 = Number($("#chartInputSpecs-IDs3").val()) || 0;
+  var inputSpecsChart4 = Number($("#chartInputSpecs-IDs4").val()) || 0;
+  var inputSpecsChart5 = Number($("#chartInputSpecs-IDs5").val()) || 0;
+
+  var newData = [
+    inputSpecsChart1,
+    inputSpecsChart2,
+    inputSpecsChart3,
+    inputSpecsChart4,
+    inputSpecsChart5
+  ];
+
+  if (resetToZero) {
+    newData = newData.map(() => 0);
+  }
+
+  if (chart) {
+    chart.updateSeries([{ data: newData }]);
+  }
 }
 
-var initialData = [inputSpecsChart1, inputSpecsChart2, inputSpecsChart3, inputSpecsChart4, inputSpecsChart5];
+// initial data from PHP
+var initialData = [
+  Number($("#chartInputSpecs-IDs1").val()) || 0,
+  Number($("#chartInputSpecs-IDs2").val()) || 0,
+  Number($("#chartInputSpecs-IDs3").val()) || 0,
+  Number($("#chartInputSpecs-IDs4").val()) || 0,
+  Number($("#chartInputSpecs-IDs5").val()) || 0
+];
+
+// create chart
+
 FuncChart(initialData);
 
 
@@ -492,7 +515,7 @@ function InsertNewDoctor(InsertDoctor) {
         PopMessages(response);
         setTimeout(function() {
             location.reload();
-          }, delayInMilliseconds);
+          }, 1000);
       }
     },
   });
@@ -1137,22 +1160,21 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     EditedNewRoom: JSON.stringify(EditNewRoomarr),
     EditedNewHMO: JSON.stringify(EditNewHMOarr),
     EditedNewSchedule: JSON.stringify(EditNewScheduleArr),
-  }; console.log(data);
+  }; 
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
     data: data,
     success: function (response) {
-      console.log(response);
       PopMessages(response)
       // $(".tbody-doctor").load(location.href + " .tr-doctor");
       // $(".tbody-archived").load(location.href + " .tr-archived");
       // reloadDiv('UpdateDiv');
       $("#Pop-Message").html("Restored successfully!");
-      location.reload();
-      // setTimeout(function() {
-      //   location.reload();
-      // }, 10000);
+      updateChartData();
+      setTimeout(function() {
+        location.reload();
+      }, 1000);
     },
   });
 }

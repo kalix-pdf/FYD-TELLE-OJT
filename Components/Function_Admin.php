@@ -1674,6 +1674,10 @@ if (isset($_POST["UpdateDoctorType"])) {
   if($UpdateDoctorType == "Delete"){
     $query = "DELETE FROM `doctor` WHERE `doctor_account_id` = '$DoctorID'";
     mysqli_query($connMysqli, $query);
+
+    $query = "DELETE FROM `doctor_specialization` WHERE `specialization_doctor_id` = '$DoctorID'";
+    mysqli_query($connMysqli, $query);
+
     $EventType = "Remove Doctor";
     $EditDetails = "Removed Doctor: Dr. ".$DocFullName;
     // echo "Account Deleted.";
