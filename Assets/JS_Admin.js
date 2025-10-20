@@ -394,52 +394,52 @@ function AddNewDoctor() {
       $("#FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningRoom, #warningSchedule, #warningTele, #HMOWarning, #secretaryWarning, #categoryWarning").html(""); // Clear previous warnings
 
       if (DocInput1 === "") {
-        $("#FirstNameWarning").html("First Name is required.");
+        $("#FirstNameWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DocInput3 === "") {
-        $("#LastNameWarning").html("Last Name is required.");
+        $("#LastNameWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DocInput4 === "" || DocInput4 === null) {
-        $("#GenderWarning").html("Please select a gender.");
+        $("#GenderWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DocInput5 === null) {
-        $("#categoryWarning").html("Please select a category.");
+        $("#categoryWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DocInputsSpecs === "") {
-        $("#SpecializationWarning").html("Please select at least one specialization.");
+        $("#SpecializationWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DocInputSchedule === "") {
-        $("#warningSchedule").html("Please add at least one Schedule.");
+        $("#warningSchedule").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DocInputsRoom === "") {
-        $("#warningRoom").html("Please add at least one room.");
+        $("#warningRoom").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true;
       }
       if (DoctorTele === "") {
-        $("#warningTele").html("Teleconsultation is required.");
+        $("#warningTele").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true; 
       }
       if (DocInputSecretary === "") {
-        $("#secretaryWarning").html("Please add at least one secretary.");
+        $("#secretaryWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true; 
       }
       if (DoctorInputHMO === "") {
-        $("#HMOWarning").html("Please add at least one HMO.");
+        $("#HMOWarning").html("*");
         $("#AddNewDoctorMessage").html("Please fill out the required fields.");
         hasError = true; 
       }

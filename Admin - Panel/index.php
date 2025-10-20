@@ -850,8 +850,8 @@
                     </div>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Last Name:</i>
-                      <span id="LastNameWarning"></span>
                       <input type="text" placeholder="Last Name" class="CT1" id="DoctorsLastName">
+                      <span id="LastNameWarning"></span>
                     </div>
                     <div class="InputFieldForm" required>
                       <i class="InputFieldForm-i">Gender:</i>
@@ -866,12 +866,13 @@
                     <h4>Category</h4>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Category:</i>
-                      <span id="categoryWarning"></span>
+                      
                       <select name="" id="DoctorCategory" class="CT1">
                         <option value="" selected disabled>-</option>
                         <option value="Regular Consultant">Regular Consultant</option>
                         <option value="Waiting Consultant">Waiting Consultant</option>
                       </select>
+                      <span id="categoryWarning"></span>
                     </div>
                     <br>
 
@@ -879,19 +880,21 @@
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
                         <i class='InputFieldForm-i'>Specialization:</i>
-                        <span id="SpecializationWarning"></span>
+                        
                         <button class='Btn_1' onclick="AddItems('Specs')">Add Specialization</button>
                       </div>
-                      <div class='searchContainer-Parent'>
+                      <div class='searchContainer-Parent .warningpadding2'>
                         <div class='inputFlex'>
                           <input type='text' onkeyup='editSearch(`Insert`,1)' id='editSearch1' class="CT1" placeholder='Search Specialization'>
                           <div class='inputFlexIcon' onclick='closeSearch(1)'><i class='fa-solid fa-xmark'></i></div>
+                          <span id="SpecializationWarning" class="warningpadding"></span>
                         </div>
                         
                         <div class='hiddenContainer'>
                           <ul id='EditDropdown1'>
                           </ul>
                         </div>
+                        
                       </div>
                     </div>
                     <div class='InputFieldForm'>
@@ -940,18 +943,27 @@
                       <i class='InputFieldForm-i'>Schedule:</i>
                       <div class='InputFieldForm-div'>
                         <div class="InputFieldFormSchedule">
-                          <span id="warningSchedule"></span>
-                          <div class='InputFieldForm-schedule'>
-                          <p>Select Day</p>
-                          <select id='day-select' name='day-select'>
-                            <option value='Monday'>Monday</option>
-                            <option value='Tuesday'>Tuesday</option>
-                            <option value='Wednesday'>Wednesday</option>
-                            <option value='Thursday'>Thursday</option>
-                            <option value='Friday'>Friday</option>
-                            <option value='Saturday'>Saturday</option>
-                            <option value='Sunday'>Sunday</option>
-                          </select>
+                          
+                            <div class='InputFieldForm-schedule'>
+                              <div>
+                                <div>
+                                  <p>Select Day</p>
+                                  <div class="selectwarning-container">
+                                    <select id='day-select' name='day-select'>
+                                      <option value='Monday'>Monday</option>
+                                      <option value='Tuesday'>Tuesday</option>
+                                      <option value='Wednesday'>Wednesday</option>
+                                      <option value='Thursday'>Thursday</option>
+                                      <option value='Friday'>Friday</option>
+                                      <option value='Saturday'>Saturday</option>
+                                      <option value='Sunday'>Sunday</option>
+                                    </select>
+                                    <span id="warningSchedule"></span>
+                                  </div>
+                                </div>
+                              </div>
+
+                          
                         </div>
                         <div class='InputFieldForm-divFlexColumn'>
                           <div class='InputFieldForm-schedule'>
@@ -979,7 +991,7 @@
                     <h4>Room</h4>
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
-                        <span id="warningRoom"></span>
+                        
                         <i class='InputFieldForm-i'>Room:</i>
                         <button class='Btn_1' onclick="AddItems('Room')">Add Room</button>
                       </div>
@@ -987,6 +999,7 @@
                         <div class='inputFlex'>
                           <input type='text' onkeyup='editSearch(`Insert`,3)' id='editSearch3' class="CT1" placeholder='Search Room'>
                           <div class='inputFlexIcon' onclick='closeSearch(1)'><i class='fa-solid fa-xmark'></i></div>
+                          <span id="warningRoom"></span>
                         </div>
                         
                         <div class='hiddenContainer'>
@@ -1009,8 +1022,9 @@
                     <h4>Teleconsultaion</h4>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Teleconsultaion:</i>
-                      <span id="warningTele"></span>
+                      
                       <input type="text" id="DoctorsTeleConsult" placeholder="Teleconsultaion" class="CT1">
+                      <span id="warningTele"></span>
                     </div>
                     <br>
 
@@ -1019,13 +1033,14 @@
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
                         <i class='InputFieldForm-i'>HMO Accreditation:</i>
-                        <span id="HMOWarning"></span>
+                        
                         <button class='Btn_1' onclick="AddItems('HMO')">Add HMO</button>
                       </div>
                       <div class='searchContainer-Parent'>
                         <div class='inputFlex'>
                           <input type='text' onkeyup='editSearch(`Insert`,4)' id='editSearch4' class="CT1" placeholder='Search HMO'>
                           <div class='inputFlexIcon' onclick='closeSearch(1)'><i class='fa-solid fa-xmark'></i></div>
+                          <span id="HMOWarning"></span>
                         </div>
                         
                         <div class='hiddenContainer'>
@@ -1060,12 +1075,16 @@
                     <h4>Secretary</h4>
                     <div class='InputFieldForm'>
                       <i class='InputFieldForm-i'>Secretary:</i>
-                      <span id="secretaryWarning"></span>
+                      
                       <div class='InputFieldForm-div'>
                         <div class=''>
                           <p>Secretary Name</p>
-                          <input type="text" id="DoctorsSecretaryName" placeholder="Ex. Maria Angelica Cruz" class="CT1">
-                        </div>
+                          <div class="secretaryNameInputDiv">
+                            <input type="text" id="DoctorsSecretaryName" placeholder="Ex. Maria Angelica Cruz" class="CT1">
+                            <span id="secretaryWarning"></span>
+                          </div>
+                      </div>
+                      
                         <div class="">
                           <p>Primary Number </p>
                           <div class='InputFieldForm-divFlexColumn'>

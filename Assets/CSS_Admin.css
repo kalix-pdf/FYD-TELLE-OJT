@@ -42,10 +42,25 @@
   color: white;
 }
 
-#AddNewDoctorMessage, #GenderWarning, #AccessTypeWarning, #AccessAccountWarning, #NewEditSpecializationWarning, #SubSpecsWarningAdd, #NewEditSubSpecializationWarning, #RoomNumberAddNewWarning, #SpecializationAddNewWarning, #FloorlevelAddNewWarning, #NewEditRoomWarning, #HMOWarningAdd, #NewEditHMOWarning, #warningRoom, #secretaryWarning, #warningSchedule, #FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningTele, #HMOWarning {
+#categoryWarning,#AddNewDoctorMessage, #GenderWarning, #AccessTypeWarning, #AccessAccountWarning, #NewEditSpecializationWarning, #SubSpecsWarningAdd, #NewEditSubSpecializationWarning, #RoomNumberAddNewWarning, #SpecializationAddNewWarning, #FloorlevelAddNewWarning, #NewEditRoomWarning, #HMOWarningAdd, #NewEditHMOWarning, #warningRoom, #secretaryWarning, #warningSchedule, #FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningTele, #HMOWarning {
   color: red;
   font-size: 12px;
   font-weight: 600;
+}
+.selectwarning-container {
+    display: flex;
+}
+#warningSchedule,.warningpadding,#warningRoom,#HMOWarning,.secretaryNameInputDiv,#secretaryWarning {
+  padding-left:10px;
+}
+.secretaryNameInputDiv {
+    display: flex;
+}
+.secretaryNameInputDiv {
+    padding: 0px;
+}
+input#DoctorsMiddleName,.InputFieldForm-i-div {
+    margin-right: 10px;
 }
 
 .tooltip::before {
