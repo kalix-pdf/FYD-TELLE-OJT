@@ -842,6 +842,7 @@
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">First Name:</i>
                       <input type="text" placeholder="First Name" class="CT1" id="DoctorsFirstName" required>
+                      <span id="FirstNameWarning"></span>
                     </div>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Middle Name:</i>
@@ -849,20 +850,23 @@
                     </div>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Last Name:</i>
+                      <span id="LastNameWarning"></span>
                       <input type="text" placeholder="Last Name" class="CT1" id="DoctorsLastName">
                     </div>
                     <div class="InputFieldForm" required>
                       <i class="InputFieldForm-i">Gender:</i>
-                      <select name="" id="DoctorGender" class="CT1" required>
+                      <select id="DoctorGender" class="CT1" required>
                         <option value="" selected disabled>-</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                       </select>
+                      <span id="GenderWarning"></span>
                     </div>
                     <br>
                     <h4>Category</h4>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Category:</i>
+                      <span id="categoryWarning"></span>
                       <select name="" id="DoctorCategory" class="CT1">
                         <option value="" selected disabled>-</option>
                         <option value="Regular Consultant">Regular Consultant</option>
@@ -875,6 +879,7 @@
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
                         <i class='InputFieldForm-i'>Specialization:</i>
+                        <span id="SpecializationWarning"></span>
                         <button class='Btn_1' onclick="AddItems('Specs')">Add Specialization</button>
                       </div>
                       <div class='searchContainer-Parent'>
@@ -1004,6 +1009,7 @@
                     <h4>Teleconsultaion</h4>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Teleconsultaion:</i>
+                      <span id="warningTele"></span>
                       <input type="text" id="DoctorsTeleConsult" placeholder="Teleconsultaion" class="CT1">
                     </div>
                     <br>
@@ -1013,6 +1019,7 @@
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
                         <i class='InputFieldForm-i'>HMO Accreditation:</i>
+                        <span id="HMOWarning"></span>
                         <button class='Btn_1' onclick="AddItems('HMO')">Add HMO</button>
                       </div>
                       <div class='searchContainer-Parent'>
@@ -1053,6 +1060,7 @@
                     <h4>Secretary</h4>
                     <div class='InputFieldForm'>
                       <i class='InputFieldForm-i'>Secretary:</i>
+                      <span id="secretaryWarning"></span>
                       <div class='InputFieldForm-div'>
                         <div class=''>
                           <p>Secretary Name</p>
@@ -1088,13 +1096,13 @@
                             </select>
                           </div>
                         </div>
-                        <button class="Btn_1" onclick="AddSecretary()">Add Secretary</button>
+                        <button class="Btn_1" onclick="AddSecretary('FromInsert')">Add Secretary</button>
                       </div>
                     </div>
 
                     <div class='InputFieldForm'>
                       <i class='InputFieldForm-i'></i>
-                      <div class='InformationField InformationFieldAddSecretary'>
+                      <div class='InformationField InformationFieldAddSecretary' id='InformationFieldAddSecretary'>
                         <!-- Function -->
                       </div>
                     </div>
@@ -1133,6 +1141,8 @@
                       <i class='InputFieldForm-i'>Username</i>
                       <input type="text" placeholder="Username" id="AccessUsername">
                     </div>
+                    <span id="AccessAccountWarning"></span>
+
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Access</i>
                       <select name="" id="AccessType">
@@ -1141,6 +1151,7 @@
                         <option value="Super Admin">Super Admin</option>
                       </select>
                     </div>
+                    <span id="AccessTypeWarning"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1175,6 +1186,7 @@
                       <i class='InputFieldForm-i'>HMO Name</i>
                       <input type="text" placeholder="HMO Name" id="HMOName">
                     </div>
+                    <span id="HMOWarningAdd"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1203,10 +1215,12 @@
                       <i class='InputFieldForm-i'>Floor Level</i>
                       <input type="text" placeholder="(ex. 1st Floor)" id="FloorLevel">
                     </div>
+                    <span id="FloorlevelAddNewWarning"></span>
                     <div class="InputFieldForm">
                       <i class='InputFieldForm-i'>Room Number</i>
                       <input type="number" placeholder="(ex. 1311)" id="RoomNumber">
                     </div>
+                    <span id="RoomNumberAddNewWarning"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1235,6 +1249,7 @@
                       <i class='InputFieldForm-i'>Specialization</i>
                       <input type="text" placeholder="(ex. Internal Medicine)" id="Specialization_ToBeAdd">
                     </div>
+                    <span id="SpecializationAddNewWarning"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1262,6 +1277,7 @@
                       <i class='InputFieldForm-i'>Sub-Specialization</i>
                       <input type="text" placeholder="(ex. Cardiology)" id="SubSpecializationToAdd">
                     </div>
+                    <span id="SubSpecsWarningAdd"></span>
 
                     <div class="InputFieldForm">
                       <i class='InputFieldForm-i'>Specialization</i>

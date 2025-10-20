@@ -42,7 +42,7 @@
   color: white;
 }
 
-#AddNewDoctorMessage, #warningRoom, #warningSchedule{
+#AddNewDoctorMessage, #GenderWarning, #AccessTypeWarning, #AccessAccountWarning, #NewEditSpecializationWarning, #SubSpecsWarningAdd, #NewEditSubSpecializationWarning, #RoomNumberAddNewWarning, #SpecializationAddNewWarning, #FloorlevelAddNewWarning, #NewEditRoomWarning, #HMOWarningAdd, #NewEditHMOWarning, #warningRoom, #secretaryWarning, #warningSchedule, #FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningTele, #HMOWarning {
   color: red;
   font-size: 12px;
   font-weight: 600;
