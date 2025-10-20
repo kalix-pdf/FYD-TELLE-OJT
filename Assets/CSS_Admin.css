@@ -62,7 +62,18 @@
 input#DoctorsMiddleName,.InputFieldForm-i-div {
     margin-right: 10px;
 }
-
+.warningpadding2{
+  padding-right:10px;
+}
+td.schedcssfix {
+    border: none;
+}
+.tdsubfix {
+    min-width: 45%;
+}
+.schedcssfix>i.fa-trash:before {
+    font-size: 16px;
+}
 .tooltip::before {
   content: attr(data-title);
   position: absolute;
