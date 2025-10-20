@@ -292,6 +292,7 @@
                             <td>" . $row['hmo_name'] . "</td>
                             <td>" . $row['doctor_count'] . "</td>
                           </tr>
+                        
                         ";
                       }
                     ?>
@@ -323,6 +324,9 @@
 
                     while($row = mysqli_fetch_assoc($DoctorSpecs)) {
                       echo "
+                    
+                      <div class='dashboard-table-row'>
+                      
                         <tr>
                           <td>" . $row['specialization_name'] . "</td>
                           <td>" . $row['specs_count'] . "</td>

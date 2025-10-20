@@ -1,0 +1,5 @@
+fix filter in doctors
+add validation in secretary
+remove edit in accounts
+make the teleconsultation optional
+remove the click teleconsultation
