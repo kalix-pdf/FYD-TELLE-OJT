@@ -683,7 +683,7 @@ if (isset($_POST["ViewDoctorType"])) {
           </div>
           <div class='Modal-Sidebar-Bottom'>
             <button class='Btn_1' onclick='EditDoctor(`".$row['doctor_account_id']."`)'>Edit</button>
-            <button class='Btn_1 yellow_btn' style='color:black;' onclick='PromptDoctor(`DeactivateDoctor`, `".$row['doctor_account_id']."`)'>Deactivate</button>
+            <button class='Btn_1 yellow_btn' onclick='PromptDoctor(`DeactivateDoctor`, `".$row['doctor_account_id']."`)'>Deactivate</button>
             <button class='Btn_2' onclick='PromptDoctor(`RemoveDoctor`,`".$row['doctor_account_id']."`)'>Delete</button>
           </div>
         ";

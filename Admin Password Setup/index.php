@@ -34,7 +34,7 @@ if (isset($_POST['Set-Password'])) {
             $stmt = $connMysqli->prepare("UPDATE admin_accounts SET admin_password = ?, admin_account_status = 'Old' WHERE admin_id = ?");
             $stmt->bind_param("si", $EncryptedPassword, $Admin_ID);
             if ($stmt->execute()) {
-                header("Location: Admin Password Setup/SuccessMessage.php");
+                header("Location: SuccessMessage.php");
                 exit();
             } else {
                 $_SESSION['error_message'] = 'Error updating password.';
