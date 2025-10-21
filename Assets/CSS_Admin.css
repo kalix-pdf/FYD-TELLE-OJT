@@ -1377,3 +1377,37 @@ tr:hover {
   padding-top: 20px;
   font-size: 30px;
 }
+.Edit-Account-Container{
+  margin:50vh 25vw;
+  padding:20px auto;
+  background-color: #ffffff;
+  border-radius: 5px;
+  min-width: 500px;
+  padding: 20px 50px;
+  max-width: 250px;
+}
+.Edit-Account-PopUp{
+  position: absolute;
+  display: none;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  
+}
+.Edit-Account-Buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    align-items: stretch;
+    gap: 10px;
+}
+.editAdminInputClass{
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 5px;
+}
+#editAdminSaveBtn,#editAdminCancelBtn {
+  border:none;
+  width: 100%;
+}

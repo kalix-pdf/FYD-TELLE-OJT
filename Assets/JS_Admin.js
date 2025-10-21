@@ -1896,3 +1896,10 @@ function Yes_EditSubSpecialization(Yes_EditSubSpecialization_ID) {
     },
   });
 }
+function editAdminName(){
+  $("#Edit-Account-PopUpID").css("display", "block");
+
+}
+function HideEditAccountPopUp(){
+  $("#Edit-Account-PopUpID").css("display", "none");
+}

@@ -338,6 +338,7 @@ svg{
   width: 100%;
 }
 
+
 .HiddenFilter{
   display: none;
   flex-direction: column;
@@ -1093,7 +1094,6 @@ body{
 @keyframes body {
   0%{};
 }
-
 
 /* END JULY 19, 2024 */
 

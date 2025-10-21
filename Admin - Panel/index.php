@@ -1596,7 +1596,20 @@
         </div>
       </section>
     <!-- END -->
-
+    <!-- EDIT ACCOUNT POP UP -->
+      <section id="Edit-Account-PopUpID" class="Edit-Account-PopUp">
+        <div class="Edit-Account-Container">
+          <!-- Function -->
+          <div>
+            <h4>Edit Admin Account</h4>
+            <input id="editAdminInputId" class="editAdminInputClass" placeholder="Edit admin user name">
+            <div class="Edit-Account-Buttons">
+              <button id="editAdminSaveBtn" class="Btn_1 editaccntBtn" onclick="UpdateAdminAccount()">Save</button>
+              <button id="editAdminCancelBtn" class="Btn_2 editaccntBtn" onclick="HideEditAccountPopUp()">Cancel</button>
+            </div>
+          </div>
+        </div>
+    <!-- END -->
   </div>
   <script>var UserID = '<?= $encrypted_user_id ?>';</script>
 </body>

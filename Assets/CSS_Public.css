@@ -207,6 +207,7 @@ select{
 }
 .InputText3 i{
   opacity: .6;
+  cursor: pointer;
 }
 
 .InputText3 i:hover{

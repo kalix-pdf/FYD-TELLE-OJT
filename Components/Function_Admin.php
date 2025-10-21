@@ -306,7 +306,7 @@ if (isset($_POST["ViewAdmin_ID"])) {
               </div>
             </div>
             <div class='Modal-Sidebar-Bottom'>
-              <button class='Btn_1' onclick='EditAdmin(" . $row1['admin_id'] . ")'>Edit</button>
+              <button class='Btn_1' onclick='editAdminName()'>Edit</button>
               <button class='Btn_2' onclick='ResetPasswordAdmin(" . $row1['admin_id'] . ")'>Reset Password</button>
             </div> ";
     };
@@ -378,7 +378,7 @@ if (isset($_POST["ViewActivityLogs_ID"])) {
               </div>
             </div>
             <!-- <div class='Modal-Sidebar-Bottom'>
-              <button class='Btn_1' onclick='EditAdmin(" . $row1['admin_id'] . ")'>Edit</button>
+              <button class='Btn_1' onclick='editAdminName()'>Edit</button>
               <button class='Btn_2' onclick='ResetPasswordAdmin(" . $row1['admin_id'] . ")'>Reset Password</button>
             </div> -->";
     };
