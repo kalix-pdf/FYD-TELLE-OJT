@@ -1896,10 +1896,48 @@ function Yes_EditSubSpecialization(Yes_EditSubSpecialization_ID) {
     },
   });
 }
-function editAdminName(){
+function editAdminName(editShow){
   $("#Edit-Account-PopUpID").css("display", "block");
+  var data = {
+    editShow: editShow, 
+  };
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      console.log(response);
+      $("#Edit-Account-PopUpID").html(response);
+    },
+  });
 
 }
 function HideEditAccountPopUp(){
   $("#Edit-Account-PopUpID").css("display", "none");
+}
+
+//IF YES EDIT ADMIN NAME
+function saveEditedName(adminID) {
+  var oldName= adminID;
+  var newName= $("#editAdminInputId").val();
+  if (newName === "") {
+    $("#NewEditAdminNameWarning").html("Please enter Admin name.");
+    return;
+  }
+  var data = {
+    EditedAdminName: newName,
+    oldName: oldName,
+  };
+  console.log(data);
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      console.log(response);
+      $("#Pop-Message").html("The data has successfully updated!");
+    },
+  });
+  
+  location.reload();
 }

@@ -243,6 +243,44 @@ if (isset($_POST["AccessAccount"])) {
   $InsertAdmin = $connPDO->prepare("INSERT INTO `admin_accounts`(admin_username, admin_password, admin_account_status, admin_status, account_access, account_created_timestamp) VALUES(?, ?, ?, ?, ?, ?)");
   $InsertAdmin->execute([$AccessUsername, $DefaultAccess, $AccountStatus, $DefaultStatus, $AccessType, $Current_Timestamp]);
 }
+//view admin edit name
+if (isset($_POST["editShow"])) {
+  global $connMysqli;
+  $Admin_ID = $_POST["editShow"];
+  $AdminFetchQuery = "SELECT * from admin_accounts
+  WHERE admin_id = '$Admin_ID'";
+
+  $AdminFetchQuery = mysqli_query($connMysqli, $AdminFetchQuery);
+  if (!$AdminFetchQuery) {
+    die('MySQL ErrorL ' . mysqli_error($conn));
+  }
+  if ($AdminFetchQuery->num_rows > 0) {
+    while ($row1 = mysqli_fetch_assoc($AdminFetchQuery)) {
+      echo " 
+        <div class='Edit-Account-Container'>
+          <div>
+            <h4>Edit Admin Account</h4>
+            <input id='editAdminInputId' class='editAdminInputClass' placeholder='" . $row1['admin_username'] . "' value=''>
+            <div class='Edit-Account-Buttons'>
+              <button id='editAdminSaveBtn' class='Btn_1 editaccntBtn' onclick='saveEditedName(" . $row1['admin_id'] . ")'>Save</button>
+              <button id='editAdminCancelBtn' class='Btn_2 editaccntBtn' onclick='HideEditAccountPopUp()'>Cancel</button>
+            </div>
+          </div>
+        </div>";
+    };
+  }
+}
+
+//write new admin name
+if (isset($_POST["EditedAdminName"])) {
+  global $connMysqli;
+  $Admin_ID = $_POST["oldName"];
+  $EditedAdminName = $_POST["EditedAdminName"];
+
+  $query = "UPDATE admin_accounts SET admin_username = '$EditedAdminName' WHERE admin_id = '$Admin_ID'";
+  mysqli_query($connMysqli, $query);
+
+}
 
 
 // VIEW ADMIN
@@ -306,7 +344,7 @@ if (isset($_POST["ViewAdmin_ID"])) {
               </div>
             </div>
             <div class='Modal-Sidebar-Bottom'>
-              <button class='Btn_1' onclick='editAdminName()'>Edit</button>
+              <button class='Btn_1' onclick='editAdminName(" . $row1['admin_id'] . ")'>Edit</button>
               <button class='Btn_2' onclick='ResetPasswordAdmin(" . $row1['admin_id'] . ")'>Reset Password</button>
             </div> ";
     };
