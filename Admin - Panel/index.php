@@ -387,8 +387,7 @@
               <button class="Btn_1" onclick="AddDoctor()"><i class="fa-solid fa-plus"></i> Add Doctor</button>
               <div class="InputText3">
                 <input type="text" placeholder="Filter By Specialization">
-                <i class="fa-solid fa-chevro
-                n-down"></i>
+                <i class="fa-solid fa-chevron-down"></i>
               </div>
               <div class="InputText3">
                 <input type="text" placeholder="Search">
@@ -1028,7 +1027,7 @@
                       <i class="InputFieldForm-i">Teleconsultaion:</i>
                       
                       <input type="text" id="DoctorsTeleConsult" placeholder="Teleconsultaion" class="CT1">
-                      <span id="warningTele"></span>
+                      
                     </div>
                     <br>
 

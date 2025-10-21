@@ -391,7 +391,7 @@ function AddNewDoctor() {
     var DoctorInputHMO = $("#hiddenInformationFieldIDHMO").text().trim();
 
     let hasError = false;
-      $("#FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningRoom, #warningSchedule, #warningTele, #HMOWarning, #secretaryWarning, #categoryWarning").html(""); // Clear previous warnings
+      $("#FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningRoom, #warningSchedule, #HMOWarning, #secretaryWarning, #categoryWarning").html(""); // Clear previous warnings
 
       if (DocInput1 === "") {
         $("#FirstNameWarning").html("*");
@@ -429,9 +429,8 @@ function AddNewDoctor() {
         hasError = true;
       }
       if (DoctorTele === "") {
-        $("#warningTele").html("*");
-        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
-        hasError = true; 
+        $("#warningTele").html("N/A");
+        hasError = false; 
       }
       if (DocInputSecretary === "") {
         $("#secretaryWarning").html("*");
@@ -570,6 +569,9 @@ function InsertNewDoctor(InsertDoctor) {
     SecondarySecondNumber: $("#DoctorsFirstName").val(),
     SecondarySecondNetwork: $("#DoctorsFirstName").val(),
   };
+  if (data.TeleConsultation === ""|| data.TeleConsultation == null) {
+    data.TeleConsultation = "N/A";
+  }
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",

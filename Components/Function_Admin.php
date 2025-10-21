@@ -203,6 +203,9 @@ if (isset($_POST["InsertDoctor"])) {
   $InsertDoctor->execute([$doctorAccountId, $FirstName, $MiddleName, $LastName, $Category, $Profile_Img, $Gender]);
 
   $InsertConsultation = $connPDO->prepare("INSERT INTO `doctor_teleconsult`(teleconsult_doctor_id, teleconsult_link) VALUES(?,?)");
+  if ($TeleConsultation == "N/A" || $TeleConsultation == null) {
+    $TeleConsultation = null;
+  }
   $InsertConsultation->execute([$doctorAccountId, $TeleConsultation]);
 
   $InsertRemarks = $connPDO->prepare("INSERT INTO `doctor_notes`(notes_doctor_id, doctor_notes_details) VALUES(?,?)");
@@ -536,6 +539,7 @@ if (isset($_POST["ViewDoctorType"])) {
                       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
                           <div class='InformationFieldTag'><p>".$SpecsRow['doctor_specialization_name']."</p> </div>
                         ";
+                      
                       }
                     }
                   echo"
