@@ -387,7 +387,7 @@
               <button class="Btn_1" onclick="AddDoctor()"><i class="fa-solid fa-plus"></i> Add Doctor</button>
               <div class="InputText3">
                 <select type="text" placeholder="Filter By Specialization" onchange="filterBySpecialization(this.value)">
-                  <option value="">Select Specialization</option>
+                  <option value="">All</option>
                   <?php
                   $FetchSpecializations = "SELECT * FROM specialization";
                   $FetchSpecializations = mysqli_query($connMysqli, $FetchSpecializations);

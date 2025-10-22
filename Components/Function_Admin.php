@@ -2517,23 +2517,67 @@ if (isset($_POST["filterBySpecialization"])) {
     while ($row = mysqli_fetch_assoc($DoctorSpecsInsertQuery)) {
       $SpecializationID = $row['specialization_doctor_id'] ;
       $specName = $row['doctor_specialization_name'] ;
+    
 
-      $DoctorQuery = "SELECT doctor_firstname,doctor_middlename,doctor_lastname FROM doctor
+      $DoctorQuery = "SELECT doctor_account_id,doctor_firstname,doctor_middlename,doctor_lastname,doctor_status FROM doctor
       WHERE doctor_account_id = '$SpecializationID'
       ORDER BY doctor_lastname ASC";
       $DoctorQueryInsert = mysqli_query($connMysqli, $DoctorQuery);
+
+      $DoctorQueryHmo = "SELECT doctor_hmo_name FROM doctor_hmo
+      WHERE hmo_doctor_id = '$SpecializationID'
+      ORDER BY doctor_hmo_name ASC";
+      $DoctorQueryHmoInsert = mysqli_query($connMysqli, $DoctorQueryHmo);
+      $CountDoctorHMO = mysqli_num_rows($DoctorQueryHmoInsert);
+
       
+     
+
 
       if ($DoctorQueryInsert->num_rows > 0) {
         while ($rowDoctor = mysqli_fetch_assoc($DoctorQueryInsert)) {
+           $StatusColor = ($rowDoctor['doctor_status'] == 'ACTIVE') ? '#326932' : '#FF0000';
           echo "<tr class='tr-doctor'> 
                   <td class='capitalize'>" . $rowDoctor['doctor_lastname'] . ", " . $rowDoctor['doctor_firstname'] . " " . substr($rowDoctor['doctor_middlename'], 0, 1) . ".</td>
                   <td class='TCenter'>" . $specName . "</td>
+                  <td class='TCenter'>$CountDoctorHMO</td>
+                  <td class='TCenter' style='color: ". $StatusColor ."; font-weight: bold;'>". $rowDoctor['doctor_status'] ." </td>
+                  <td><div class='td-div'><button class='Btn_1' onclick='ViewDoctor(`View`,`".$rowDoctor['doctor_account_id']."`)'><i class='fa-regular fa-eye'></i>View</button></div></td>
                 </tr>";
         }
       }
-      
+ 
     }
+  }else if ($filterBySpecialization == ""|| $filterBySpecialization == null){
+    $FetchDoctor = "SELECT DISTINCT * FROM doctor WHERE doctor_archive_status = 'VISIBLE' AND doctor_status = 'ACTIVE' ORDER BY doctor_id DESC";
+    $FetchDoctor = mysqli_query($connMysqli, $FetchDoctor);
+    while ($row = mysqli_fetch_assoc($FetchDoctor)) {
+      $Status = $row['doctor_status'];
+      $StatusColor = ($Status == 'ACTIVE') ? '#326932' : '#FF0000';
+
+      $docId = $row['doctor_account_id'];
+      $CountDoctorHMO = mysqli_query($connMysqli, "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$docId'");
+      $CountDoctorHMO = mysqli_num_rows($CountDoctorHMO);
+      echo "
+        <tr class='tr-doctor'>
+          <td class='capitalize'>" . $row['doctor_lastname'] . ", " . $row['doctor_firstname'] . " " . substr($row['doctor_middlename'], 0, 1) . ".</td>
+          <td class='TCenter'>
+            ";
+              $FetchDoctorSpecs = "SELECT DISTINCT * FROM doctor_specialization WHERE specialization_doctor_id = '$docId'";
+              $FetchDoctorSpecs = mysqli_query($connMysqli, $FetchDoctorSpecs);
+              while ($row2 = mysqli_fetch_assoc($FetchDoctorSpecs)) {
+                echo $row2['doctor_specialization_name'];
+              }
+              echo "
+          </td>
+          <td class='TCenter'>$CountDoctorHMO</td>
+          <td class='TCenter' style='color: ". $StatusColor ."; font-weight: bold;'>". $Status ." </td>
+          <td><div class='td-div'><button class='Btn_1' onclick='ViewDoctor(`View`,`".$row['doctor_account_id']."`)'><i class='fa-regular fa-eye'></i>View</button></div></td>
+        </tr>
+      ";
+    }
+  }else{
+    echo "<tr><td colspan='5' class='TCenter'>No Data Found</td></tr>";
   }
   
 }

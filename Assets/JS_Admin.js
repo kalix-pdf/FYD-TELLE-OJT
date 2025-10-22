@@ -1954,16 +1954,14 @@ function saveEditedName(adminID) {
   location.reload();
 }
 function filterBySpecialization(specializationId) {
-  console.log("Filtering by specialization ID:", specializationId);
   var data = {
     filterBySpecialization: specializationId,
-  }; console.log(data);
+  };
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
     data: data,
     success: function (response) {
-      console.log(response);
       $(".tbody-doctor").html(response);
     },
   });
