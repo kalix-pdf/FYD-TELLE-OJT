@@ -411,3 +411,7 @@ td{
 .Btn_2 .fa-trash-arrow-up{
   color: var(--Color1);
 }
+
+.SecHeader i, .InputFieldForm-divFlexColumn #selectNetwork1Edit, .InputFieldForm-divFlexColumn #selectNetwork2Edit, .InputFieldForm-divFlexColumn #selectNetwork1, .InputFieldForm-divFlexColumn #selectNetwork2{
+  cursor: pointer;
+}

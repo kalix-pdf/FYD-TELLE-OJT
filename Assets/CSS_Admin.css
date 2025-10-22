@@ -42,7 +42,7 @@
   color: white;
 }
 
-#categoryWarning,#AddNewDoctorMessage, #GenderWarning, #AccessTypeWarning, #AccessAccountWarning, #NewEditSpecializationWarning, #SubSpecsWarningAdd, #NewEditSubSpecializationWarning, #RoomNumberAddNewWarning, #SpecializationAddNewWarning, #FloorlevelAddNewWarning, #NewEditRoomWarning, #HMOWarningAdd, #NewEditHMOWarning, #warningRoom, #secretaryWarning, #warningSchedule, #FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningTele, #HMOWarning {
+#categoryWarning,#AddNewDoctorMessage, #GenderWarning, #AccessTypeWarning, #AccessAccountWarning, #NewEditSpecializationWarning, #SubSpecsWarningAdd, #NewEditSubSpecializationWarning, #RoomNumberAddNewWarning, #SpecializationAddNewWarning, #FloorlevelAddNewWarning, #NewEditRoomWarning, #HMOWarningAdd, #NewEditHMOWarning, #warningRoom, #secretaryWarning, #warningSchedule, #FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningTele, #HMOWarning, #SecretaryWarning, #SecretaryWarningEdit {
   color: red;
   font-size: 12px;
   font-weight: 600;

@@ -386,8 +386,17 @@
             <div class="MainDiv-Header-Right">
               <button class="Btn_1" onclick="AddDoctor()"><i class="fa-solid fa-plus"></i> Add Doctor</button>
               <div class="InputText3">
-                <input type="text" placeholder="Filter By Specialization">
-                <i class="fa-solid fa-chevron-down"></i>
+                <select type="text" placeholder="Filter By Specialization" onchange="filterBySpecialization(this.value)">
+                  <option value="">Select Specialization</option>
+                  <?php
+                  $FetchSpecializations = "SELECT * FROM specialization";
+                  $FetchSpecializations = mysqli_query($connMysqli, $FetchSpecializations);
+                  while ($row = mysqli_fetch_assoc($FetchSpecializations)) {
+                    echo "<option value='" . $row['specialization_id'] . "'>" . $row['specialization_name'] . "</option>";
+                  }
+                  ?>
+                </select>
+              
               </div>
               <div class="InputText3">
                 <input type="text" placeholder="Search">
@@ -1119,6 +1128,8 @@
                           </div>
                         </div>
                         <button class="Btn_1" onclick="AddSecretary('FromInsert')">Add Secretary</button>
+                        <span id="SecretaryWarning"></span>
+                        
                       </div>
                     </div>
 

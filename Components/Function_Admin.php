@@ -1125,6 +1125,7 @@ if (isset($_POST["ViewEdit_ID"])) {
                           </div>
                         </div>
                         <button class='Btn_1' onclick='AddSecretary(\"FromEdit\")'>Add Secretary</button>
+                        <span id='SecretaryWarningEdit'></span>
                     </div>
                 </div>
                 <br>
@@ -2504,6 +2505,36 @@ if (isset($_POST["Yes_EditSubSpecialization_ID"])) {
     echo "error, please try again";
   }
 }
+if (isset($_POST["filterBySpecialization"])) {
+  global $connMysqli;
+  $filterBySpecialization = $_POST["filterBySpecialization"];
 
+  $DoctorSpecsQuery = "SELECT * FROM doctor_specialization
+  WHERE specialization_id_2 = '$filterBySpecialization'";
+  $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsQuery);
 
+  if ($DoctorSpecsInsertQuery->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($DoctorSpecsInsertQuery)) {
+      $SpecializationID = $row['specialization_doctor_id'] ;
+      $specName = $row['doctor_specialization_name'] ;
+
+      $DoctorQuery = "SELECT doctor_firstname,doctor_middlename,doctor_lastname FROM doctor
+      WHERE doctor_account_id = '$SpecializationID'
+      ORDER BY doctor_lastname ASC";
+      $DoctorQueryInsert = mysqli_query($connMysqli, $DoctorQuery);
+      
+
+      if ($DoctorQueryInsert->num_rows > 0) {
+        while ($rowDoctor = mysqli_fetch_assoc($DoctorQueryInsert)) {
+          echo "<tr class='tr-doctor'> 
+                  <td class='capitalize'>" . $rowDoctor['doctor_lastname'] . ", " . $rowDoctor['doctor_firstname'] . " " . substr($rowDoctor['doctor_middlename'], 0, 1) . ".</td>
+                  <td class='TCenter'>" . $specName . "</td>
+                </tr>";
+        }
+      }
+      
+    }
+  }
+  
+}
 ?>

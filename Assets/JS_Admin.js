@@ -1193,9 +1193,16 @@ function AddSecretary(Type) {
   );
 
   if(DoctorsSecretaryName === "" || DoctorsSecretaryName == null){
-    alert("Please enter a valid Secretary Name.");
+    $("#SecretaryWarning").html("Please enter a valid Secretary Name.");
+     $("#SecretaryWarningEdit").html("Please enter a valid Secretary Name.");
     return;
-  } else if (!exists) {
+  }
+  else if(SecretaryMobile1 === "" || SecretaryMobile1 == null){
+    $("#SecretaryWarning").html("Please enter a valid Primary Number.");
+     $("#SecretaryWarningEdit").html("Please enter a valid Primary Number.");
+    return;
+  }
+  else if (!exists) {
       if (Type === "FromEdit") {
         EditedNewSecretaryArr.push(secretaryObject);
       } else {
@@ -1945,4 +1952,19 @@ function saveEditedName(adminID) {
   });
   
   location.reload();
+}
+function filterBySpecialization(specializationId) {
+  console.log("Filtering by specialization ID:", specializationId);
+  var data = {
+    filterBySpecialization: specializationId,
+  }; console.log(data);
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      console.log(response);
+      $(".tbody-doctor").html(response);
+    },
+  });
 }
