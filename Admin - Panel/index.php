@@ -292,6 +292,7 @@
                             <td>" . $row['hmo_name'] . "</td>
                             <td>" . $row['doctor_count'] . "</td>
                           </tr>
+                        
                         ";
                       }
                     ?>
@@ -323,6 +324,9 @@
 
                     while($row = mysqli_fetch_assoc($DoctorSpecs)) {
                       echo "
+                    
+                      <div class='dashboard-table-row'>
+                      
                         <tr>
                           <td>" . $row['specialization_name'] . "</td>
                           <td>" . $row['specs_count'] . "</td>
@@ -382,9 +386,17 @@
             <div class="MainDiv-Header-Right">
               <button class="Btn_1" onclick="AddDoctor()"><i class="fa-solid fa-plus"></i> Add Doctor</button>
               <div class="InputText3">
-                <input type="text" placeholder="Filter By Specialization">
-                <i class="fa-solid fa-chevro
-                n-down"></i>
+                <select type="text" placeholder="Filter By Specialization" onchange="filterBySpecialization(this.value)">
+                  <option value="">All</option>
+                  <?php
+                  $FetchSpecializations = "SELECT * FROM specialization";
+                  $FetchSpecializations = mysqli_query($connMysqli, $FetchSpecializations);
+                  while ($row = mysqli_fetch_assoc($FetchSpecializations)) {
+                    echo "<option value='" . $row['specialization_id'] . "'>" . $row['specialization_name'] . "</option>";
+                  }
+                  ?>
+                </select>
+              
               </div>
               <div class="InputText3">
                 <input type="text" placeholder="Search">
@@ -842,6 +854,7 @@
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">First Name:</i>
                       <input type="text" placeholder="First Name" class="CT1" id="DoctorsFirstName" required>
+                      <span id="FirstNameWarning"></span>
                     </div>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Middle Name:</i>
@@ -850,24 +863,28 @@
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Last Name:</i>
                       <input type="text" placeholder="Last Name" class="CT1" id="DoctorsLastName">
+                      <span id="LastNameWarning"></span>
                     </div>
                     <div class="InputFieldForm" required>
                       <i class="InputFieldForm-i">Gender:</i>
-                      <select name="" id="DoctorGender" class="CT1" required>
+                      <select id="DoctorGender" class="CT1" required>
                         <option value="" selected disabled>-</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                       </select>
+                      <span id="GenderWarning"></span>
                     </div>
                     <br>
                     <h4>Category</h4>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Category:</i>
+                      
                       <select name="" id="DoctorCategory" class="CT1">
                         <option value="" selected disabled>-</option>
                         <option value="Regular Consultant">Regular Consultant</option>
                         <option value="Waiting Consultant">Waiting Consultant</option>
                       </select>
+                      <span id="categoryWarning"></span>
                     </div>
                     <br>
 
@@ -875,18 +892,21 @@
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
                         <i class='InputFieldForm-i'>Specialization:</i>
+                        
                         <button class='Btn_1' onclick="AddItems('Specs')">Add Specialization</button>
                       </div>
-                      <div class='searchContainer-Parent'>
+                      <div class='searchContainer-Parent .warningpadding2'>
                         <div class='inputFlex'>
                           <input type='text' onkeyup='editSearch(`Insert`,1)' id='editSearch1' class="CT1" placeholder='Search Specialization'>
                           <div class='inputFlexIcon' onclick='closeSearch(1)'><i class='fa-solid fa-xmark'></i></div>
+                          <span id="SpecializationWarning" class="warningpadding"></span>
                         </div>
                         
                         <div class='hiddenContainer'>
                           <ul id='EditDropdown1'>
                           </ul>
                         </div>
+                        
                       </div>
                     </div>
                     <div class='InputFieldForm'>
@@ -935,18 +955,27 @@
                       <i class='InputFieldForm-i'>Schedule:</i>
                       <div class='InputFieldForm-div'>
                         <div class="InputFieldFormSchedule">
-                          <span id="warningSchedule"></span>
-                          <div class='InputFieldForm-schedule'>
-                          <p>Select Day</p>
-                          <select id='day-select' name='day-select'>
-                            <option value='Monday'>Monday</option>
-                            <option value='Tuesday'>Tuesday</option>
-                            <option value='Wednesday'>Wednesday</option>
-                            <option value='Thursday'>Thursday</option>
-                            <option value='Friday'>Friday</option>
-                            <option value='Saturday'>Saturday</option>
-                            <option value='Sunday'>Sunday</option>
-                          </select>
+                          
+                            <div class='InputFieldForm-schedule'>
+                              <div>
+                                <div>
+                                  <p>Select Day</p>
+                                  <div class="selectwarning-container">
+                                    <select id='day-select' name='day-select'>
+                                      <option value='Monday'>Monday</option>
+                                      <option value='Tuesday'>Tuesday</option>
+                                      <option value='Wednesday'>Wednesday</option>
+                                      <option value='Thursday'>Thursday</option>
+                                      <option value='Friday'>Friday</option>
+                                      <option value='Saturday'>Saturday</option>
+                                      <option value='Sunday'>Sunday</option>
+                                    </select>
+                                    <span id="warningSchedule"></span>
+                                  </div>
+                                </div>
+                              </div>
+
+                          
                         </div>
                         <div class='InputFieldForm-divFlexColumn'>
                           <div class='InputFieldForm-schedule'>
@@ -974,7 +1003,7 @@
                     <h4>Room</h4>
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
-                        <span id="warningRoom"></span>
+                        
                         <i class='InputFieldForm-i'>Room:</i>
                         <button class='Btn_1' onclick="AddItems('Room')">Add Room</button>
                       </div>
@@ -982,6 +1011,7 @@
                         <div class='inputFlex'>
                           <input type='text' onkeyup='editSearch(`Insert`,3)' id='editSearch3' class="CT1" placeholder='Search Room'>
                           <div class='inputFlexIcon' onclick='closeSearch(1)'><i class='fa-solid fa-xmark'></i></div>
+                          <span id="warningRoom"></span>
                         </div>
                         
                         <div class='hiddenContainer'>
@@ -1004,7 +1034,9 @@
                     <h4>Teleconsultaion</h4>
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Teleconsultaion:</i>
+                      
                       <input type="text" id="DoctorsTeleConsult" placeholder="Teleconsultaion" class="CT1">
+                      
                     </div>
                     <br>
 
@@ -1013,12 +1045,14 @@
                     <div class='InputFieldForm'>
                       <div class='InputFieldFormChild1'>
                         <i class='InputFieldForm-i'>HMO Accreditation:</i>
+                        
                         <button class='Btn_1' onclick="AddItems('HMO')">Add HMO</button>
                       </div>
                       <div class='searchContainer-Parent'>
                         <div class='inputFlex'>
                           <input type='text' onkeyup='editSearch(`Insert`,4)' id='editSearch4' class="CT1" placeholder='Search HMO'>
                           <div class='inputFlexIcon' onclick='closeSearch(1)'><i class='fa-solid fa-xmark'></i></div>
+                          <span id="HMOWarning"></span>
                         </div>
                         
                         <div class='hiddenContainer'>
@@ -1053,11 +1087,16 @@
                     <h4>Secretary</h4>
                     <div class='InputFieldForm'>
                       <i class='InputFieldForm-i'>Secretary:</i>
+                      
                       <div class='InputFieldForm-div'>
                         <div class=''>
                           <p>Secretary Name</p>
-                          <input type="text" id="DoctorsSecretaryName" placeholder="Ex. Maria Angelica Cruz" class="CT1">
-                        </div>
+                          <div class="secretaryNameInputDiv">
+                            <input type="text" id="DoctorsSecretaryName" placeholder="Ex. Maria Angelica Cruz" class="CT1">
+                            <span id="secretaryWarning"></span>
+                          </div>
+                      </div>
+                      
                         <div class="">
                           <p>Primary Number </p>
                           <div class='InputFieldForm-divFlexColumn'>
@@ -1088,13 +1127,15 @@
                             </select>
                           </div>
                         </div>
-                        <button class="Btn_1" onclick="AddSecretary()">Add Secretary</button>
+                        <button class="Btn_1" onclick="AddSecretary('FromInsert')">Add Secretary</button>
+                        <span id="SecretaryWarning"></span>
+                        
                       </div>
                     </div>
 
                     <div class='InputFieldForm'>
                       <i class='InputFieldForm-i'></i>
-                      <div class='InformationField InformationFieldAddSecretary'>
+                      <div class='InformationField InformationFieldAddSecretary' id='InformationFieldAddSecretary'>
                         <!-- Function -->
                       </div>
                     </div>
@@ -1133,6 +1174,8 @@
                       <i class='InputFieldForm-i'>Username</i>
                       <input type="text" placeholder="Username" id="AccessUsername">
                     </div>
+                    <span id="AccessAccountWarning"></span>
+
                     <div class="InputFieldForm">
                       <i class="InputFieldForm-i">Access</i>
                       <select name="" id="AccessType">
@@ -1141,6 +1184,7 @@
                         <option value="Super Admin">Super Admin</option>
                       </select>
                     </div>
+                    <span id="AccessTypeWarning"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1175,6 +1219,7 @@
                       <i class='InputFieldForm-i'>HMO Name</i>
                       <input type="text" placeholder="HMO Name" id="HMOName">
                     </div>
+                    <span id="HMOWarningAdd"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1203,10 +1248,12 @@
                       <i class='InputFieldForm-i'>Floor Level</i>
                       <input type="text" placeholder="(ex. 1st Floor)" id="FloorLevel">
                     </div>
+                    <span id="FloorlevelAddNewWarning"></span>
                     <div class="InputFieldForm">
                       <i class='InputFieldForm-i'>Room Number</i>
                       <input type="number" placeholder="(ex. 1311)" id="RoomNumber">
                     </div>
+                    <span id="RoomNumberAddNewWarning"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1235,6 +1282,7 @@
                       <i class='InputFieldForm-i'>Specialization</i>
                       <input type="text" placeholder="(ex. Internal Medicine)" id="Specialization_ToBeAdd">
                     </div>
+                    <span id="SpecializationAddNewWarning"></span>
                   </div>
                 </div>
                 <div class="Modal-Sidebar-Bottom">
@@ -1262,6 +1310,7 @@
                       <i class='InputFieldForm-i'>Sub-Specialization</i>
                       <input type="text" placeholder="(ex. Cardiology)" id="SubSpecializationToAdd">
                     </div>
+                    <span id="SubSpecsWarningAdd"></span>
 
                     <div class="InputFieldForm">
                       <i class='InputFieldForm-i'>Specialization</i>
@@ -1558,7 +1607,20 @@
         </div>
       </section>
     <!-- END -->
-
+    <!-- EDIT ACCOUNT POP UP -->
+      <section id="Edit-Account-PopUpID" class="Edit-Account-PopUp">
+        <div class="Edit-Account-Container">
+          <!-- Function -->
+          <div>
+            <h4>Edit Admin Account</h4>
+            <input id="editAdminInputId" class="editAdminInputClass" placeholder="Edit admin user name">
+            <div class="Edit-Account-Buttons">
+              <button id="editAdminSaveBtn" class="Btn_1 editaccntBtn" onclick="UpdateAdminAccount()">Save</button>
+              <button id="editAdminCancelBtn" class="Btn_2 editaccntBtn" onclick="HideEditAccountPopUp()">Cancel</button>
+            </div>
+          </div>
+        </div>
+    <!-- END -->
   </div>
   <script>var UserID = '<?= $encrypted_user_id ?>';</script>
 </body>

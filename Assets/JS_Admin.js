@@ -82,94 +82,142 @@ function editNav(navId){
 
 // Dashboard Chart
 var chart;
-function FuncChart(data) {
-  var inputChartName1 = $("#chartInputSpecs-Names1").val();
-  var inputChartName2 = $("#chartInputSpecs-Names2").val();
-  var inputChartName3 = $("#chartInputSpecs-Names3").val();
-  var inputChartName4 = $("#chartInputSpecs-Names4").val();
-  var inputChartName5 = $("#chartInputSpecs-Names5").val();
+function FuncChart(data = []) {
+
+  var inputChartName1 = $("#chartInputSpecs-Names1").val() || "";
+  var inputChartName2 = $("#chartInputSpecs-Names2").val() || "";
+  var inputChartName3 = $("#chartInputSpecs-Names3").val() || "";
+  var inputChartName4 = $("#chartInputSpecs-Names4").val() || "";
+  var inputChartName5 = $("#chartInputSpecs-Names5").val() || "";
+
+  var categories = [inputChartName1, inputChartName2, inputChartName3, inputChartName4, inputChartName5]
+    .filter(name => name !== ""); // remove empty names
 
   var options = {
-    series: [{ data: data }],
-    chart: { type: "bar", height: 250, dropShadow: { enabled: true, top: 0, left: 0, blur: 2, opacity: 0.2 } },
-    plotOptions: { bar: { borderRadius: 4, borderRadiusApplication: "end", horizontal: true } },
+    series: [{ data: Array.isArray(data) ? data : [] }], // ensure it's always an array
+    chart: {
+      type: "bar",
+      height: 250,
+      dropShadow: { enabled: true, top: 0, left: 0, blur: 2, opacity: 0.2 }
+    },
+    plotOptions: {
+      bar: { borderRadius: 4, borderRadiusApplication: "end", horizontal: true }
+    },
     fill: { colors: ["#318499"] },
     dataLabels: { enabled: false },
-    labels: {
-      show: true,
-      rotate: -45,
-      rotateAlways: false,
-      hideOverlappingLabels: true,
-      showDuplicates: false,
-      trim: false,
-      minHeight: undefined,
-      maxHeight: 120,
-    },
-    xaxis: { categories: [inputChartName1, inputChartName2, inputChartName3, inputChartName4, inputChartName5] },
+    xaxis: { categories: categories.length ? categories : ["No Data"] } // fallback label
   };
+
+  if (chart) chart.destroy();
+
   chart = new ApexCharts(document.querySelector("#chart"), options);
   chart.render();
 }
 
 
 
-var inputSpecsChart1 = $("#chartInputSpecs-IDs1").val();
-var inputSpecsChart2 = $("#chartInputSpecs-IDs2").val();
-var inputSpecsChart3 = $("#chartInputSpecs-IDs3").val();
-var inputSpecsChart4 = $("#chartInputSpecs-IDs4").val();
-var inputSpecsChart5 = $("#chartInputSpecs-IDs5").val();
-function updateChartData() {
-  var newData = [0, 0, 0, 0, 0];
-  var newData2 = [inputSpecsChart1, inputSpecsChart2, inputSpecsChart3, inputSpecsChart4, inputSpecsChart5];
-  chart.updateSeries([{ data: newData }]);
-  chart.updateSeries([{ data: newData2 }]);
+function updateChartData(resetToZero = false) {
+  var inputSpecsChart1 = Number($("#chartInputSpecs-IDs1").val()) || 0;
+  var inputSpecsChart2 = Number($("#chartInputSpecs-IDs2").val()) || 0;
+  var inputSpecsChart3 = Number($("#chartInputSpecs-IDs3").val()) || 0;
+  var inputSpecsChart4 = Number($("#chartInputSpecs-IDs4").val()) || 0;
+  var inputSpecsChart5 = Number($("#chartInputSpecs-IDs5").val()) || 0;
+
+  var newData = [
+    inputSpecsChart1,
+    inputSpecsChart2,
+    inputSpecsChart3,
+    inputSpecsChart4,
+    inputSpecsChart5
+  ];
+
+  if (resetToZero) {
+    newData = newData.map(() => 0);
+  }
+
+  if (chart) {
+    chart.updateSeries([{ data: newData }]);
+  }
 }
 
-// var inputChart = $("#chartInput").val();
-var initialData = [inputSpecsChart1, inputSpecsChart2, inputSpecsChart3, inputSpecsChart4, inputSpecsChart5];
+// initial data from PHP
+var initialData = [
+  Number($("#chartInputSpecs-IDs1").val()) || 0,
+  Number($("#chartInputSpecs-IDs2").val()) || 0,
+  Number($("#chartInputSpecs-IDs3").val()) || 0,
+  Number($("#chartInputSpecs-IDs4").val()) || 0,
+  Number($("#chartInputSpecs-IDs5").val()) || 0
+];
+
+// create chart
+
 FuncChart(initialData);
 
 
 
 // Dashboard Chart 2
 var chart2;
-function FuncChart2(data) {
-  var inputChartName1 = $("#chartInputHMO-Names1").val();
-  var inputChartName2 = $("#chartInputHMO-Names2").val();
-  var inputChartName3 = $("#chartInputHMO-Names3").val();
-  var inputChartName4 = $("#chartInputHMO-Names4").val();
-  var inputChartName5 = $("#chartInputHMO-Names5").val();
+var chart2; // define globally so you can destroy/re-render later
+
+function FuncChart2(data = []) {
+  var inputChartName1 = $("#chartInputHMO-Names1").val() || "";
+  var inputChartName2 = $("#chartInputHMO-Names2").val() || "";
+  var inputChartName3 = $("#chartInputHMO-Names3").val() || "";
+  var inputChartName4 = $("#chartInputHMO-Names4").val() || "";
+  var inputChartName5 = $("#chartInputHMO-Names5").val() || "";
+
+  var categories = [
+    inputChartName1,
+    inputChartName2,
+    inputChartName3,
+    inputChartName4,
+    inputChartName5
+  ].filter(name => name !== "");
+
+  if (categories.length === 0) categories = ["No Data"];
+
+  if (!Array.isArray(data)) {
+    console.warn("FuncChart2(): Invalid data argument, expected array. Got:", data);
+    data = [];
+  }
 
   var options = {
-    series: [{ data: data }],
-    chart: { type: "bar", height: 250, dropShadow: { enabled: true, top: 0, left: 0, blur: 2, opacity: 0.2 } },
-    plotOptions: { bar: { borderRadius: 4, borderRadiusApplication: "end", horizontal: true } },
+    series: [{
+      data: data
+    }],
+    chart: {
+      type: "bar",
+      height: 250,
+      dropShadow: {
+        enabled: true,
+        top: 0,
+        left: 0,
+        blur: 2,
+        opacity: 0.2
+      }
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 4,
+        borderRadiusApplication: "end",
+        horizontal: true
+      }
+    },
     fill: { colors: ["#318499"] },
     dataLabels: { enabled: false },
-    labels: {
-      show: true,
-      rotate: -45,
-      rotateAlways: false,
-      hideOverlappingLabels: true,
-      showDuplicates: false,
-      trim: false,
-      minHeight: undefined,
-      maxHeight: 120,
-      minWidth: 400,
-    },
     xaxis: {
-      categories: [
-        inputChartName1,
-        inputChartName2,
-        inputChartName3,
-        inputChartName4,
-        inputChartName5,
-      ],
-    },
+      categories: categories
+    }
   };
+
+  if (chart2) {
+    chart2.destroy();
+  }
+
   chart2 = new ApexCharts(document.querySelector("#chart2"), options);
   chart2.render();
 }
+
 
 
 
@@ -187,9 +235,6 @@ function updateChartData2() {
 }
 var initialData2 = [inputChart1, inputChart2, inputChart3, inputChart4, inputChart5];
 FuncChart2(initialData2);
-
-
-
 
 
 
@@ -247,6 +292,7 @@ let EditSubSpecializationArr = [];
 let EditNewRoomarr = [];
 let EditNewHMOarr = [];
 let EditNewScheduleArr = [];
+let EditedNewSecretaryArr = [];
 // ============= AJAX =============
 // HIDE MODAL
 function ModalSidebarExit() {
@@ -255,6 +301,7 @@ function ModalSidebarExit() {
   EditNewRoomarr = [];
   EditNewHMOarr = [];
   EditNewScheduleArr = [];
+  EditedNewSecretaryArr = [];
 
   $(".Modal-Sidebar").css("display", "none");
 }
@@ -335,24 +382,72 @@ function AddNewDoctor() {
     var DocInput3 = $("#DoctorsLastName").val();
     var DocInput4 = $("#DoctorGender").val();
     var DocInput5 = $("#DoctorCategory").val();
+
+    var DoctorTele = $("#DoctorsTeleConsult").val();
     var DocInputsSpecs = $("#hiddenInformationFieldIDSpecs").text().trim();
     var DocInputSchedule = $("#informationFieldAddSchedule").text().trim();
     var DocInputsRoom = $("#hiddenInformationFieldIDRoom").text().trim();
+    var DocInputSecretary = $("#InformationFieldAddSecretary").text().trim();
+    var DoctorInputHMO = $("#hiddenInformationFieldIDHMO").text().trim();
 
-    if (
-        DocInput1 === "" ||
-        DocInput3 === "" ||
-        DocInput4 === "-" ||
-        DocInput5 === "" ||
-        DocInput5 === "-" ||
-        DocInputsSpecs === "" ||
-        DocInputSchedule === "" ||
-        DocInputsRoom === ""
-    ) {
-        $("#AddNewDoctorMessage").html("Please fill out all required fields.");
-        $("#warningRoom").html("Please add at least one room.");
-        $("#warningSchedule").html("Please add at least one Schedule.");
-    } else {
+    let hasError = false;
+      $("#FirstNameWarning, #LastNameWarning, #GenderWarning, #SpecializationWarning, #warningRoom, #warningSchedule, #HMOWarning, #secretaryWarning, #categoryWarning").html(""); // Clear previous warnings
+
+      if (DocInput1 === "") {
+        $("#FirstNameWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DocInput3 === "") {
+        $("#LastNameWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DocInput4 === "" || DocInput4 === null) {
+        $("#GenderWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DocInput5 === null) {
+        $("#categoryWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DocInputsSpecs === "") {
+        $("#SpecializationWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DocInputSchedule === "") {
+        $("#warningSchedule").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DocInputsRoom === "") {
+        $("#warningRoom").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true;
+      }
+      if (DoctorTele === "") {
+        $("#warningTele").html("N/A");
+        hasError = false; 
+      }
+      if (DocInputSecretary === "") {
+        $("#secretaryWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true; 
+      }
+      if (DoctorInputHMO === "") {
+        $("#HMOWarning").html("*");
+        $("#AddNewDoctorMessage").html("Please fill out the required fields.");
+        hasError = true; 
+      }
+
+      if (hasError) {
+        return;
+      }
+
+    if (!hasError) {
         $(".Prompt-Message").css("display", "flex");
         $(".Prompt-AddNewDoctor").css("display", "flex");
         $(".Prompt-AddNewDoctor").siblings().css("display", "none");
@@ -378,6 +473,24 @@ function PromptDoctor(PromptType, Prompt_ID) {
 
 // PROMPT MESSAGE / ADD ACCESS ACCOUNT
 function AddNewAccess() {
+  var AccessUsername  = $("#AccessUsername").val(); 
+  var AccessType  = $("#AccessType").val();
+
+  let warning = false;
+
+  if (AccessUsername === "") {
+    $("#AccessAccountWarning").html("Please enter a username.");  
+    warning = true;
+  }
+  if (AccessType === null) {
+    $("#AccessTypeWarning").html("Please select an access type.");
+    warning = true;
+  }
+  if (warning) {
+    return;
+  }
+
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-AccessAccount").css("display", "flex");
   $(".Prompt-AccessAccount").siblings().css("display", "none");
@@ -437,7 +550,7 @@ function InsertNewDoctor(InsertDoctor) {
     FirstName: $("#DoctorsFirstName").val(),
     Gender: $("#DoctorGender").val(),
     Specialization: selectedIds,
-    SubSpecialization: selectedIds2,
+    SubSpecialization: selectedIds2, 
     Schedule: scheduleArr,
     Secretary: secretaryArr,
     Remarks: $("#DoctorsRemarks").val(),
@@ -456,6 +569,9 @@ function InsertNewDoctor(InsertDoctor) {
     SecondarySecondNumber: $("#DoctorsFirstName").val(),
     SecondarySecondNetwork: $("#DoctorsFirstName").val(),
   };
+  if (data.TeleConsultation === ""|| data.TeleConsultation == null) {
+    data.TeleConsultation = "N/A";
+  }
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
@@ -468,10 +584,9 @@ function InsertNewDoctor(InsertDoctor) {
       clearText();
       if(response == "Doctor have been successfully inserted!"){
         PopMessages(response);
-        setTimeout(function() {
-            location.reload();
-          }, delayInMilliseconds);
+        location.reload();
       }
+      location.reload();
     },
   });
 
@@ -1040,12 +1155,14 @@ function formatTime(time) {
 }
 
 
-function AddSecretary() {
-  const DoctorsSecretaryName = $("#DoctorsSecretaryName").val();
-  const SecretaryMobile1 = $("#SecretaryMobile1").val();
-  const SecretaryMobile2 = $("#SecretaryMobile2").val();
-  const selectNetwork1 = $("#selectNetwork1").val();
-  const selectNetwork2 = $("#selectNetwork2").val();
+function AddSecretary(Type) {
+  const DoctorsSecretaryName = Type === "FromEdit" ? $("#DoctorsSecretaryNameEdit").val() : $("#DoctorsSecretaryName").val();
+  const SecretaryMobile1 = Type === "FromEdit" ? $("#SecretaryMobile1Edit").val() : $("#SecretaryMobile1").val();
+  const SecretaryMobile2 = Type === "FromEdit" ? $("#SecretaryMobile2Edit").val() : $("#SecretaryMobile2").val();
+  const selectNetwork1 = Type === "FromEdit" ? $("#selectNetwork1Edit").val() : $("#selectNetwork1").val();
+  const selectNetwork2 = Type === "FromEdit" ? $("#selectNetwork2Edit").val() : $("#selectNetwork2").val();
+
+  
 
   const formattedMobile1 = `'${SecretaryMobile1}'`; 
   const formattedMobile2 = `'${SecretaryMobile2}'`; 
@@ -1058,7 +1175,15 @@ function AddSecretary() {
     network2: selectNetwork2,
   };
 
-  const exists = secretaryArr.some(
+  const exists = Type === "FromEdit" ? EditedNewSecretaryArr.some(
+    (item) =>
+      item.name === secretaryObject.name &&
+      item.number === secretaryObject.number &&
+      item.network === secretaryObject.network &&
+      item.number2 === secretaryObject.number2 &&
+      item.network2 === secretaryObject.network2
+  ) : 
+  secretaryArr.some(
     (item) =>
       item.name === secretaryObject.name &&
       item.number === secretaryObject.number &&
@@ -1067,26 +1192,61 @@ function AddSecretary() {
       item.network2 === secretaryObject.network2
   );
 
-  if (!exists) {
-    secretaryArr.push(secretaryObject);
-  } else {
-    console.warn("This Secretary already exists:", secretaryObject);
+  if(DoctorsSecretaryName === "" || DoctorsSecretaryName == null){
+    $("#SecretaryWarning").html("Please enter a valid Secretary Name.");
+     $("#SecretaryWarningEdit").html("Please enter a valid Secretary Name.");
+    return;
   }
-  $.ajax({
-    url: "../Components/Function_Admin.php",
-    type: "post",
-    data: { AddSecretary: secretaryArr },
-    success: function (response) {
-      // console.log(response);
-      $(".InformationFieldAddSecretary").html(response);
+  else if(SecretaryMobile1 === "" || SecretaryMobile1 == null){
+    $("#SecretaryWarning").html("Please enter a valid Primary Number.");
+     $("#SecretaryWarningEdit").html("Please enter a valid Primary Number.");
+    return;
+  }
+  else if (!exists) {
+      if (Type === "FromEdit") {
+        EditedNewSecretaryArr.push(secretaryObject);
+      } else {
+        secretaryArr.push(secretaryObject);
+      }
+    } else {
+      console.warn("This Secretary already exists:", secretaryObject);
+    }
+    $.ajax({
+      url: "../Components/Function_Admin.php",
+      type: "post",
+      data: { AddSecretary: Type === "FromEdit" ? EditedNewSecretaryArr : secretaryArr,
+              Type: Type,
+            },
+      success: function (response) {
 
-      $("#DoctorsSecretaryName").val("");
-      $("#SecretaryMobile1").val("");
-      $("#SecretaryMobile2").val("");
-      $("#selectNetwork1").val("-");
-      $("#selectNetwork2").val("-");
-    },
-  });
+        if (Type === "FromEdit") {
+          var newItem = $(response);
+
+          EditedNewSecretaryArr.forEach(function (secretaryObject) {
+            var specId = secretaryObject.number;
+          if ($("#InformationFieldAddSecretaryEdit").find("[data-specid='" + specId + "']").length === 0) {
+                $("#InformationFieldAddSecretaryEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+              }
+            });
+
+          $("#DoctorsSecretaryNameEdit").val("");
+          $("#SecretaryMobile1Edit").val("");
+          $("#selectNetwork1Edit").val("");
+          $("#SecretaryMobile2Edit").val("");
+          $("#selectNetwork2Edit").val("");
+
+        } else {
+          $(".InformationFieldAddSecretary").html(response);
+
+          $("#DoctorsSecretaryName").val("");
+          $("#SecretaryMobile1").val("");
+          $("#SecretaryMobile2").val("");
+          $("#selectNetwork1").val("-");
+          $("#selectNetwork2").val("-");
+        }
+        
+      },
+    });
 }
 
 function UpdateDoctorDB(UpdateType, DoctorID){
@@ -1095,6 +1255,8 @@ function UpdateDoctorDB(UpdateType, DoctorID){
   var EditMiddlename = $("#EditMiddleName").val();
   var EditGender = $("#EditGender").val();
   var EditCategory = $("#EditCategory").val();
+  var EditRemarks = $("#EditDoctorsRemarks").val();
+  var EditTele = $("#EditDoctorsTeleConsult").val();
   
   var data = {
     UpdateDoctorType: UpdateType,
@@ -1105,6 +1267,10 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     EditMiddlename: EditMiddlename,
     EditGender: EditGender,
     EditCategory: EditCategory,
+    EditRemarks: EditRemarks,
+    EditTele: EditTele,
+    EditSecretary: JSON.stringify(EditedNewSecretaryArr),
+
     RemovedSpecs: JSON.stringify(RemovedSpecsFromEdit),
     RemovedSubSpecs: JSON.stringify(RemovedSubSpecsFromEdit),
     RemovedRoom: JSON.stringify(RemovedRoom),
@@ -1115,7 +1281,8 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     EditedNewRoom: JSON.stringify(EditNewRoomarr),
     EditedNewHMO: JSON.stringify(EditNewHMOarr),
     EditedNewSchedule: JSON.stringify(EditNewScheduleArr),
-  }; console.log(data);
+    EditedNewSecretary: JSON.stringify(RemovedSecretary),
+  }; 
   $.ajax({
     url: "../Components/Function_Admin.php",
     type: "post",
@@ -1123,14 +1290,12 @@ function UpdateDoctorDB(UpdateType, DoctorID){
     success: function (response) {
       console.log(response);
       PopMessages(response)
-      // $(".tbody-doctor").load(location.href + " .tr-doctor");
-      // $(".tbody-archived").load(location.href + " .tr-archived");
-      // reloadDiv('UpdateDiv');
       $("#Pop-Message").html("Restored successfully!");
-      location.reload();
-      // setTimeout(function() {
-      //   location.reload();
-      // }, 10000);
+      updateChartData();
+      updateChartData2();
+      setTimeout(function() {
+        location.reload();
+      }, 1000);
     },
   });
 }
@@ -1193,6 +1358,12 @@ function AddHMO() {
 
 //ADD HMO PROMPT 
 function AddNewHMO() {
+  const name = $("#HMOName").val();
+
+  if (name === "") {
+    $("#HMOWarningAdd").html("Please enter HMO name.");
+    return;
+  }
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-AddHMO").css("display", "flex");
   $(".Prompt-AddHMO").siblings().css("display", "none");
@@ -1242,6 +1413,13 @@ function EditHMO(EditHMO_ID) {
 //IF YES EDIT HMO 
 let HMO_ID = '';
 function PromptHMO(PromptHMO_ID) {
+  const newEditHMOName = $("#EditHMOName").val();
+  
+  if (newEditHMOName === "") {
+    $("#NewEditHMOWarning").html("Please enter HMO name.");
+    return;
+  }
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-EditHMO").css("display", "flex");
   $(".Prompt-EditHMO").siblings().css("display", "none");
@@ -1282,6 +1460,23 @@ function AddRoom() {
 
 //ADD ROOM PROMPT 
 function AddNewRoom() {
+  const floorLevel = $("#FloorLevel").val();
+  const roomNumber = $("#RoomNumber").val();
+
+  let warningMessage = false;
+
+  if (floorLevel === "") {
+    $("#FloorlevelAddNewWarning").html("Please enter Floor Level.");
+    warningMessage = true;
+  }
+  if (roomNumber === "") {
+    $("#RoomNumberAddNewWarning").html("Please enter Room Number.");
+    warningMessage = true;
+  }
+  if (warningMessage) {
+    return;
+  }
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-AddRoom").css("display", "flex");
   $(".Prompt-AddRoom").siblings().css("display", "none");
@@ -1332,6 +1527,13 @@ function EditRoom(EditRoom_ID) {
 //IF YES EDIT ROOM
 let Room_ID = '';
 function PromptRoom(PromptRoom_ID) {
+  var newEditRoomFloorLevel = $("#EditRoomName").val();
+
+  if (newEditRoomFloorLevel === "") {
+    $("#NewEditRoomWarning").html("Please enter Room name.");
+    return;
+  }
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-EditRoom").css("display", "flex");
   $(".Prompt-EditRoom").siblings().css("display", "none");
@@ -1373,6 +1575,14 @@ function AddSpecialization() {
 
 //ADD SPECIALIZATION PROMPT 
 function AddNewSpecialization() {
+  var NewSpecialization = $("#Specialization_ToBeAdd").val();
+
+  if (NewSpecialization === "") {
+    $("#SpecializationAddNewWarning").html("Please enter Specialization name.");
+    return;
+  }
+
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-AddSpecialization").css("display", "flex");
   $(".Prompt-AddSpecialization").siblings().css("display", "none");
@@ -1422,6 +1632,13 @@ function EditSpecialization(EditSpecialization_ID) {
 //IF YES EDIT SPECIALIZATION
 let Specialization_ID = '';
 function PromptSpecialization(PromptSpecialization_ID) {
+  var EditSpecializationNameEdit = $("#EditSpecializationName").val();
+
+  if (EditSpecializationNameEdit === "") {
+    $("#NewEditSpecializationWarning").html("Please enter Specialization name.");
+    return;
+  }
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-EditSpecialization").css("display", "flex");
   $(".Prompt-EditSpecialization").siblings().css("display", "none");
@@ -1464,6 +1681,14 @@ function AddSubSpecialization() {
 
 //ADD SUB-SPECIALIZATION PROMPT 
 function AddNewSubSpecialization() {
+  var NewSubSpecialization = $("#SubSpecializationToAdd").val();
+
+  if (NewSubSpecialization === "") {
+    $("#SubSpecsWarningAdd").html("Please enter Sub-Specialization name.");
+    return;
+  }
+
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-AddSubSpecialization").css("display", "flex");
   $(".Prompt-AddSubSpecialization").siblings().css("display", "none");
@@ -1495,6 +1720,7 @@ let RemovedSubSpecsFromEdit = [];
 let RemovedRoom = [];
 let RemovedHMO = [];
 let RemovedSchedule = [];
+let RemovedSecretary = [];
 
 //REGEX FOR DAY AND TIME VALIDATION
 function isValidDayTime(value) {
@@ -1504,9 +1730,24 @@ function isValidDayTime(value) {
 }
 //funtion to remove selected items from the list and array
 function removeSelected(iconElement, specId, arrayType) {
-
   const itemDiv = iconElement.closest(".ClickableList");
   if (itemDiv) itemDiv.remove();
+
+  if (arrayType === "DeleteSecretary") {
+    if (EditedNewSecretaryArr.length > 0) {
+
+      const index = EditedNewSecretaryArr.findIndex(secretary => secretary.number == specId);
+      if (index !== -1) {
+        EditedNewSecretaryArr.splice(index, 1);
+      }
+      
+    }
+    const itemDiv = iconElement.closest(".ClickableLists");
+    if (itemDiv) itemDiv.remove();
+    RemovedSecretary.push(specId);
+    
+    return;
+  }
 
   if (isValidDayTime(specId) === true) {
     if (arrayType === "schedule") {
@@ -1631,6 +1872,14 @@ function EditSubSpecialization(EditSubSpecialization_ID) {
 //IF YES EDIT SUB-SPECIALIZATION
 let Sub_Specialization_ID = '';
 function PromptSubSpecialization(PromptSubSpecialization_ID) {
+  var EditSubSpecializationName = $("#EditSubSpecializationName").val();
+
+  if (EditSubSpecializationName === "") {
+    $("#NewEditSubSpecializationWarning").html("Please enter Sub-Specialization name.");
+    return;
+  }
+
+
   $(".Prompt-Message").css("display", "flex");
   $(".Prompt-EditSubSpecialization").css("display", "flex");
   $(".Prompt-EditSubSpecialization").siblings().css("display", "none");
@@ -1656,6 +1905,64 @@ function Yes_EditSubSpecialization(Yes_EditSubSpecialization_ID) {
     success: function (response) {
       console.log(response);
       $("#Pop-Message").html("The data has successfully updated!");
+    },
+  });
+}
+function editAdminName(editShow){
+  $("#Edit-Account-PopUpID").css("display", "block");
+  var data = {
+    editShow: editShow, 
+  };
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      console.log(response);
+      $("#Edit-Account-PopUpID").html(response);
+    },
+  });
+
+}
+function HideEditAccountPopUp(){
+  $("#Edit-Account-PopUpID").css("display", "none");
+}
+
+//IF YES EDIT ADMIN NAME
+function saveEditedName(adminID) {
+  var oldName= adminID;
+  var newName= $("#editAdminInputId").val();
+  if (newName === "") {
+    $("#NewEditAdminNameWarning").html("Please enter Admin name.");
+    return;
+  }
+  var data = {
+    EditedAdminName: newName,
+    oldName: oldName,
+  };
+  console.log(data);
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      console.log(response);
+      $("#Pop-Message").html("The data has successfully updated!");
+    },
+  });
+  
+  location.reload();
+}
+function filterBySpecialization(specializationId) {
+  var data = {
+    filterBySpecialization: specializationId,
+  };
+  $.ajax({
+    url: "../Components/Function_Admin.php",
+    type: "post",
+    data: data,
+    success: function (response) {
+      $(".tbody-doctor").html(response);
     },
   });
 }
