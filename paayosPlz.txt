@@ -1,3 +1,2 @@
 fix filter in doctors
-add validation in secretary
 

@@ -1162,6 +1162,8 @@ function AddSecretary(Type) {
   const selectNetwork1 = Type === "FromEdit" ? $("#selectNetwork1Edit").val() : $("#selectNetwork1").val();
   const selectNetwork2 = Type === "FromEdit" ? $("#selectNetwork2Edit").val() : $("#selectNetwork2").val();
 
+  
+
   const formattedMobile1 = `'${SecretaryMobile1}'`; 
   const formattedMobile2 = `'${SecretaryMobile2}'`; 
 
@@ -1190,51 +1192,54 @@ function AddSecretary(Type) {
       item.network2 === secretaryObject.network2
   );
 
-  if (!exists) {
-    if (Type === "FromEdit") {
-      EditedNewSecretaryArr.push(secretaryObject);
-    } else {
-      secretaryArr.push(secretaryObject);
-    }
-  } else {
-    console.warn("This Secretary already exists:", secretaryObject);
-  }
-  $.ajax({
-    url: "../Components/Function_Admin.php",
-    type: "post",
-    data: { AddSecretary: Type === "FromEdit" ? EditedNewSecretaryArr : secretaryArr,
-            Type: Type,
-          },
-    success: function (response) {
-
+  if(DoctorsSecretaryName === "" || DoctorsSecretaryName == null){
+    alert("Please enter a valid Secretary Name.");
+    return;
+  } else if (!exists) {
       if (Type === "FromEdit") {
-        var newItem = $(response);
-
-        EditedNewSecretaryArr.forEach(function (secretaryObject) {
-          var specId = secretaryObject.number;
-         if ($("#InformationFieldAddSecretaryEdit").find("[data-specid='" + specId + "']").length === 0) {
-              $("#InformationFieldAddSecretaryEdit").append(newItem.filter("[data-specid='" + specId + "']"));
-            }
-          });
-
-        $("#DoctorsSecretaryNameEdit").val("");
-        $("#SecretaryMobile1Edit").val("");
-        $("#selectNetwork1Edit").val("");
-        $("#SecretaryMobile2Edit").val("");
-        $("#selectNetwork2Edit").val("");
-
+        EditedNewSecretaryArr.push(secretaryObject);
       } else {
-        $(".InformationFieldAddSecretary").html(response);
-
-        $("#DoctorsSecretaryName").val("");
-        $("#SecretaryMobile1").val("");
-        $("#SecretaryMobile2").val("");
-        $("#selectNetwork1").val("-");
-        $("#selectNetwork2").val("-");
+        secretaryArr.push(secretaryObject);
       }
-      
-    },
-  });
+    } else {
+      console.warn("This Secretary already exists:", secretaryObject);
+    }
+    $.ajax({
+      url: "../Components/Function_Admin.php",
+      type: "post",
+      data: { AddSecretary: Type === "FromEdit" ? EditedNewSecretaryArr : secretaryArr,
+              Type: Type,
+            },
+      success: function (response) {
+
+        if (Type === "FromEdit") {
+          var newItem = $(response);
+
+          EditedNewSecretaryArr.forEach(function (secretaryObject) {
+            var specId = secretaryObject.number;
+          if ($("#InformationFieldAddSecretaryEdit").find("[data-specid='" + specId + "']").length === 0) {
+                $("#InformationFieldAddSecretaryEdit").append(newItem.filter("[data-specid='" + specId + "']"));
+              }
+            });
+
+          $("#DoctorsSecretaryNameEdit").val("");
+          $("#SecretaryMobile1Edit").val("");
+          $("#selectNetwork1Edit").val("");
+          $("#SecretaryMobile2Edit").val("");
+          $("#selectNetwork2Edit").val("");
+
+        } else {
+          $(".InformationFieldAddSecretary").html(response);
+
+          $("#DoctorsSecretaryName").val("");
+          $("#SecretaryMobile1").val("");
+          $("#SecretaryMobile2").val("");
+          $("#selectNetwork1").val("-");
+          $("#selectNetwork2").val("-");
+        }
+        
+      },
+    });
 }
 
 function UpdateDoctorDB(UpdateType, DoctorID){
