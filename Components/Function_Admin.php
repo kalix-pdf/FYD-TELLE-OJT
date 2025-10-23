@@ -2520,7 +2520,8 @@ if (isset($_POST["filterBySpecialization"])) {
     
 
       $DoctorQuery = "SELECT doctor_account_id,doctor_firstname,doctor_middlename,doctor_lastname,doctor_status FROM doctor
-      WHERE doctor_account_id = '$SpecializationID'
+      WHERE doctor_account_id = '$SpecializationID' 
+      AND doctor_status = 'ACTIVE'
       ORDER BY doctor_lastname ASC";
       $DoctorQueryInsert = mysqli_query($connMysqli, $DoctorQuery);
 

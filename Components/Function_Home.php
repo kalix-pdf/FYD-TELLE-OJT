@@ -43,28 +43,7 @@ if(isset($_POST["DoctorID"])){
                 
 
                 ";  
-                    // $DoctorTelConsult1 = "SELECT `teleconsult_doctor_id`, `teleconsult_link` FROM doctor_teleconsult WHERE teleconsult_doctor_id = $DID";
-                    // $DoctorTelConsult1 = mysqli_query($connMysqli,$DoctorTelConsult1);
-                    // $row9 = mysqli_fetch_assoc($DoctorTelConsult1);
                     
-                    //   if (!empty($row9['teleconsult_link'])) {
-                          
-                    //       echo"
-                    //       <div class='TeleDiv'>
-                    //       <p class='TelecastSpanP'>
-                    //           <i class='fa-solid fa-arrow-up-right-from-square'></i>
-                    //           <span class='TelecastSpan' onclick='TelecastDiv(". $row9['teleconsult_link'] .")'>
-                    //               Click here for teleconsultation
-                    //           </span>
-                    //       </p>
-                    //       </div>
-                    //       ";
-                    //   }else {
-                        
-                    //     echo "<p class='TelecastSpanP'>No teleconsultation link available</p>
-                    //           <script>console.log(". $row9['teleconsult_link'].");</script>
-                    //     ";
-                    //   }
                   $DoctorTelConsult1 = "SELECT * 
                                         FROM doctor_teleconsult 
                                         WHERE teleconsult_doctor_id = '$DID'";
@@ -243,7 +222,10 @@ if(isset($_POST["SearchDoc"])){
   }
   else{  
     // $SearchResult = "SELECT * FROM doctor WHERE doctor_name LIKE '%$DocID%' ";
-    $SearchResult = "SELECT * FROM doctor WHERE doctor_firstname LIKE '%$DocID%' OR doctor_middlename LIKE '%$DocID%' OR doctor_lastname LIKE '%$DocID%'  ";
+    $SearchResult = "SELECT * FROM doctor WHERE 
+                    doctor_firstname LIKE '%$DocID%' OR 
+                    doctor_middlename LIKE '%$DocID%' OR 
+                    doctor_lastname LIKE '%$DocID%'  ";
     $SearchResult = mysqli_query($connMysqli, $SearchResult);
   }
 
