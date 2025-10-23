@@ -187,7 +187,7 @@ function LoadingHide(){
   }
 }
 
-function TelecastDiv(LinkAddress){
+function telecastDiv(LinkAddress){
   // LinkAddress = "https://chatgpt.com/";
   window.open(LinkAddress, '_blank');
 }

@@ -28,24 +28,74 @@ if(isset($_POST["DoctorID"])){
               <div class='ModalContainerDiv1Img ".$DR_SexColor." '><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
               <div class='ModalContainerDiv1Names'>
                 <h1 class='Capitalize'>Dr. ".$row['doctor_lastname'].".  ".substr($row['doctor_middlename'], 0, 1)." ".$row['doctor_firstname']."</h1>
-                ";
-                $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID'";
-                $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-                while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){echo "
-                  <h4>".$row3['doctor_specialization_name']."</h4>
-                ";};
-                echo"
-                <div class='TeleDiv'>
-
-                    ";
-                    $DoctorTelConsult1 = "SELECT * FROM doctor_teleconsult WHERE teleconsult_doctor_id = '$DID' AND teleconsult_link != ''";
-                    $DoctorTelConsult1 = mysqli_query($connMysqli,$DoctorTelConsult1);
-                    while($row9 = mysqli_fetch_assoc($DoctorTelConsult1)){echo "
-                      <p class='TelecastSpanP'><i class='fa-solid fa-arrow-up-right-from-square'></i> <span class='TelecastSpan' onclick='TelecastDiv(`".$row9['teleconsult_link']."`)'>Click here for teleconsultaion</span></p>
+                  <div class='SpecList'>";
+                  $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID'";
+                  $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
+                  while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){
+                    echo "
+                    
+                    <h5>"."|&nbsp"."".$row3['doctor_specialization_name']."&nbsp|"."&nbsp&nbsp"."</h5>
+                    
                     ";};
+                
                     echo"
+                  </div>
+                
 
-                </div>
+                ";  
+                    // $DoctorTelConsult1 = "SELECT `teleconsult_doctor_id`, `teleconsult_link` FROM doctor_teleconsult WHERE teleconsult_doctor_id = $DID";
+                    // $DoctorTelConsult1 = mysqli_query($connMysqli,$DoctorTelConsult1);
+                    // $row9 = mysqli_fetch_assoc($DoctorTelConsult1);
+                    
+                    //   if (!empty($row9['teleconsult_link'])) {
+                          
+                    //       echo"
+                    //       <div class='TeleDiv'>
+                    //       <p class='TelecastSpanP'>
+                    //           <i class='fa-solid fa-arrow-up-right-from-square'></i>
+                    //           <span class='TelecastSpan' onclick='TelecastDiv(". $row9['teleconsult_link'] .")'>
+                    //               Click here for teleconsultation
+                    //           </span>
+                    //       </p>
+                    //       </div>
+                    //       ";
+                    //   }else {
+                        
+                    //     echo "<p class='TelecastSpanP'>No teleconsultation link available</p>
+                    //           <script>console.log(". $row9['teleconsult_link'].");</script>
+                    //     ";
+                    //   }
+                  $DoctorTelConsult1 = "SELECT * 
+                                        FROM doctor_teleconsult 
+                                        WHERE teleconsult_doctor_id = '$DID'";
+                  $DoctorTelConsult1 = mysqli_query($connMysqli, $DoctorTelConsult1);
+                  
+                  
+                  while($row9 = mysqli_fetch_assoc($DoctorTelConsult1)){
+                    if ($row9 && !empty($row9['teleconsult_link'])) {
+
+                        echo "
+                        <div class='TeleDiv'>
+                            <p class='TelecastSpanP'>
+                                <i class='fa-solid fa-arrow-up-right-from-square'></i>
+                                <span class='TelecastSpan' onclick='telecastDiv(\" ".$row9['teleconsult_link']."\")'>
+                                    Click here for teleconsultation
+                                </span>
+                                
+                            </p>
+                        </div>
+                        ";
+                    } else {
+                        
+                        echo "<p class='TelecastSpanP'>No teleconsultation link available</p>
+                              ";
+                    }
+                  
+                  }
+                    
+                  echo"
+
+                
               </div>
             </div>
             <div class='ModalContainerDiv1Close' onclick='CloseDoctor()'>

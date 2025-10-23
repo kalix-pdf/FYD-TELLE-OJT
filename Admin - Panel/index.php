@@ -386,7 +386,7 @@
             <div class="MainDiv-Header-Right">
               <button class="Btn_1" onclick="AddDoctor()"><i class="fa-solid fa-plus"></i> Add Doctor</button>
               <div class="InputText3">
-                <select type="text" placeholder="Filter By Specialization" onchange="filterBySpecialization(this.value)">
+                <select title="filterSpecialization" id="filterSpecialization" type="text" placeholder="Filter By Specialization" onchange="filterBySpecialization(this.value)">
                   <option value="">All</option>
                   <?php
                   $FetchSpecializations = "SELECT * FROM specialization";

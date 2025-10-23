@@ -1096,7 +1096,13 @@ body{
 }
 
 /* END JULY 19, 2024 */
-
+.SpecList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
 
 @media only screen and (max-width: 600px) {
   .Main_Div1-Section::-webkit-scrollbar {

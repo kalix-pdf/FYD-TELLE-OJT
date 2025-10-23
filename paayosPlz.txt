@@ -1,2 +1,2 @@
-fix filter in doctors
+filter inactive in doctor filter
 
