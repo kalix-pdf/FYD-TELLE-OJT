@@ -6,7 +6,8 @@ $Time = date("h:i:sa");
 $Day = date('l');
 
 //CREATE RANDOM ID
-function generateDoctorAccountId() {
+function generateDoctorAccountId()
+{
   $date = date("Ymd");
   $randomNumber = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
   $accountId = $date . '-' . $randomNumber;
@@ -14,7 +15,8 @@ function generateDoctorAccountId() {
 }
 
 // DECRYPT ID
-function decrypt_user_id($encrypted_data) {
+function decrypt_user_id($encrypted_data)
+{
   $encryption_key = 'your-encryption-key';
   list($encrypted_user_id, $iv) = explode('::', base64_decode($encrypted_data), 2);
   return openssl_decrypt($encrypted_user_id, 'aes-256-cbc', $encryption_key, 0, $iv);
@@ -81,7 +83,7 @@ if (isset($_POST["InsertDoctor"])) {
 
   if (!empty($Specialization) && is_array($Specialization)) {
     $ids = implode(",", array_map('intval', $Specialization));
-  
+
     $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
     $stmt = $connPDO->query($DoctorSpecsFetchQuery);
     $fetchedSpecializations = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -89,10 +91,10 @@ if (isset($_POST["InsertDoctor"])) {
     $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `doctor_specialization` (specialization_doctor_id, specialization_id_2, doctor_specialization_name) VALUES (?,?,?)");
 
     foreach ($fetchedSpecializations as $spec) {
-        $InsertDoctorSpecs->execute([$doctorAccountId, $spec['specialization_id'], $spec['specialization_name']]);
+      $InsertDoctorSpecs->execute([$doctorAccountId, $spec['specialization_id'], $spec['specialization_name']]);
     }
   } else {
-      echo "No valid specializations selected.";
+    echo "No valid specializations selected.";
   }
 
 
@@ -106,85 +108,84 @@ if (isset($_POST["InsertDoctor"])) {
     $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `doctor_sub_specialization` (sub_specialization_doctor_id, sub_specialization_id_2, doctor_sub_specialization_name) VALUES (?,?,?)");
 
     foreach ($fetchedSpecializations as $spec) {
-        $InsertDoctorSpecs->execute([$doctorAccountId, $spec['sub_specialization_id'], $spec['sub_specialization_name']]);
+      $InsertDoctorSpecs->execute([$doctorAccountId, $spec['sub_specialization_id'], $spec['sub_specialization_name']]);
     }
-
   } else {
-      echo "No valid specializations selected.";
+    echo "No valid specializations selected.";
   }
 
 
   if (!empty($Schedule) && is_array($Schedule)) {
     foreach ($Schedule as $schedule) {
-        [$doctor_schedule_day, $doctor_schedule_time] = explode(", ", $schedule);
-        $InsertDoctorSchedule = $connPDO->prepare("INSERT INTO `doctor_schedule` (schedule_doctor_id, doctor_schedule_day, doctor_schedule_time) VALUES (?, ?, ?)");
-        $InsertDoctorSchedule->execute([$doctorAccountId, $doctor_schedule_day, $doctor_schedule_time]);
+      [$doctor_schedule_day, $doctor_schedule_time] = explode(", ", $schedule);
+      $InsertDoctorSchedule = $connPDO->prepare("INSERT INTO `doctor_schedule` (schedule_doctor_id, doctor_schedule_day, doctor_schedule_time) VALUES (?, ?, ?)");
+      $InsertDoctorSchedule->execute([$doctorAccountId, $doctor_schedule_day, $doctor_schedule_time]);
     }
   } else {
-      echo "No valid schedules found.";
+    echo "No valid schedules found.";
   }
 
 
 
   if (!empty($Secretary) && is_array($Secretary)) {
     foreach ($Secretary as $index => $secretary) {
-        // Ensure $secretary is an array with the expected keys
-        if (
-            isset(
-                $secretary['name'],
-                $secretary['network'],
-                $secretary['number'],
-                $secretary['network2'],
-                $secretary['number2']
-            )
-        ) {
-            $InsertDoctorSecretary = $connPDO->prepare("
+      // Ensure $secretary is an array with the expected keys
+      if (
+        isset(
+          $secretary['name'],
+          $secretary['network'],
+          $secretary['number'],
+          $secretary['network2'],
+          $secretary['number2']
+        )
+      ) {
+        $InsertDoctorSecretary = $connPDO->prepare("
                 INSERT INTO `doctor_secretary` 
                 (secretary_doctor_id, doctor_secretary_first_name, doctor_secretary_first_network, doctor_secretary_first_number, doctor_secretary_second_network, doctor_secretary_second_number) 
                 VALUES (?, ?, ?, ?, ?, ?)
             ");
-            $InsertDoctorSecretary->execute([
-                $doctorAccountId,
-                $secretary['name'],
-                $secretary['network'],
-                $secretary['number'],
-                $secretary['network2'],
-                $secretary['number2']
-            ]);
-        } else {
-            // Echo invalid data
-            echo "Invalid secretary data at index {$index}: ";
-            echo "<pre>" . htmlspecialchars(print_r($secretary, true)) . "</pre>";
-        }
+        $InsertDoctorSecretary->execute([
+          $doctorAccountId,
+          $secretary['name'],
+          $secretary['network'],
+          $secretary['number'],
+          $secretary['network2'],
+          $secretary['number2']
+        ]);
+      } else {
+        // Echo invalid data
+        echo "Invalid secretary data at index {$index}: ";
+        echo "<pre>" . htmlspecialchars(print_r($secretary, true)) . "</pre>";
+      }
     }
   } else {
-      echo "Failed";
+    echo "Failed";
   }
 
 
 
   if (!empty($Room) && is_array($Room)) {
     $ids = implode(",", array_map('intval', $Room));
-  
+
     $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
     $stmt = $connPDO->query($DoctorSpecsFetchQuery);
     $fetchedRoom = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     if (!$DoctorSpecsFetchQuery) {
       die('MySQL ErrorL ' . mysqli_error($conn));
     }
     $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `doctor_room` (room_doctor_id,doctor_room_number) VALUES (?,?)");
 
     foreach ($fetchedRoom as $spec) {
-        $InsertDoctorSpecs->execute([$doctorAccountId, $spec['room_floor_name']]);
+      $InsertDoctorSpecs->execute([$doctorAccountId, $spec['room_floor_name']]);
     }
   } else {
-      echo "No valid Room selected.";
+    echo "No valid Room selected.";
   }
 
   if (!empty($HMOAccreditation) && is_array($HMOAccreditation)) {
     $ids = implode(",", array_map('intval', $HMOAccreditation));
-  
+
     $DoctorSpecsFetchQuery = "SELECT * FROM hmo WHERE hmo_id IN ($ids)";
     $stmt = $connPDO->query($DoctorSpecsFetchQuery);
     $fetchedSpecializations = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -192,10 +193,10 @@ if (isset($_POST["InsertDoctor"])) {
     $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `doctor_hmo` (hmo_doctor_id, hmo_id_2, doctor_hmo_name) VALUES (?,?,?)");
 
     foreach ($fetchedSpecializations as $spec) {
-        $InsertDoctorSpecs->execute([$doctorAccountId, $spec['hmo_id'], $spec['hmo_name']]);
+      $InsertDoctorSpecs->execute([$doctorAccountId, $spec['hmo_id'], $spec['hmo_name']]);
     }
   } else {
-      echo "No valid specializations selected.";
+    echo "No valid specializations selected.";
   }
 
 
@@ -215,7 +216,7 @@ if (isset($_POST["InsertDoctor"])) {
   $EventByID = "123";
   $EventByName = "France";
   $EventType = "New Account";
-  $EditDetails = "Create Account of Dr. ".$FirstName ." ". $MiddleName ." ". $LastName;
+  $EditDetails = "Create Account of Dr. " . $FirstName . " " . $MiddleName . " " . $LastName;
 
   $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
   $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
@@ -224,7 +225,6 @@ if (isset($_POST["InsertDoctor"])) {
 
 
   echo "Doctor have been successfully inserted!";
-
 }
 
 
@@ -279,7 +279,6 @@ if (isset($_POST["EditedAdminName"])) {
 
   $query = "UPDATE admin_accounts SET admin_username = '$EditedAdminName' WHERE admin_id = '$Admin_ID'";
   mysqli_query($connMysqli, $query);
-
 }
 
 
@@ -297,7 +296,7 @@ if (isset($_POST["ViewAdmin_ID"])) {
   }
   if ($AdminFetchQuery->num_rows > 0) {
     while ($row1 = mysqli_fetch_assoc($AdminFetchQuery)) {
-      $Admin_Timestamp = strtotime($row1['account_created_timestamp']); 
+      $Admin_Timestamp = strtotime($row1['account_created_timestamp']);
       $Admin_DateTime = date('M-d-Y h:i:s A', $Admin_Timestamp);
 
 
@@ -369,7 +368,7 @@ if (isset($_POST["ViewActivityLogs_ID"])) {
   }
   if ($ActivityLogsFetchQuery->num_rows > 0) {
     while ($row1 = mysqli_fetch_assoc($ActivityLogsFetchQuery)) {
-      $ActivityLogs_Timestamp = strtotime($row1['time_stamp']); 
+      $ActivityLogs_Timestamp = strtotime($row1['time_stamp']);
       $ActivityLogs_DateTime = date('M-d-Y h:i:s A', $ActivityLogs_Timestamp);
 
       echo " 
@@ -492,27 +491,25 @@ if (isset($_POST["Yes_ResetPasswordAdmin_ID"])) {
 
       if ($Admin_Password === $AdminDefaultPass) {
         echo json_encode([
-            "status" => "error",
-            "message" => "The password is already set to default and cannot be changed."
+          "status" => "error",
+          "message" => "The password is already set to default and cannot be changed."
         ]);
         exit;
-      } 
-      
-      else {
+      } else {
         // UPDATE RESET PASSWORD - ADMIN
 
         $ResetPasswordQuery = "UPDATE admin_accounts SET admin_password = '$AdminDefaultPass', admin_account_status = '$Admin_Reset_Status' WHERE admin_id = '$Admin_ID'";
         mysqli_query($connMysqli, $ResetPasswordQuery);
 
-        $EventType = "Reset Password"; 
-        $EditDetails = "The current password for the $Account_Access user, ". $Admin_Username . " has been reset.";
+        $EventType = "Reset Password";
+        $EditDetails = "The current password for the $Account_Access user, " . $Admin_Username . " has been reset.";
 
         $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
         $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
 
         echo json_encode([
-            "status" => "success",
-            "message" => "The password for the user has been successfully reset."
+          "status" => "success",
+          "message" => "The password for the user has been successfully reset."
         ]);
         exit;
       }
@@ -526,7 +523,7 @@ if (isset($_POST["Yes_ResetPasswordAdmin_ID"])) {
 // Search Doctor Specialization
 if (isset($_POST["SearchSpecs"])) {
   global $connMysqli;
-  
+
   $Admin_ID = $_POST["SpecializationInput"];
   echo $Admin_ID;
 }
@@ -538,11 +535,13 @@ if (isset($_POST["ViewDoctorType"])) {
   $ViewDoctorType = $_POST["ViewDoctorType"];
   $ViewDoctor_ID = $_POST["ViewDoctor_ID"];
 
-  if($ViewDoctorType == "View" || $ViewDoctorType == "ArchivedView"){
+  if ($ViewDoctorType == "View" || $ViewDoctorType == "ArchivedView") {
     $DoctorFetchQuery = "SELECT DISTINCT * from doctor 
     WHERE doctor_account_id = '$ViewDoctor_ID'";
     $DoctorFetchQuery = mysqli_query($connMysqli, $DoctorFetchQuery);
-    if (!$DoctorFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+    if (!$DoctorFetchQuery) {
+      die('MySQL ErrorL ' . mysqli_error($conn));
+    }
     if ($DoctorFetchQuery->num_rows > 0) {
       while ($row = mysqli_fetch_assoc($DoctorFetchQuery)) {
         echo " 
@@ -553,34 +552,36 @@ if (isset($_POST["ViewDoctorType"])) {
           <div class='Modal-Sidebar-Main'>
             <div class='ModalSidebar-Container AddDoctorDivContainer-Form'>
               <div class='Div-Container1'>
-                <div class='Doctor-Img-Profile'><img src='../Uploaded/".$row['profile_image']."' alt=''></div>
+                <div class='Doctor-Img-Profile'><img src='../Uploaded/" . $row['profile_image'] . "' alt=''></div>
                 <div class=''>
-                  <h3 class='capitalize'>Dr. ".$row['doctor_firstname']." ".substr($row['doctor_middlename'], 0, 1).". ".$row['doctor_lastname']."</h3>
-                  <div class='Doctor-Active'><i class='fa-solid fa-circle'></i> ".$row['doctor_status']."</div>
+                  <h3 class='capitalize'>Dr. " . $row['doctor_firstname'] . " " . substr($row['doctor_middlename'], 0, 1) . ". " . $row['doctor_lastname'] . "</h3>
+                  <div class='Doctor-Active'><i class='fa-solid fa-circle'></i> " . $row['doctor_status'] . "</div>
                 </div>
               </div>
   
               <div class='InputFieldForm'>
                 <i class='InputFieldForm-i'>Category:</i>
-                <input type='text' readonly placeholder='' value='".$row['doctor_category']."'>
+                <input type='text' readonly placeholder='' value='" . $row['doctor_category'] . "'>
               </div>
   
               <div class='InputFieldForm'>
                 <i class='InputFieldForm-i'>Specialization:</i>
                 <div class='InformationField'>
                   ";
-                    $DoctorSpecsFetchQuery = "SELECT * from doctor_specialization
+        $DoctorSpecsFetchQuery = "SELECT * from doctor_specialization
                     WHERE specialization_doctor_id = '$ViewDoctor_ID'";
-                    $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-                    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorSpecsFetchQuery->num_rows > 0) {
-                      while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-                          <div class='InformationFieldTag'><p>".$SpecsRow['doctor_specialization_name']."</p> </div>
+        $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+        if (!$DoctorSpecsFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorSpecsFetchQuery->num_rows > 0) {
+          while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+            echo " 
+                          <div class='InformationFieldTag'><p>" . $SpecsRow['doctor_specialization_name'] . "</p> </div>
                         ";
-                      
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
               <div class='InputFieldForm'>
@@ -588,57 +589,66 @@ if (isset($_POST["ViewDoctorType"])) {
   
                 <div class='InformationField'>
                   ";
-                    $DoctorSubSpecsFetchQuery = "SELECT * from doctor_sub_specialization
+        $DoctorSubSpecsFetchQuery = "SELECT * from doctor_sub_specialization
                     WHERE sub_specialization_doctor_id = '$ViewDoctor_ID'";
-                    $DoctorSubSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSubSpecsFetchQuery);
-                    if (!$DoctorSubSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorSubSpecsFetchQuery->num_rows > 0) {
-                      while ($SubSpecsRow = mysqli_fetch_assoc($DoctorSubSpecsFetchQuery)) {echo" 
-                          <div class='InformationFieldTag'><p>".$SubSpecsRow['doctor_sub_specialization_name']."</p> </div>
+        $DoctorSubSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSubSpecsFetchQuery);
+        if (!$DoctorSubSpecsFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorSubSpecsFetchQuery->num_rows > 0) {
+          while ($SubSpecsRow = mysqli_fetch_assoc($DoctorSubSpecsFetchQuery)) {
+            echo " 
+                          <div class='InformationFieldTag'><p>" . $SubSpecsRow['doctor_sub_specialization_name'] . "</p> </div>
                         ";
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
               <div class='InputFieldForm'>
                 <i class='InputFieldForm-i'>Secretary:</i>
                 <div class='InformationField'>";
-                    $DoctorSecretaryFetchQuery = "SELECT * from doctor_secretary
+        $DoctorSecretaryFetchQuery = "SELECT * from doctor_secretary
                     WHERE secretary_doctor_id = '$ViewDoctor_ID'";
-                    $DoctorSecretaryFetchQuery = mysqli_query($connMysqli, $DoctorSecretaryFetchQuery);
-                    if (!$DoctorSecretaryFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorSecretaryFetchQuery->num_rows > 0) {
-                      while ($SecretaryRow = mysqli_fetch_assoc($DoctorSecretaryFetchQuery)) {echo" 
+        $DoctorSecretaryFetchQuery = mysqli_query($connMysqli, $DoctorSecretaryFetchQuery);
+        if (!$DoctorSecretaryFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorSecretaryFetchQuery->num_rows > 0) {
+          while ($SecretaryRow = mysqli_fetch_assoc($DoctorSecretaryFetchQuery)) {
+            echo " 
                           <div class='InformationFieldTag'>
-                            <p>".$SecretaryRow['doctor_secretary_first_name']."</p> 
+                            <p>" . $SecretaryRow['doctor_secretary_first_name'] . "</p> 
                             <ul>
-                              <li><i>".$SecretaryRow['doctor_secretary_first_network']."</i> <p>".$SecretaryRow['doctor_secretary_first_number']."</p></li>
-                              <li><i>".$SecretaryRow['doctor_secretary_second_network']."</i> <p>".$SecretaryRow['doctor_secretary_second_number']."</p></li>
+                              <li><i>" . $SecretaryRow['doctor_secretary_first_network'] . "</i> <p>" . $SecretaryRow['doctor_secretary_first_number'] . "</p></li>
+                              <li><i>" . $SecretaryRow['doctor_secretary_second_network'] . "</i> <p>" . $SecretaryRow['doctor_secretary_second_number'] . "</p></li>
                             </ul>
   
                           </div>
                         ";
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
               <div class='InputFieldForm'>
                 <i class='InputFieldForm-i'>Room Number:</i>
                 <div class='InformationField'>
                   ";
-                    $DoctorRoomFetchQuery = "SELECT * from doctor_room
+        $DoctorRoomFetchQuery = "SELECT * from doctor_room
                     WHERE room_doctor_id = '$ViewDoctor_ID'";
-                    $DoctorRoomFetchQuery = mysqli_query($connMysqli, $DoctorRoomFetchQuery);
-                    if (!$DoctorRoomFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorRoomFetchQuery->num_rows > 0) {
-                      while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {echo" 
-                          <div class='InformationFieldTag'><p>".$RoomRow['doctor_room_number']."</p> </div>
+        $DoctorRoomFetchQuery = mysqli_query($connMysqli, $DoctorRoomFetchQuery);
+        if (!$DoctorRoomFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorRoomFetchQuery->num_rows > 0) {
+          while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {
+            echo " 
+                          <div class='InformationFieldTag'><p>" . $RoomRow['doctor_room_number'] . "</p> </div>
                         ";
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
               
@@ -647,20 +657,23 @@ if (isset($_POST["ViewDoctorType"])) {
                 <div class='InformationField'>
                   <table class='table-doctor-schedule'>
                       ";
-                        $DoctorScheduleFetchQuery = "SELECT * from doctor_schedule
+        $DoctorScheduleFetchQuery = "SELECT * from doctor_schedule
                         WHERE schedule_doctor_id = '$ViewDoctor_ID'";
-                        $DoctorScheduleFetchQuery = mysqli_query($connMysqli, $DoctorScheduleFetchQuery);
-                        if (!$DoctorScheduleFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                        if ($DoctorScheduleFetchQuery->num_rows > 0) {
-                          while ($ScheduleRow = mysqli_fetch_assoc($DoctorScheduleFetchQuery)) {echo" 
+        $DoctorScheduleFetchQuery = mysqli_query($connMysqli, $DoctorScheduleFetchQuery);
+        if (!$DoctorScheduleFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorScheduleFetchQuery->num_rows > 0) {
+          while ($ScheduleRow = mysqli_fetch_assoc($DoctorScheduleFetchQuery)) {
+            echo " 
                             <tr>
-                              <td>".$ScheduleRow['doctor_schedule_day']."</td> 
-                              <td>".$ScheduleRow['doctor_schedule_time']."</td> 
+                              <td>" . $ScheduleRow['doctor_schedule_day'] . "</td> 
+                              <td>" . $ScheduleRow['doctor_schedule_time'] . "</td> 
                             </tr>
                             ";
-                          }
-                        }
-                      echo"
+          }
+        }
+        echo "
                   </table>
                   
                 </div>
@@ -671,17 +684,20 @@ if (isset($_POST["ViewDoctorType"])) {
   
                 <div class='InformationField'>
                   ";
-                    $DoctorHMOFetchQuery = "SELECT * from doctor_hmo
+        $DoctorHMOFetchQuery = "SELECT * from doctor_hmo
                     WHERE hmo_doctor_id = '$ViewDoctor_ID' ORDER BY doctor_hmo_name";
-                    $DoctorHMOFetchQuery = mysqli_query($connMysqli, $DoctorHMOFetchQuery);
-                    if (!$DoctorHMOFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorHMOFetchQuery->num_rows > 0) {
-                      while ($HMOrow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {echo" 
-                          <div class='InformationFieldTag'><p>".$HMOrow['doctor_hmo_name']."</p></div> 
+        $DoctorHMOFetchQuery = mysqli_query($connMysqli, $DoctorHMOFetchQuery);
+        if (!$DoctorHMOFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorHMOFetchQuery->num_rows > 0) {
+          while ($HMOrow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
+            echo " 
+                          <div class='InformationFieldTag'><p>" . $HMOrow['doctor_hmo_name'] . "</p></div> 
                         ";
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
 
@@ -690,17 +706,20 @@ if (isset($_POST["ViewDoctorType"])) {
   
                 <div class='InformationField'>
                   ";
-                    $DoctorHMOFetchQuery = "SELECT * from doctor_teleconsult
+        $DoctorHMOFetchQuery = "SELECT * from doctor_teleconsult
                     WHERE teleconsult_doctor_id = '$ViewDoctor_ID'";
-                    $DoctorHMOFetchQuery = mysqli_query($connMysqli, $DoctorHMOFetchQuery);
-                    if (!$DoctorHMOFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorHMOFetchQuery->num_rows > 0) {
-                      while ($TeleRow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {echo" 
-                          <div class='InformationFieldTag'><p>".$TeleRow['teleconsult_link']."</p></div> 
+        $DoctorHMOFetchQuery = mysqli_query($connMysqli, $DoctorHMOFetchQuery);
+        if (!$DoctorHMOFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorHMOFetchQuery->num_rows > 0) {
+          while ($TeleRow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
+            echo " 
+                          <div class='InformationFieldTag'><p>" . $TeleRow['teleconsult_link'] . "</p></div> 
                         ";
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
 
@@ -708,25 +727,28 @@ if (isset($_POST["ViewDoctorType"])) {
                 <i class='InputFieldForm-i'>Remarks:</i>
                 <div class='InformationField'>
                   ";
-                    $DoctorNotesFetchQuery = "SELECT * from doctor_notes
+        $DoctorNotesFetchQuery = "SELECT * from doctor_notes
                     WHERE notes_doctor_id = '$ViewDoctor_ID'";
-                    $DoctorNotesFetchQuery = mysqli_query($connMysqli, $DoctorNotesFetchQuery);
-                    if (!$DoctorNotesFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                    if ($DoctorNotesFetchQuery->num_rows > 0) {
-                      while ($NotesRow = mysqli_fetch_assoc($DoctorNotesFetchQuery)) {echo" 
-                          <p>".$NotesRow['doctor_notes_details']."</p> 
+        $DoctorNotesFetchQuery = mysqli_query($connMysqli, $DoctorNotesFetchQuery);
+        if (!$DoctorNotesFetchQuery) {
+          die('MySQL ErrorL ' . mysqli_error($conn));
+        }
+        if ($DoctorNotesFetchQuery->num_rows > 0) {
+          while ($NotesRow = mysqli_fetch_assoc($DoctorNotesFetchQuery)) {
+            echo " 
+                          <p>" . $NotesRow['doctor_notes_details'] . "</p> 
                         ";
-                      }
-                    }
-                  echo"
+          }
+        }
+        echo "
                 </div>
               </div>
             </div>
           </div>
           <div class='Modal-Sidebar-Bottom'>
-            <button class='Btn_1' onclick='EditDoctor(`".$row['doctor_account_id']."`)'>Edit</button>
-            <button class='Btn_1 yellow_btn' onclick='PromptDoctor(`DeactivateDoctor`, `".$row['doctor_account_id']."`)'>Deactivate</button>
-            <button class='Btn_2' onclick='PromptDoctor(`RemoveDoctor`,`".$row['doctor_account_id']."`)'>Delete</button>
+            <button class='Btn_1' onclick='EditDoctor(`" . $row['doctor_account_id'] . "`)'>Edit</button>
+            <button class='Btn_1 yellow_btn' onclick='PromptDoctor(`DeactivateDoctor`, `" . $row['doctor_account_id'] . "`)'>Deactivate</button>
+            <button class='Btn_2' onclick='PromptDoctor(`RemoveDoctor`,`" . $row['doctor_account_id'] . "`)'>Delete</button>
           </div>
         ";
       };
@@ -744,15 +766,27 @@ if (isset($_POST["ViewEdit_ID"])) {
   $DoctorFetchQuery = "SELECT * from doctor 
   WHERE doctor_account_id = '$ViewEdit_ID'";
   $DoctorFetchQuery = mysqli_query($connMysqli, $DoctorFetchQuery);
-  if (!$DoctorFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+  if (!$DoctorFetchQuery) {
+    die('MySQL ErrorL ' . mysqli_error($conn));
+  }
   if ($DoctorFetchQuery->num_rows > 0) {
     while ($row = mysqli_fetch_assoc($DoctorFetchQuery)) {
       $DoctorSex = $row['doctor_sex'];
       $DoctorCategory = $row['doctor_category'];
-      if($DoctorSex == "Male"){$SelectedSexIsMale = "Selected"; $SelectedSexIsFemale = "";}
-      else{$SelectedSexIsFemale = "Selected";$SelectedSexIsMale = "";}
-      if($DoctorCategory == "Regular Consultant"){$DocCategoryRegular = "Selected"; $DocCategoryWaiting = "";}
-      else{$DocCategoryWaiting = "Selected";$DocCategoryRegular = "";}
+      if ($DoctorSex == "Male") {
+        $SelectedSexIsMale = "Selected";
+        $SelectedSexIsFemale = "";
+      } else {
+        $SelectedSexIsFemale = "Selected";
+        $SelectedSexIsMale = "";
+      }
+      if ($DoctorCategory == "Regular Consultant") {
+        $DocCategoryRegular = "Selected";
+        $DocCategoryWaiting = "";
+      } else {
+        $DocCategoryWaiting = "Selected";
+        $DocCategoryRegular = "";
+      }
 
       echo " 
         <div class='Modal-Sidebar-Top'>
@@ -772,17 +806,17 @@ if (isset($_POST["ViewEdit_ID"])) {
               <div class='editDoctor-Child1'>
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>Last Name:</i>
-                  <input type='text' id='EditLastName' placeholder='Last Name' value='".$row['doctor_lastname']."'>
+                  <input type='text' id='EditLastName' placeholder='Last Name' value='" . $row['doctor_lastname'] . "'>
                 </div>
                 <br>
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>First Name:</i>
-                  <input type='text' id='EditFirstName' placeholder='First Name' value='".$row['doctor_firstname']."'>
+                  <input type='text' id='EditFirstName' placeholder='First Name' value='" . $row['doctor_firstname'] . "'>
                 </div>
                 <br>
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>Middle Name:</i>
-                  <input type='text' id='EditMiddleName' placeholder='Middle Name' value='".$row['doctor_middlename']."'>
+                  <input type='text' id='EditMiddleName' placeholder='Middle Name' value='" . $row['doctor_middlename'] . "'>
                 </div>
                 <br>
                 <div class='InputFieldForm'>
@@ -825,23 +859,25 @@ if (isset($_POST["ViewEdit_ID"])) {
                   <div class='InputFieldForm-i-div'>
                     <div class='hiddenInformationField' id='hiddenInformationFieldIDSpecsEdit'>
                       <!-- Function -->
-                        "; 
-                          $DoctorSpecsFetchQuery = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$ViewEdit_ID'";
-                          $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-                          if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                          if ($DoctorSpecsFetchQuery->num_rows > 0) {
-                            while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
-                              $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
-                              $specID = htmlspecialchars($SpecsRow['specialization_id_2'], ENT_QUOTES, 'UTF-8');
-                              echo" 
+                        ";
+      $DoctorSpecsFetchQuery = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$ViewEdit_ID'";
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          $specName = htmlspecialchars($SpecsRow['doctor_specialization_name'], ENT_QUOTES, 'UTF-8');
+          $specID = htmlspecialchars($SpecsRow['specialization_id_2'], ENT_QUOTES, 'UTF-8');
+          echo " 
                                 <div class='ClickableList' data-specid='$specID'>
                                   <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$specID', 'RemoveFromEdit')\"></i>
                                   <p>$specName</p>
                                 </div>
                               ";
-                            }
-                          }
-                        echo "
+        }
+      }
+      echo "
                     </div>
                   </div>
                 </div>
@@ -870,21 +906,23 @@ if (isset($_POST["ViewEdit_ID"])) {
                   <div class='InputFieldForm-i-div'>
                     <div class='hiddenInformationField' id='hiddenInformationFieldIDSubSpecsEdit'>
                           <!-- Function -->
-                          "; 
-                              $DoctorSpecsFetchQuery = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$ViewEdit_ID'";
-                              $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-                              if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                              if ($DoctorSpecsFetchQuery->num_rows > 0) {
-                                while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
-                                  $SubSpecName = htmlspecialchars($SpecsRow['doctor_sub_specialization_name'], ENT_QUOTES, 'UTF-8');
-                                  $SubSpecID = htmlspecialchars($SpecsRow['sub_specialization_id_2'], ENT_QUOTES, 'UTF-8');
-                                  echo" 
+                          ";
+      $DoctorSpecsFetchQuery = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$ViewEdit_ID'";
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          $SubSpecName = htmlspecialchars($SpecsRow['doctor_sub_specialization_name'], ENT_QUOTES, 'UTF-8');
+          $SubSpecID = htmlspecialchars($SpecsRow['sub_specialization_id_2'], ENT_QUOTES, 'UTF-8');
+          echo " 
                                     <div class='ClickableList'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$SubSpecID', 'RemoveFromEditSubSpecs')\"></i> 
-                                    <p>".$SubSpecName."</p></div>
+                                    <p>" . $SubSpecName . "</p></div>
                                   ";
-                            }
-                          }
-                        echo "
+        }
+      }
+      echo "
                     </div>
                   </div>
                 </div>
@@ -928,28 +966,30 @@ if (isset($_POST["ViewEdit_ID"])) {
                   <div class='InformationField' id='InformationFieldDoctorScheduleEdit'>
                     <table class='table-doctor-edit-schedule'>
                       ";
-                        $DoctorScheduleFetchQuery = "SELECT * from doctor_schedule
+      $DoctorScheduleFetchQuery = "SELECT * from doctor_schedule
                         WHERE schedule_doctor_id = '$ViewEdit_ID'";
-                        $DoctorScheduleFetchQuery = mysqli_query($connMysqli, $DoctorScheduleFetchQuery);
-                        if (!$DoctorScheduleFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                        if ($DoctorScheduleFetchQuery->num_rows > 0) {
-                          while ($ScheduleRow = mysqli_fetch_assoc($DoctorScheduleFetchQuery)) {
-                            $ScheduleTime = htmlspecialchars($ScheduleRow['doctor_schedule_time'], ENT_QUOTES, 'UTF-8');
-                            $ScheduleDay = htmlspecialchars($ScheduleRow['doctor_schedule_day'], ENT_QUOTES, 'UTF-8');
-                            $scheduleID = htmlspecialchars($ScheduleRow['doctor_schedule_id'], ENT_QUOTES, 'UTF-8');
-                            echo" 
+      $DoctorScheduleFetchQuery = mysqli_query($connMysqli, $DoctorScheduleFetchQuery);
+      if (!$DoctorScheduleFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorScheduleFetchQuery->num_rows > 0) {
+        while ($ScheduleRow = mysqli_fetch_assoc($DoctorScheduleFetchQuery)) {
+          $ScheduleTime = htmlspecialchars($ScheduleRow['doctor_schedule_time'], ENT_QUOTES, 'UTF-8');
+          $ScheduleDay = htmlspecialchars($ScheduleRow['doctor_schedule_day'], ENT_QUOTES, 'UTF-8');
+          $scheduleID = htmlspecialchars($ScheduleRow['doctor_schedule_id'], ENT_QUOTES, 'UTF-8');
+          echo " 
                               <tr class='ClickableList'>
                                 <td class='schedcssfix'>
                                   <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$scheduleID', 'RemoveFromEditSchedule')\"></i>
                                 </td>
-                                <td class='schedcssfix'>".$ScheduleDay."</td> 
-                                <td class='schedcssfix tdsubfix'>".$ScheduleTime."</td> 
+                                <td class='schedcssfix'>" . $ScheduleDay . "</td> 
+                                <td class='schedcssfix tdsubfix'>" . $ScheduleTime . "</td> 
                                 
                               </tr>
                             ";
-                          }
-                        }
-                      echo"
+        }
+      }
+      echo "
                     </table>
                   </div>
                 </div>
@@ -979,21 +1019,23 @@ if (isset($_POST["ViewEdit_ID"])) {
                     <div class='InputFieldForm-i-div'>
                       <div class='hiddenInformationField' id='hiddenInformationFieldIDRoomEdit'>
                         <!-- Function -->
-                          "; 
-                              $DoctorRoomFetchQuery = "SELECT * FROM doctor_room WHERE room_doctor_id = '$ViewEdit_ID'";
-                                  $DoctorRoomFetchQuery = mysqli_query($connMysqli, $DoctorRoomFetchQuery);
-                                  if (!$DoctorRoomFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                                  if ($DoctorRoomFetchQuery->num_rows > 0) {
-                                    while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {
-                                      $RoomName = htmlspecialchars($RoomRow['doctor_room_number'], ENT_QUOTES, 'UTF-8');
-                                      $RoomID = htmlspecialchars($RoomRow['doctor_room_id'], ENT_QUOTES, 'UTF-8');
-                                      echo" 
+                          ";
+      $DoctorRoomFetchQuery = "SELECT * FROM doctor_room WHERE room_doctor_id = '$ViewEdit_ID'";
+      $DoctorRoomFetchQuery = mysqli_query($connMysqli, $DoctorRoomFetchQuery);
+      if (!$DoctorRoomFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorRoomFetchQuery->num_rows > 0) {
+        while ($RoomRow = mysqli_fetch_assoc($DoctorRoomFetchQuery)) {
+          $RoomName = htmlspecialchars($RoomRow['doctor_room_number'], ENT_QUOTES, 'UTF-8');
+          $RoomID = htmlspecialchars($RoomRow['doctor_room_id'], ENT_QUOTES, 'UTF-8');
+          echo " 
                                         <div class='ClickableList'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$RoomID', 'RemoveFromEditRoom')\"></i> 
-                                        <p>".$RoomName."</p></div>
+                                        <p>" . $RoomName . "</p></div>
                                       ";
-                                }
-                              }
-                          echo "
+        }
+      }
+      echo "
                         </div>
                       </div>
                     </div>
@@ -1022,21 +1064,23 @@ if (isset($_POST["ViewEdit_ID"])) {
                     <div class='hiddenInformationField' id='hiddenInformationFieldIDHMOEdit'>
                       <!-- Function -->
                         ";
-                            $DoctorHMOFetchQuery = "SELECT * from doctor_hmo
+      $DoctorHMOFetchQuery = "SELECT * from doctor_hmo
                             WHERE hmo_doctor_id = '$ViewEdit_ID' ORDER BY doctor_hmo_name";
-                            $DoctorHMOFetchQuery = mysqli_query($connMysqli, $DoctorHMOFetchQuery);
-                            if (!$DoctorHMOFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                            if ($DoctorHMOFetchQuery->num_rows > 0) {
-                              while ($HMORow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
-                                $HMOName = htmlspecialchars($HMORow['doctor_hmo_name'], ENT_QUOTES, 'UTF-8');
-                                $HMO_ID = htmlspecialchars($HMORow['hmo_id_2'], ENT_QUOTES, 'UTF-8');
-                                echo" 
+      $DoctorHMOFetchQuery = mysqli_query($connMysqli, $DoctorHMOFetchQuery);
+      if (!$DoctorHMOFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorHMOFetchQuery->num_rows > 0) {
+        while ($HMORow = mysqli_fetch_assoc($DoctorHMOFetchQuery)) {
+          $HMOName = htmlspecialchars($HMORow['doctor_hmo_name'], ENT_QUOTES, 'UTF-8');
+          $HMO_ID = htmlspecialchars($HMORow['hmo_id_2'], ENT_QUOTES, 'UTF-8');
+          echo " 
                                    <div class='ClickableList'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$HMO_ID', 'RemoveFromEditHMO')\"></i> 
-                                   <p>".$HMOName."</p></div>
+                                   <p>" . $HMOName . "</p></div>
                                 ";
-                              }
-                            }
-                        echo"
+        }
+      }
+      echo "
                     </div>
                   </div>
                 </div>
@@ -1047,17 +1091,19 @@ if (isset($_POST["ViewEdit_ID"])) {
                   <i class='InputFieldForm-i'>Teleconsultaion:</i>
                       
                       ";
-                        $TeleconsultationSelectQuery = "SELECT * from doctor_teleconsult WHERE teleconsult_doctor_id = '$ViewEdit_ID'";
-                        $TeleconsultationSelectQuery = mysqli_query($connMysqli, $TeleconsultationSelectQuery);
-                        if (!$TeleconsultationSelectQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                          if ($TeleconsultationSelectQuery->num_rows > 0) {
-                            while ($TeleconsultRow = mysqli_fetch_assoc($TeleconsultationSelectQuery)) {
-                              echo"
-                                <input type='text' id='EditDoctorsTeleConsult' placeholder='Teleconsultation' value = ". $TeleconsultRow['teleconsult_link'].">
+      $TeleconsultationSelectQuery = "SELECT * from doctor_teleconsult WHERE teleconsult_doctor_id = '$ViewEdit_ID'";
+      $TeleconsultationSelectQuery = mysqli_query($connMysqli, $TeleconsultationSelectQuery);
+      if (!$TeleconsultationSelectQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($TeleconsultationSelectQuery->num_rows > 0) {
+        while ($TeleconsultRow = mysqli_fetch_assoc($TeleconsultationSelectQuery)) {
+          echo "
+                                <input type='text' id='EditDoctorsTeleConsult' placeholder='Teleconsultation' value = " . $TeleconsultRow['teleconsult_link'] . ">
                               ";
-                            }
-                          }
-                    echo "
+        }
+      }
+      echo "
                 </div>
 
                 <br>
@@ -1067,17 +1113,19 @@ if (isset($_POST["ViewEdit_ID"])) {
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>Remarks:</i>
                     ";
-                      $RemarksSelectQuery = "SELECT * from doctor_notes WHERE notes_doctor_id = '$ViewEdit_ID'";
-                      $RemarksSelectQuery = mysqli_query($connMysqli, $RemarksSelectQuery);
-                      if (!$RemarksSelectQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                        if ($RemarksSelectQuery->num_rows > 0) {
-                          while ($RemarksRow = mysqli_fetch_assoc($RemarksSelectQuery)) {
-                            echo" 
-                              <textarea id='EditDoctorsRemarks' class='DoctorRemarks' placeholder='Input Notes'>". $RemarksRow['doctor_notes_details']."</textarea>
+      $RemarksSelectQuery = "SELECT * from doctor_notes WHERE notes_doctor_id = '$ViewEdit_ID'";
+      $RemarksSelectQuery = mysqli_query($connMysqli, $RemarksSelectQuery);
+      if (!$RemarksSelectQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($RemarksSelectQuery->num_rows > 0) {
+        while ($RemarksRow = mysqli_fetch_assoc($RemarksSelectQuery)) {
+          echo " 
+                              <textarea id='EditDoctorsRemarks' class='DoctorRemarks' placeholder='Input Notes'>" . $RemarksRow['doctor_notes_details'] . "</textarea>
                             ";
-                          }
-                        }
-                    echo "
+        }
+      }
+      echo "
                 </div>
               
 
@@ -1140,24 +1188,27 @@ if (isset($_POST["ViewEdit_ID"])) {
                   </thead>
                   <tbody id='InformationFieldAddSecretaryEdit'>
                       ";
-                        $DoctorSecretaryFetchQuery = "SELECT * from doctor_secretary
+      $DoctorSecretaryFetchQuery = "SELECT * from doctor_secretary
                         WHERE secretary_doctor_id = '$ViewEdit_ID'";
-                         $DoctorSecretaryFetchQuery = mysqli_query($connMysqli,  $DoctorSecretaryFetchQuery);
-                        if (! $DoctorSecretaryFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-                        if ( $DoctorSecretaryFetchQuery->num_rows > 0) {
-                          while ($SecretaryRow = mysqli_fetch_assoc($DoctorSecretaryFetchQuery)) {echo" 
+      $DoctorSecretaryFetchQuery = mysqli_query($connMysqli,  $DoctorSecretaryFetchQuery);
+      if (! $DoctorSecretaryFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorSecretaryFetchQuery->num_rows > 0) {
+        while ($SecretaryRow = mysqli_fetch_assoc($DoctorSecretaryFetchQuery)) {
+          echo " 
                             <tr class='ClickableLists'>
-                              <td>".$SecretaryRow['doctor_secretary_first_name']."</td> 
-                              <td>".$SecretaryRow['doctor_secretary_first_number']."</td> 
-                              <td>".$SecretaryRow['doctor_secretary_second_number']."</td> 
-                              <td onclick='removeSelected(this, ".$SecretaryRow['doctor_secretary_id'].", \"DeleteSecretary\")'>
+                              <td>" . $SecretaryRow['doctor_secretary_first_name'] . "</td> 
+                              <td>" . $SecretaryRow['doctor_secretary_first_number'] . "</td> 
+                              <td>" . $SecretaryRow['doctor_secretary_second_number'] . "</td> 
+                              <td onclick='removeSelected(this, " . $SecretaryRow['doctor_secretary_id'] . ", \"DeleteSecretary\")'>
                                 <button style='background:red; color: white;'>Delete</button>
                               </td>
                             </tr>
                             ";
-                          }
-                        }
-                      echo"
+        }
+      }
+      echo "
                   </tbody>
                 </table>
               </div>
@@ -1166,7 +1217,7 @@ if (isset($_POST["ViewEdit_ID"])) {
           </div>
         </div>
         <div class='Modal-Sidebar-Bottom'>
-          <button class='Btn_1' onclick='PromptDoctor(`UpdateDoctor`,`".$row['doctor_account_id']."`)'>Save</button>
+          <button class='Btn_1' onclick='PromptDoctor(`UpdateDoctor`,`" . $row['doctor_account_id'] . "`)'>Save</button>
           <button class='Btn_2' onclick='BackToViewDoctor()'>Cancel</button>
         </div>
       ";
@@ -1184,12 +1235,14 @@ if (isset($_POST["searchId"])) {
   $searchName = $_POST["searchName"];
   $SearchType = $_POST["SearchType"];
 
-  if($searchId == 1){
+  if ($searchId == 1) {
     $DoctorSpecsFetchQuery = "SELECT * from specialization
     WHERE specialization_name LIKE '%$searchName%' 
     ";
     $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+    if (!$DoctorSpecsFetchQuery) {
+      die('MySQL ErrorL ' . mysqli_error($conn));
+    }
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         $specID = htmlspecialchars($SpecsRow['specialization_id'], ENT_QUOTES, 'UTF-8');
@@ -1201,8 +1254,7 @@ if (isset($_POST["searchId"])) {
               <p>$specName</p>
             </li>
           ";
-        }
-        else {
+        } else {
           echo "
             <li onclick='selectThis(\"Specs\", $specID, \"$SearchType\")'>
               <i class='fa-solid fa-plus'></i>
@@ -1211,85 +1263,79 @@ if (isset($_POST["searchId"])) {
           ";
         }
       }
-
-    }
-    else{
+    } else {
       echo "Nothing Found!";
     }
-  }
-  elseif($searchId == 2){
+  } elseif ($searchId == 2) {
     $DoctorSpecsFetchQuery = "SELECT * from sub_specialization
     WHERE sub_specialization_name LIKE '%$searchName%' 
     ";
     $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+    if (!$DoctorSpecsFetchQuery) {
+      die('MySQL ErrorL ' . mysqli_error($conn));
+    }
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
-        if($SearchType == "Edit") {
-          echo" 
-            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
+        if ($SearchType == "Edit") {
+          echo " 
+            <li onclick='selectThis(`SubSpecs`," . $SpecsRow['sub_specialization_id'] . ", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>" . $SpecsRow['sub_specialization_name'] . "</p></li>
           ";
-        }
-        else { 
-          echo" 
-            <li onclick='selectThis(`SubSpecs`,".$SpecsRow['sub_specialization_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['sub_specialization_name']."</p></li>
+        } else {
+          echo " 
+            <li onclick='selectThis(`SubSpecs`," . $SpecsRow['sub_specialization_id'] . ", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>" . $SpecsRow['sub_specialization_name'] . "</p></li>
           ";
         }
       }
-    }
-    else{
+    } else {
       echo "Nothing Found!";
     }
-  }
-  elseif($searchId == 3){
+  } elseif ($searchId == 3) {
     $DoctorSpecsFetchQuery = "SELECT * from room
     WHERE room_floor_name LIKE '%$searchName%' 
     ";
     $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+    if (!$DoctorSpecsFetchQuery) {
+      die('MySQL ErrorL ' . mysqli_error($conn));
+    }
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
         if ($SearchType == "Edit") {
           echo "
-             <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
+             <li onclick='selectThis(`Room`," . $SpecsRow['room_id'] . ", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>" . $SpecsRow['room_floor_name'] . "</p></li>
           ";
-        }
-        else {
-          echo" 
-            <li onclick='selectThis(`Room`,".$SpecsRow['room_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['room_floor_name']."</p></li>
+        } else {
+          echo " 
+            <li onclick='selectThis(`Room`," . $SpecsRow['room_id'] . ", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>" . $SpecsRow['room_floor_name'] . "</p></li>
           ";
         }
       }
-    }
-    else{
+    } else {
       echo "Nothing Found!";
     }
-  }
-  elseif($searchId == 4){
+  } elseif ($searchId == 4) {
     $DoctorSpecsFetchQuery = "SELECT * from hmo
     WHERE hmo_name LIKE '%$searchName%' 
     ";
     $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-    if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+    if (!$DoctorSpecsFetchQuery) {
+      die('MySQL ErrorL ' . mysqli_error($conn));
+    }
     if ($DoctorSpecsFetchQuery->num_rows > 0) {
       while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
-        if($SearchType == "Edit") { 
-          echo" 
-            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
+        if ($SearchType == "Edit") {
+          echo " 
+            <li onclick='selectThis(`HMO`," . $SpecsRow['hmo_id'] . ", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>" . $SpecsRow['hmo_name'] . "</p></li>
           ";
-        }
-        else {
-          echo" 
-            <li onclick='selectThis(`HMO`,".$SpecsRow['hmo_id'].", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>".$SpecsRow['hmo_name']."</p></li>
+        } else {
+          echo " 
+            <li onclick='selectThis(`HMO`," . $SpecsRow['hmo_id'] . ", \"$SearchType\")'><i class='fa-solid fa-plus'></i> <p>" . $SpecsRow['hmo_name'] . "</p></li>
           ";
         }
       }
-    }
-    else{
+    } else {
       echo "Nothing Found!";
     }
   }
-
 }
 
 // SELECT SPECS
@@ -1305,51 +1351,51 @@ if (isset($_POST["functionSelectedItems"])) {
       $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
       $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
         while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
           $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
-          echo" 
+          echo " 
             <div class='ClickableList' data-specid='{$SpecsRow['specialization_id']}'>
               <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}', 'EditSpecs')\"></i>
               <p>$specName</p>
             </div>
           ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
     return;
-
   } else {
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
       $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
       $DoctorSpecsFetchQuery = "SELECT * FROM specialization WHERE specialization_id IN ($ids)";
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
         while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
           $specName = htmlspecialchars($SpecsRow['specialization_name'], ENT_QUOTES, 'UTF-8');
-          echo" 
+          echo " 
             <div class='ClickableList' data-id='{$SpecsRow['specialization_id']}'>
               <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['specialization_id']}', 'Specs')\"></i>
               <p>$specName</p>
             </div>
           ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
   }
-
 }
 
 
@@ -1365,52 +1411,52 @@ if (isset($_POST["functionSelectedItems2"])) {
       $DoctorSpecsFetchQuery = "SELECT * FROM sub_specialization WHERE sub_specialization_id IN ($ids)";
 
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
         while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
           $specSubName = htmlspecialchars($SpecsRow['sub_specialization_name'], ENT_QUOTES, 'UTF-8');
-          echo" 
+          echo " 
               <div class='ClickableList' data-specid='{$SpecsRow['sub_specialization_id']}'>
                 <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['sub_specialization_id']}', 'EditSubSpecs')\"></i>
                 <p>$specSubName</p>
               </div>
             ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
     return;
-
   } else {
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
       $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
       $DoctorSpecsFetchQuery = "SELECT * FROM sub_specialization WHERE sub_specialization_id IN ($ids)";
 
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
         while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
           $specSubName = htmlspecialchars($SpecsRow['sub_specialization_name'], ENT_QUOTES, 'UTF-8');
-          echo" 
+          echo " 
               <div class='ClickableList' data-id='{$SpecsRow['sub_specialization_id']}'>
                 <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['sub_specialization_id']}', 'SubSpecs')\"></i>
                 <p>$specSubName</p>
               </div>
             ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
   }
-  
 }
 
 // SELECT ROOM
@@ -1425,43 +1471,45 @@ if (isset($_POST["functionSelectedItems3"])) {
       $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
 
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
-        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          echo "
             <div class='ClickableList' data-specid='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'EditRoom')\"></i> 
-            <p>".$SpecsRow['room_floor_name']."</p></div>
+            <p>" . $SpecsRow['room_floor_name'] . "</p></div>
           ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
     return;
-
   } else {
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
-        $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
-        $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
+      $ids = implode(",", array_map('intval', $functionSelectedArrayItems));
+      $DoctorSpecsFetchQuery = "SELECT * FROM room WHERE room_id IN ($ids)";
 
-        $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-        if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-        if ($DoctorSpecsFetchQuery->num_rows > 0) {
-          while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo"
-              <div class='ClickableList' data-id='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'Room')\"></i> <p>".$SpecsRow['room_floor_name']."</p></div>
+      $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
+      if ($DoctorSpecsFetchQuery->num_rows > 0) {
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          echo "
+              <div class='ClickableList' data-id='{$SpecsRow['room_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['room_id']}', 'Room')\"></i> <p>" . $SpecsRow['room_floor_name'] . "</p></div>
             ";
-          }
-        }
-        else{
-          echo "Nothing Found!";
         }
       } else {
-          echo "No valid items selected.";
+        echo "Nothing Found!";
       }
+    } else {
+      echo "No valid items selected.";
+    }
   }
-  
 }
 
 
@@ -1469,7 +1517,7 @@ if (isset($_POST["functionSelectedItems3"])) {
 if (isset($_POST["functionSelectedItems4"])) {
   global $connMysqli;
   $functionSelectedArrayItems = $_POST["functionSelectedItems4"];
-  $selectedCode = $_POST["selectedCode"]; 
+  $selectedCode = $_POST["selectedCode"];
 
   if ($selectedCode == "Edit") {
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
@@ -1477,22 +1525,23 @@ if (isset($_POST["functionSelectedItems4"])) {
       $DoctorSpecsFetchQuery = "SELECT * FROM hmo WHERE hmo_id IN ($ids)";
 
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
-        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          echo " 
             <div class='ClickableList' data-specid='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'EditHMO')\"></i> 
-            <p>".$SpecsRow['hmo_name']."</p></div>
+            <p>" . $SpecsRow['hmo_name'] . "</p></div>
           ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
     return;
-
   } else {
 
     if (!empty($functionSelectedArrayItems) && is_array($functionSelectedArrayItems)) {
@@ -1500,18 +1549,20 @@ if (isset($_POST["functionSelectedItems4"])) {
       $DoctorSpecsFetchQuery = "SELECT * FROM hmo WHERE hmo_id IN ($ids)";
 
       $DoctorSpecsFetchQuery = mysqli_query($connMysqli, $DoctorSpecsFetchQuery);
-      if (!$DoctorSpecsFetchQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsFetchQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsFetchQuery->num_rows > 0) {
-        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {echo" 
-            <div class='ClickableList' data-id='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'HMO')\"></i> <p>".$SpecsRow['hmo_name']."</p></div>
+        while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsFetchQuery)) {
+          echo " 
+            <div class='ClickableList' data-id='{$SpecsRow['hmo_id']}'><i class='fa-solid fa-trash' onclick=\"removeSelected(this, '{$SpecsRow['hmo_id']}', 'HMO')\"></i> <p>" . $SpecsRow['hmo_name'] . "</p></div>
           ";
         }
-      }
-      else{
+      } else {
         echo "Nothing Found!";
       }
     } else {
-        echo "No valid items selected.";
+      echo "No valid items selected.";
     }
   }
 }
@@ -1522,7 +1573,7 @@ if (isset($_POST["AddItemsItemType"])) {
   global $connMysqli;
   $AddItemsItemType = $_POST["AddItemsItemType"];
 
-  if($AddItemsItemType == "Specs"){
+  if ($AddItemsItemType == "Specs") {
     echo "
         <div class='Add-Items-Header'>
           <h3>Add Specialization</h3>
@@ -1539,8 +1590,7 @@ if (isset($_POST["AddItemsItemType"])) {
         
         <div class='Add-Items-Message'></div>
     ";
-  }
-  elseif($AddItemsItemType == "SubSpecs"){
+  } elseif ($AddItemsItemType == "SubSpecs") {
     echo "
         <div class='Add-Items-Header'>
           <h3>Add Sub Specialization</h3>
@@ -1568,8 +1618,7 @@ if (isset($_POST["AddItemsItemType"])) {
         </div>
         <div class='Add-Items-Message'></div>
     ";
-  }
-  elseif($AddItemsItemType == "HMO"){
+  } elseif ($AddItemsItemType == "HMO") {
     echo "
         <div class='Add-Items-Header'>
           <h3>Add HMO</h3>
@@ -1585,9 +1634,7 @@ if (isset($_POST["AddItemsItemType"])) {
         </div>
         <div class='Add-Items-Message'></div>
     ";
-  }
-
-  elseif($AddItemsItemType == "Room"){
+  } elseif ($AddItemsItemType == "Room") {
     echo "
         <div class='Add-Items-Header'>
           <h3>Add Room</h3>
@@ -1618,79 +1665,76 @@ if (isset($_POST["AddItemsItemType"])) {
 if (isset($_POST["InsertDocDataItemType"])) {
   global $connMysqli;
   $InsertDocDataItemType = $_POST["InsertDocDataItemType"];
-  if($InsertDocDataItemType == "Room"){
+  if ($InsertDocDataItemType == "Room") {
     $InsertDocDataName = $_POST["InsertDocDataName"];
-  }
-  else if($InsertDocDataItemType == "SubSpecs"){
+  } else if ($InsertDocDataItemType == "SubSpecs") {
     $InsertDocDataName = $_POST["InsertDocDataName"];
     $InsertDocDataID = $_POST["InsertDocDataID"];
-  }
-  else{
+  } else {
     $InsertDocDataName = $_POST["InsertDocDataName"];
   }
 
-  if($InsertDocDataName != ""){
-    if($InsertDocDataItemType == "Specs"){
+  if ($InsertDocDataName != "") {
+    if ($InsertDocDataItemType == "Specs") {
       $DoctorSpecsInsertQuery = "SELECT * FROM specialization WHERE specialization_name =  '$InsertDocDataName'";
       $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsInsertQuery);
-      if (!$DoctorSpecsInsertQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-      if ($DoctorSpecsInsertQuery->num_rows > 0) {
-        
-        echo "Already Existed!";
+      if (!$DoctorSpecsInsertQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
       }
-      else{
+      if ($DoctorSpecsInsertQuery->num_rows > 0) {
+
+        echo "Already Existed!";
+      } else {
         echo "Insert Successfully";
         $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `specialization`(specialization_name) VALUES(?)");
         $InsertDoctorSpecs->execute([$InsertDocDataName]);
       }
-    }
-    elseif($InsertDocDataItemType == "SubSpecs"){
+    } elseif ($InsertDocDataItemType == "SubSpecs") {
       $DoctorSpecsInsertQuery = "SELECT * FROM sub_specialization WHERE sub_specialization_name =  '$InsertDocDataName'";
       $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsInsertQuery);
-      if (!$DoctorSpecsInsertQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-      if ($DoctorSpecsInsertQuery->num_rows > 0) {
-        
-        echo "Already Existed!";
+      if (!$DoctorSpecsInsertQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
       }
-      else{
+      if ($DoctorSpecsInsertQuery->num_rows > 0) {
+
+        echo "Already Existed!";
+      } else {
         echo "Insert Successfully";
         $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `sub_specialization`(sub_specs_id, sub_specialization_name) VALUES(?,?)");
         $InsertDoctorSpecs->execute([$InsertDocDataID, $InsertDocDataName]);
       }
-    }
-    elseif($InsertDocDataItemType == "HMO"){
+    } elseif ($InsertDocDataItemType == "HMO") {
       $DoctorSpecsInsertQuery = "SELECT * FROM hmo WHERE hmo_name =  '$InsertDocDataName'";
       $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsInsertQuery);
-      if (!$DoctorSpecsInsertQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
-      if ($DoctorSpecsInsertQuery->num_rows > 0) {
-        
-        echo "Already Existed!";
+      if (!$DoctorSpecsInsertQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
       }
-      else{
+      if ($DoctorSpecsInsertQuery->num_rows > 0) {
+
+        echo "Already Existed!";
+      } else {
         echo "Insert Successfully";
         $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `hmo`(hmo_name) VALUES(?)");
         $InsertDoctorSpecs->execute([$InsertDocDataName]);
       }
-    }
-    elseif($InsertDocDataItemType == "Room"){
+    } elseif ($InsertDocDataItemType == "Room") {
       // $InsertDataFloorLevel = $_POST["InsertDataFloorLevel"];
       // $InsertDataFloorNumber = $_POST["InsertDataFloorNumber"];
       // $InsertData = $InsertDataFloorLevel . " - " . $InsertDocDataName;
       $DoctorSpecsInsertQuery = "SELECT * FROM room WHERE room_floor_name =  '$InsertDocDataName'";
       $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsInsertQuery);
-      if (!$DoctorSpecsInsertQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+      if (!$DoctorSpecsInsertQuery) {
+        die('MySQL ErrorL ' . mysqli_error($conn));
+      }
       if ($DoctorSpecsInsertQuery->num_rows > 0) {
         echo "Already Existed!";
-      }
-      else{
+      } else {
         echo "Insert Successfully";
         $InsertDoctorSpecs = $connPDO->prepare("INSERT INTO `room`(room_floor_name) VALUES(?)");
         $InsertDoctorSpecs->execute([$InsertDocDataName]);
       }
     }
-  
-  }
-  else{
+  } else {
     echo "Input Text!";
   }
 }
@@ -1704,14 +1748,16 @@ if (isset($_POST["SearchAddSpecs"])) {
   $DoctorSpecsInsertQuery = "SELECT * FROM specialization WHERE specialization_name LIKE '%$InsertDataSpecsName%' ";
 
   $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsInsertQuery);
-  if (!$DoctorSpecsInsertQuery) {die('MySQL ErrorL ' . mysqli_error($conn));}
+  if (!$DoctorSpecsInsertQuery) {
+    die('MySQL ErrorL ' . mysqli_error($conn));
+  }
   if ($DoctorSpecsInsertQuery->num_rows > 0) {
-    while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsInsertQuery)) {echo" 
-      <p onclick='selectThisAddSubSpecs(`".$SpecsRow['specialization_name']."`, `".$SpecsRow['specialization_id']."`)' >".$SpecsRow['specialization_name']."</p>
+    while ($SpecsRow = mysqli_fetch_assoc($DoctorSpecsInsertQuery)) {
+      echo " 
+      <p onclick='selectThisAddSubSpecs(`" . $SpecsRow['specialization_name'] . "`, `" . $SpecsRow['specialization_id'] . "`)' >" . $SpecsRow['specialization_name'] . "</p>
       ";
     }
-  }
-  else{
+  } else {
     echo "Nothing Found";
   }
 }
@@ -1741,25 +1787,25 @@ if (isset($_POST["AddSchedule"])) {
 if (isset($_POST["AddSecretary"])) {
   $AddSecretary = $_POST["AddSecretary"];
   $Type = $_POST["Type"];
-  
+
 
   foreach ($AddSecretary as $remarks) {
-      if (is_array($remarks) && isset($remarks['name'], $remarks['number'], $remarks['network'])) {
-        $name = htmlspecialchars($remarks['number'], ENT_QUOTES, 'UTF-8');
+    if (is_array($remarks) && isset($remarks['name'], $remarks['number'], $remarks['network'])) {
+      $name = htmlspecialchars($remarks['number'], ENT_QUOTES, 'UTF-8');
 
-        if ($Type == "FromEdit") {
-          echo "
+      if ($Type == "FromEdit") {
+        echo "
             <tr class='ClickableLists' data-specid='{$remarks['number']}'>
               <td>" . htmlspecialchars($remarks['name']) . "</td> 
               <td>" . htmlspecialchars($remarks['number']) . "</td> 
               <td>" . htmlspecialchars($remarks['number2']) . "</td> 
-              <td onclick='removeSelected(this, ".$remarks['number'].", \"DeleteSecretary\")'>
+              <td onclick='removeSelected(this, " . $remarks['number'] . ", \"DeleteSecretary\")'>
                 <button style='background:red; color: white;'>Delete</button>
               </td>
             </tr>
           ";
-        } else {
-          echo "
+      } else {
+        echo "
             <div class='SecretaryCard'>
                 <ul>
                     <li><div class='SecHeader'><h3>" . htmlspecialchars($remarks['name']) . "</h3> <i class='fa-solid fa-trash' onclick=\"removeSelected(this, '$name', 'addsec')\"></i></div></li>
@@ -1768,11 +1814,10 @@ if (isset($_POST["AddSecretary"])) {
                 </ul>
             </div>
             ";
-        }
-          
-      } else {
-          echo "<p>Invalid secretary data.</p>";
       }
+    } else {
+      echo "<p>Invalid secretary data.</p>";
+    }
   }
 }
 
@@ -1788,15 +1833,19 @@ if (isset($_POST["UpdateDoctorType"])) {
 
   $FetchDoctorId = "SELECT * FROM doctor WHERE doctor_account_id = '$DoctorID' ";
   $FetchDoctorId = mysqli_query($connMysqli, $FetchDoctorId);
-  if (!$FetchDoctorId) {die('MySQL ErrorL ' . mysqli_error($conn));}
+  if (!$FetchDoctorId) {
+    die('MySQL ErrorL ' . mysqli_error($conn));
+  }
   if ($FetchDoctorId->num_rows > 0) {
     while ($DocRow = mysqli_fetch_assoc($FetchDoctorId)) {
       $DocFullName = $DocRow['doctor_firstname'] . " " . $DocRow['doctor_middlename'] . " " . $DocRow['doctor_lastname'];
     }
-  }else{echo "Nothing Found";}
+  } else {
+    echo "Nothing Found";
+  }
 
-  if($UpdateDoctorType == "Delete"){
-    
+  if ($UpdateDoctorType == "Delete") {
+
     $query = "
         DELETE FROM `doctor` WHERE `doctor_account_id` = '$DoctorID';
         DELETE FROM `doctor_specialization` WHERE `specialization_doctor_id` = '$DoctorID';
@@ -1811,32 +1860,27 @@ if (isset($_POST["UpdateDoctorType"])) {
     mysqli_multi_query($connMysqli, $query);
 
     $EventType = "Remove Doctor";
-    $EditDetails = "Removed Doctor: Dr. ".$DocFullName;
-
+    $EditDetails = "Removed Doctor: Dr. " . $DocFullName;
   }
 
-  if($UpdateDoctorType == "Deactivate"){
+  if ($UpdateDoctorType == "Deactivate") {
     $query = "UPDATE doctor SET `doctor_status` = 'INACTIVE', `doctor_archive_status` = 'VISIBLE' WHERE doctor_account_id  = '$DoctorID'";
     mysqli_query($connMysqli, $query);
     $EventType = "Remove Doctor";
-    $EditDetails = "Deactivated Doctor: Dr. ".$DocFullName;
+    $EditDetails = "Deactivated Doctor: Dr. " . $DocFullName;
     // echo "Account Deactivated.";
 
-  }
-
-  elseif($UpdateDoctorType == "Restore"){
+  } elseif ($UpdateDoctorType == "Restore") {
     $query = "UPDATE doctor SET doctor_archive_status = 'VISIBLE' WHERE doctor_account_id  = '$DoctorID'";
     mysqli_query($connMysqli, $query);
 
     $query = "UPDATE doctor SET doctor_status = 'ACTIVE' WHERE doctor_account_id  = '$DoctorID'";
     mysqli_query($connMysqli, $query);
-    
-    $EventType = "Restore Doctor";
-    $EditDetails = "Restored: ".$DocFullName;
-    // echo "Account Restored.";
-  }
 
-  elseif($UpdateDoctorType == "Edit"){
+    $EventType = "Restore Doctor";
+    $EditDetails = "Restored: " . $DocFullName;
+    // echo "Account Restored.";
+  } elseif ($UpdateDoctorType == "Edit") {
 
     $EditLastname = $_POST["EditLastname"];
     $EditFirstname = $_POST["EditFirstname"];
@@ -1860,15 +1904,15 @@ if (isset($_POST["UpdateDoctorType"])) {
                 (secretary_doctor_id, doctor_secretary_first_name, doctor_secretary_first_network, doctor_secretary_first_number, doctor_secretary_second_network, doctor_secretary_second_number) 
                 VALUES (?, ?, ?, ?, ?, ?)
             ");
-            $InsertDoctorSecretary->execute([
-                $DoctorID,
-                $secretary['name'],
-                $secretary['network'],
-                $secretary['number'],
-                $secretary['network2'],
-                $secretary['number2']
-            ]);
-          } 
+          $InsertDoctorSecretary->execute([
+            $DoctorID,
+            $secretary['name'],
+            $secretary['network'],
+            $secretary['number'],
+            $secretary['network2'],
+            $secretary['number2']
+          ]);
+        }
       }
     }
 
@@ -1888,13 +1932,13 @@ if (isset($_POST["UpdateDoctorType"])) {
       WHERE doctor_account_id  = '$DoctorID'";
       mysqli_query($connMysqli, $query);
     }
-    
+
     if (!empty($EditRemarks)) {
       $query = "UPDATE doctor_notes SET 
       doctor_notes_details = '$EditRemarks'
       WHERE notes_doctor_id  = '$DoctorID'";
       mysqli_query($connMysqli, $query);
-    } 
+    }
 
     // REMOVE PREVIOUS SPECS
     if (!empty($_POST['RemovedSpecs'])) {
@@ -1906,7 +1950,7 @@ if (isset($_POST["UpdateDoctorType"])) {
       }
     } // insert new EDIT SPECS
     if (!empty($_POST['EditedNewSpecs'])) {
-      $EditedNewSpecs = json_decode($_POST['EditedNewSpecs'], true); 
+      $EditedNewSpecs = json_decode($_POST['EditedNewSpecs'], true);
 
       foreach ($EditedNewSpecs as $selectedId) {
         $InsertEditSpecs = $connPDO->prepare("
@@ -1917,7 +1961,7 @@ if (isset($_POST["UpdateDoctorType"])) {
         ");
         $InsertEditSpecs->execute([$DoctorID, $selectedId]);
       }
-    } 
+    }
     // REMOVE PREVIOUS SUB SPECS
     if (!empty($_POST['RemovedSubSpecs'])) {
       $RemovedSubSpecs = json_decode($_POST['RemovedSubSpecs'], true);
@@ -1928,7 +1972,7 @@ if (isset($_POST["UpdateDoctorType"])) {
       }
     } // insert new EDIT SPECS
     if (!empty($_POST['EditNewSubSpecs'])) {
-      $EditedNewSubSpecs = json_decode($_POST['EditNewSubSpecs'], true); 
+      $EditedNewSubSpecs = json_decode($_POST['EditNewSubSpecs'], true);
 
       foreach ($EditedNewSubSpecs as $selectedId) {
         $InsertEditSpecs = $connPDO->prepare("
@@ -1939,7 +1983,7 @@ if (isset($_POST["UpdateDoctorType"])) {
         ");
         $InsertEditSpecs->execute([$DoctorID, $selectedId]);
       }
-    } 
+    }
 
     // REMOVE PREVIOUS ROOM
     if (!empty($_POST['RemovedRoom'])) {
@@ -1951,7 +1995,7 @@ if (isset($_POST["UpdateDoctorType"])) {
       }
     } // insert new EDIT SPECS
     if (!empty($_POST['EditedNewRoom'])) {
-      $EditedNewRoom = json_decode($_POST['EditedNewRoom'], true); 
+      $EditedNewRoom = json_decode($_POST['EditedNewRoom'], true);
 
       foreach ($EditedNewRoom as $selectedId) {
         $InsertEditSpecs = $connPDO->prepare("
@@ -1962,7 +2006,7 @@ if (isset($_POST["UpdateDoctorType"])) {
         ");
         $InsertEditSpecs->execute([$DoctorID, $selectedId]);
       }
-    } 
+    }
 
     //REMOVE PREVIOUS HMO
     if (!empty($_POST['RemovedHMO'])) {
@@ -1974,7 +2018,7 @@ if (isset($_POST["UpdateDoctorType"])) {
       }
     } // insert new EDIT SPECS
     if (!empty($_POST['EditedNewHMO'])) {
-      $EditedNewHMO = json_decode($_POST['EditedNewHMO'], true); 
+      $EditedNewHMO = json_decode($_POST['EditedNewHMO'], true);
 
       foreach ($EditedNewHMO as $selectedId) {
         $InsertEditSpecs = $connPDO->prepare("
@@ -1985,7 +2029,7 @@ if (isset($_POST["UpdateDoctorType"])) {
         ");
         $InsertEditSpecs->execute([$DoctorID, $selectedId]);
       }
-    } 
+    }
 
     //REMOVE PREVIOUS SCHEDULE
     if (!empty($_POST['RemovedSchedule'])) {
@@ -1996,26 +2040,26 @@ if (isset($_POST["UpdateDoctorType"])) {
       }
     } // insert new EDIT SCHEDULE
     if (!empty($_POST['EditedNewSchedule'])) {
-      $EditedNewSchedule = json_decode($_POST['EditedNewSchedule'], true); 
+      $EditedNewSchedule = json_decode($_POST['EditedNewSchedule'], true);
 
       foreach ($EditedNewSchedule as $schedule) {
-          [$doctor_schedule_day, $doctor_schedule_time] = explode(", ", $schedule);
-          $InsertDoctorSchedule = $connPDO->prepare("INSERT INTO `doctor_schedule` (schedule_doctor_id, doctor_schedule_day, doctor_schedule_time) VALUES (?, ?, ?)");
-          $InsertDoctorSchedule->execute([$DoctorID, $doctor_schedule_day, $doctor_schedule_time]);
+        [$doctor_schedule_day, $doctor_schedule_time] = explode(", ", $schedule);
+        $InsertDoctorSchedule = $connPDO->prepare("INSERT INTO `doctor_schedule` (schedule_doctor_id, doctor_schedule_day, doctor_schedule_time) VALUES (?, ?, ?)");
+        $InsertDoctorSchedule->execute([$DoctorID, $doctor_schedule_day, $doctor_schedule_time]);
       }
-    } 
-    if (!empty($_POST['EditedNewSecretary'])){
-      $EditedNewSecretary = json_decode($_POST['EditedNewSecretary'], true); 
+    }
+    if (!empty($_POST['EditedNewSecretary'])) {
+      $EditedNewSecretary = json_decode($_POST['EditedNewSecretary'], true);
 
       foreach ($EditedNewSecretary as $deletedSecretary) {
-          $deleteQuery = "DELETE FROM doctor_secretary WHERE doctor_secretary_id = '$deletedSecretary'";
-          mysqli_query($connMysqli, $deleteQuery);
+        $deleteQuery = "DELETE FROM doctor_secretary WHERE doctor_secretary_id = '$deletedSecretary'";
+        mysqli_query($connMysqli, $deleteQuery);
       }
     }
 
 
     $EventType = "Update Doctor";
-    $EditDetails = "Updated Doctor Information of Dr. ".$DocFullName;
+    $EditDetails = "Updated Doctor Information of Dr. " . $DocFullName;
     echo "Account Updated.";
   }
   $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
@@ -2031,14 +2075,13 @@ if (isset($_POST["AddHMO"])) {
   $decrypted_user_id = decrypt_user_id($UserID);
 
   $query = $connPDO->prepare("INSERT INTO `hmo`(hmo_name) VALUES(?)");
-  $query->execute([$HMOName]); 
+  $query->execute([$HMOName]);
 
-  $EventType = "Added Data"; 
-  $EditDetails = 'Added HMO (HMO Name: '. $HMOName .')';
+  $EventType = "Added Data";
+  $EditDetails = 'Added HMO (HMO Name: ' . $HMOName . ')';
 
   $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
   $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
-
 }
 
 //EDIT HMO 
@@ -2074,7 +2117,7 @@ if (isset($_POST["EditHMO_ID"])) {
 
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>New HMO Name: </i>
-                  <input type='text' id='EditHMOName' placeholder='".$row1['hmo_name']."' value=''>
+                  <input type='text' id='EditHMOName' placeholder='" . $row1['hmo_name'] . "' value=''>
                 </div>
                   <span id='NewEditHMOWarning'></span>
               </div>
@@ -2087,14 +2130,13 @@ if (isset($_POST["EditHMO_ID"])) {
   } else {
     echo "No Data Found";
   }
-
 }
 
 //IF YES EDIT HMO 
-if (isset($_POST["Yes_EditHMO"])) { 
+if (isset($_POST["Yes_EditHMO"])) {
   global $connMysqli;
 
-  $EditedHMO_ID = $_POST["Yes_EditHMO"]; 
+  $EditedHMO_ID = $_POST["Yes_EditHMO"];
   $NewHMOName = $_POST["NewHMOName"];
 
   $UserID = $_POST["UserID"];
@@ -2105,21 +2147,20 @@ if (isset($_POST["Yes_EditHMO"])) {
   WHERE hmo_id = '$EditedHMO_ID'";
   $LastUpdateQuery = mysqli_query($connMysqli, $LastUpdateQuery);
 
-    if($LastUpdateQuery->num_rows > 0) {
-      while($row = mysqli_fetch_assoc($LastUpdateQuery)) {
+  if ($LastUpdateQuery->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($LastUpdateQuery)) {
       $LastHMOName = $row['hmo_name'];
 
       $query = "UPDATE hmo SET hmo_name = '$NewHMOName' WHERE hmo_id = '$EditedHMO_ID'";
       mysqli_query($connMysqli, $query);
 
-      $EventType = "Update Data"; 
+      $EventType = "Update Data";
       $EditDetails = 'Updated HMO Name (Before: ' . $LastHMOName . ', After: ' . $NewHMOName . ')';
 
       $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
       $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
     }
   }
-
 }
 
 
@@ -2168,7 +2209,7 @@ if (isset($_POST["EditRoom_ID"])) {
 
                 <div class='InputFieldForm'>
                   <i class='InputFieldForm-i'>New Floor/Room: </i>
-                  <input type='text' id='EditRoomName' placeholder='Current: ".$row1['room_floor_name']."' value=''>
+                  <input type='text' id='EditRoomName' placeholder='Current: " . $row1['room_floor_name'] . "' value=''>
                 </div>
                   <span id='NewEditRoomWarning'></span>
               </div>
@@ -2181,14 +2222,13 @@ if (isset($_POST["EditRoom_ID"])) {
   } else {
     echo "No Data Found";
   }
-
 }
 
 //IF YES EDIT ROOM
-if (isset($_POST["Yes_EditRoom_ID"])) { 
+if (isset($_POST["Yes_EditRoom_ID"])) {
   global $connMysqli;
 
-  $EditedRoom_ID = $_POST["Yes_EditRoom_ID"]; 
+  $EditedRoom_ID = $_POST["Yes_EditRoom_ID"];
   $NewRoomName = $_POST["NewRoomName"];
 
   $UserID = $_POST["UserID"];
@@ -2199,21 +2239,20 @@ if (isset($_POST["Yes_EditRoom_ID"])) {
   WHERE room_id = '$EditedRoom_ID'";
   $LastUpdateQuery = mysqli_query($connMysqli, $LastUpdateQuery);
 
-    if($LastUpdateQuery->num_rows > 0) {
-      while($row = mysqli_fetch_assoc($LastUpdateQuery)) {
+  if ($LastUpdateQuery->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($LastUpdateQuery)) {
       $LastRoomName = $row['room_floor_name'];
 
       $query = "UPDATE room SET room_floor_name = '$NewRoomName' WHERE room_id = '$EditedRoom_ID'";
       mysqli_query($connMysqli, $query);
 
-      $EventType = "Update Data"; 
+      $EventType = "Update Data";
       $EditDetails = 'Updated Floor/Room Name (Before: ' . $LastRoomName . ', After: ' . $NewRoomName . ')';
 
       $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
       $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
     }
   }
-
 }
 
 
@@ -2225,10 +2264,10 @@ if (isset($_POST["AddSpecialization"])) {
   $decrypted_user_id = decrypt_user_id($UserID);
 
   $query = $connPDO->prepare("INSERT INTO `specialization`(specialization_name) VALUES(?)");
-  $query->execute([$SpecializationName]); 
+  $query->execute([$SpecializationName]);
 
-  $EventType = "Added Data"; 
-  $EditDetails = 'Added Specialization (Specialization Name: '. $SpecializationName .')';
+  $EventType = "Added Data";
+  $EditDetails = 'Added Specialization (Specialization Name: ' . $SpecializationName . ')';
 
   $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
   $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
@@ -2236,26 +2275,26 @@ if (isset($_POST["AddSpecialization"])) {
 
 //EDIT SPECIALIZATION
 if (isset($_POST["EditSpecialization_ID"])) {
-    global $connMysqli;
-    $Specialization_ID = intval($_POST["EditSpecialization_ID"]); // prevent SQL injection
+  global $connMysqli;
+  $Specialization_ID = intval($_POST["EditSpecialization_ID"]); // prevent SQL injection
 
-    // Fetch specialization data
-    $FetchQuery = "
+  // Fetch specialization data
+  $FetchQuery = "
         SELECT * FROM specialization
         WHERE specialization_id = $Specialization_ID
     ";
-    $result = mysqli_query($connMysqli, $FetchQuery);
+  $result = mysqli_query($connMysqli, $FetchQuery);
 
-    if (!$result) {
-        die('MySQL Error: ' . mysqli_error($connMysqli));
-    }
+  if (!$result) {
+    die('MySQL Error: ' . mysqli_error($connMysqli));
+  }
 
-    if ($result->num_rows > 0) {
-        while ($row1 = mysqli_fetch_assoc($result)) {
-            $specializationName = htmlspecialchars($row1['specialization_name']);
-            $specializationID = htmlspecialchars($row1['specialization_id']);
+  if ($result->num_rows > 0) {
+    while ($row1 = mysqli_fetch_assoc($result)) {
+      $specializationName = htmlspecialchars($row1['specialization_name']);
+      $specializationID = htmlspecialchars($row1['specialization_id']);
 
-            echo "
+      echo "
             <div class='Modal-Sidebar-Top'>
                 <i class='fa-solid fa-user-tie'></i>
                 <h4>Edit Specialization</h4>
@@ -2289,18 +2328,18 @@ if (isset($_POST["EditSpecialization_ID"])) {
                 <button class='Btn_2' onclick='ModalSidebarExit()'>Cancel</button>
             </div>
             ";
-        }
-    } else {
-        echo "No Data Found";
     }
+  } else {
+    echo "No Data Found";
+  }
 }
 
 
 //IF YES EDIT SPECIALIZATION
-if (isset($_POST["Yes_EditSpecialization_ID"])) { 
+if (isset($_POST["Yes_EditSpecialization_ID"])) {
   global $connMysqli;
 
-  $EditedSpecialization_ID = $_POST["Yes_EditSpecialization_ID"]; 
+  $EditedSpecialization_ID = $_POST["Yes_EditSpecialization_ID"];
   $NewSpecializationName = $_POST["NewSpecializationName"];
 
   $UserID = $_POST["UserID"];
@@ -2311,21 +2350,20 @@ if (isset($_POST["Yes_EditSpecialization_ID"])) {
   WHERE specialization_id = '$EditedSpecialization_ID'";
   $LastUpdateQuery = mysqli_query($connMysqli, $LastUpdateQuery);
 
-    if($LastUpdateQuery->num_rows > 0) {
-      while($row = mysqli_fetch_assoc($LastUpdateQuery)) {
+  if ($LastUpdateQuery->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($LastUpdateQuery)) {
       $LastSpecializationName = $row['specialization_name'];
 
       $query = "UPDATE specialization SET specialization_name = '$NewSpecializationName' WHERE specialization_id = '$EditedSpecialization_ID'";
       mysqli_query($connMysqli, $query);
 
-      $EventType = "Update Data"; 
+      $EventType = "Update Data";
       $EditDetails = 'Updated Specialization Name (Before: ' . $LastSpecializationName . ', After: ' . $NewSpecializationName . ')';
 
       $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
       $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
     }
   }
-
 }
 
 
@@ -2337,18 +2375,18 @@ if (isset($_POST["AddSubSpecialization"])) {
   $decrypted_user_id = decrypt_user_id($UserID);
 
   $query = $connPDO->prepare("INSERT INTO `sub_specialization`(sub_specs_id, sub_specialization_name) VALUES(?,?)");
-  $query->execute([$SelectedSpecialization, $SubSpecializationName]); 
+  $query->execute([$SelectedSpecialization, $SubSpecializationName]);
 
   $SpecializationDataQuery = "SELECT specialization_name from specialization
   WHERE specialization_id = '$SelectedSpecialization'";
   $SpecializationDataQuery = mysqli_query($connMysqli, $SpecializationDataQuery);
 
-    if($SpecializationDataQuery->num_rows > 0) {
-      while($row = mysqli_fetch_assoc($SpecializationDataQuery)) {
+  if ($SpecializationDataQuery->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($SpecializationDataQuery)) {
       $SpecializationName = $row['specialization_name'];
 
-      $EventType = "Added Data"; 
-      $EditDetails = 'Added Sub-Specialization (Sub-specialization Name: '. $SubSpecializationName .', under ' . $SpecializationName . ')';
+      $EventType = "Added Data";
+      $EditDetails = 'Added Sub-Specialization (Sub-specialization Name: ' . $SubSpecializationName . ', under ' . $SpecializationName . ')';
 
       $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
       $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
@@ -2360,10 +2398,10 @@ if (isset($_POST["AddSubSpecialization"])) {
 
 //EDIT SUB-SPECIALIZATION
 if (isset($_POST["EditSubSpecialization_ID"])) {
-    global $connMysqli;
-    $SubSpecialization_ID = intval($_POST["EditSubSpecialization_ID"]); // Prevent SQL injection
+  global $connMysqli;
+  $SubSpecialization_ID = intval($_POST["EditSubSpecialization_ID"]); // Prevent SQL injection
 
-    $FetchQuery = "
+  $FetchQuery = "
         SELECT 
             sub_specialization.*, 
             specialization.specialization_name 
@@ -2373,15 +2411,15 @@ if (isset($_POST["EditSubSpecialization_ID"])) {
         WHERE sub_specialization_id = $SubSpecialization_ID
     ";
 
-    $result = mysqli_query($connMysqli, $FetchQuery);
+  $result = mysqli_query($connMysqli, $FetchQuery);
 
-    if (!$result) {
-        die('MySQL Error: ' . mysqli_error($connMysqli));
-    }
+  if (!$result) {
+    die('MySQL Error: ' . mysqli_error($connMysqli));
+  }
 
-    if ($result->num_rows > 0) {
-        while ($row1 = mysqli_fetch_assoc($result)) {
-            echo "
+  if ($result->num_rows > 0) {
+    while ($row1 = mysqli_fetch_assoc($result)) {
+      echo "
             <div class='Modal-Sidebar-Top'>
               <i class='fa-solid fa-user-tie'></i>
               <h4>Edit Sub-specialization</h4>
@@ -2412,21 +2450,21 @@ if (isset($_POST["EditSubSpecialization_ID"])) {
                   <select name='NewSpecForSubSpec' id='NewSpecForSubSpec'>
             ";
 
-            // Fetch specialization options
-            $sub_specs_id = $row1['sub_specs_id'];
-            $specQuery = "SELECT * FROM specialization ORDER BY specialization_name ASC";
-            $specResult = mysqli_query($connMysqli, $specQuery);
+      // Fetch specialization options
+      $sub_specs_id = $row1['sub_specs_id'];
+      $specQuery = "SELECT * FROM specialization ORDER BY specialization_name ASC";
+      $specResult = mysqli_query($connMysqli, $specQuery);
 
-            if ($specResult && $specResult->num_rows > 0) {
-                while ($row2 = mysqli_fetch_assoc($specResult)) {
-                    $selected = ($row2['specialization_id'] == $sub_specs_id) ? "selected" : "";
-                    echo "<option value='" . htmlspecialchars($row2['specialization_id']) . "' $selected>" . htmlspecialchars($row2['specialization_name']) . "</option>";
-                }
-            } else {
-                echo "<option disabled>No specialization found</option>";
-            }
+      if ($specResult && $specResult->num_rows > 0) {
+        while ($row2 = mysqli_fetch_assoc($specResult)) {
+          $selected = ($row2['specialization_id'] == $sub_specs_id) ? "selected" : "";
+          echo "<option value='" . htmlspecialchars($row2['specialization_id']) . "' $selected>" . htmlspecialchars($row2['specialization_name']) . "</option>";
+        }
+      } else {
+        echo "<option disabled>No specialization found</option>";
+      }
 
-            echo "
+      echo "
                   </select>
                 </div>
 
@@ -2445,18 +2483,18 @@ if (isset($_POST["EditSubSpecialization_ID"])) {
               <button class='Btn_2' onclick='ModalSidebarExit()'>Cancel</button>
             </div>
             ";
-        }
-    } else {
-        echo "No Data Found";
     }
+  } else {
+    echo "No Data Found";
+  }
 }
 
 
 //IF YES EDIT SUB-SPECIALIZATION
-if (isset($_POST["Yes_EditSubSpecialization_ID"])) { 
+if (isset($_POST["Yes_EditSubSpecialization_ID"])) {
   global $connMysqli;
 
-  $EditedSubSpecialization_ID = $_POST["Yes_EditSubSpecialization_ID"]; 
+  $EditedSubSpecialization_ID = $_POST["Yes_EditSubSpecialization_ID"];
   $NewSubSpecializationName = $_POST["NewSubSpecializationName"];
   $NewSelectedSpecialization = $_POST["NewSelectedSpecialization"];
 
@@ -2469,8 +2507,8 @@ if (isset($_POST["Yes_EditSubSpecialization_ID"])) {
   WHERE sub_specialization_id = '$EditedSubSpecialization_ID'";
   $LastUpdateQuery = mysqli_query($connMysqli, $LastUpdateQuery);
 
-    if($LastUpdateQuery->num_rows > 0) {
-      while($row = mysqli_fetch_assoc($LastUpdateQuery)) {
+  if ($LastUpdateQuery->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($LastUpdateQuery)) {
       $LastSubSpecializationName = $row['sub_specialization_name'];
       $LastSpecializationName = $row['specialization_name'];
 
@@ -2483,103 +2521,435 @@ if (isset($_POST["Yes_EditSubSpecialization_ID"])) {
       WHERE sub_specialization_id = $EditedSubSpecialization_ID";
       $FetchingSpecializationName = mysqli_query($connMysqli, $FetchingSpecializationName);
 
-      if($FetchingSpecializationName->num_rows > 0) {
-        while($row1 = mysqli_fetch_assoc($FetchingSpecializationName)) {
+      if ($FetchingSpecializationName->num_rows > 0) {
+        while ($row1 = mysqli_fetch_assoc($FetchingSpecializationName)) {
           $UpdatedSpecializationName = $row1['specialization_name'];
           $UpdatedSubSpecializationName = $NewSubSpecializationName;
 
-          $EventType = "Update Data"; 
-          $EditDetails = 'Updated Sub-Specialization Name (Before: ' . $LastSubSpecializationName . ' under '. $LastSpecializationName .', After: ' . $UpdatedSubSpecializationName . ' under ' . $UpdatedSpecializationName . ')';
+          $EventType = "Update Data";
+          $EditDetails = 'Updated Sub-Specialization Name (Before: ' . $LastSubSpecializationName . ' under ' . $LastSpecializationName . ', After: ' . $UpdatedSubSpecializationName . ' under ' . $UpdatedSpecializationName . ')';
 
           $InsertLogs = $connPDO->prepare("INSERT INTO `admin_activity_logs`(activity_logs_admin_id, event_type, edit_details) VALUES(?,?,?)");
           $InsertLogs->execute([$decrypted_user_id, $EventType, $EditDetails]);
         }
-      }
-      else {
+      } else {
         echo "error";
       }
     }
-  }
-
-  else {
+  } else {
     echo "error, please try again";
   }
 }
-if (isset($_POST["filterBySpecialization"])) {
+
+if (isset($_POST["searchDoctor"])) {
   global $connMysqli;
-  $filterBySpecialization = $_POST["filterBySpecialization"];
 
-  $DoctorSpecsQuery = "SELECT * FROM doctor_specialization
-  WHERE specialization_id_2 = '$filterBySpecialization'";
-  $DoctorSpecsInsertQuery = mysqli_query($connMysqli, $DoctorSpecsQuery);
+  $DocName  = $_POST["searchDoctor"];
+  $DocSpecs = $_POST["doctorSpecs"];
 
-  if ($DoctorSpecsInsertQuery->num_rows > 0) {
-    while ($row = mysqli_fetch_assoc($DoctorSpecsInsertQuery)) {
-      $SpecializationID = $row['specialization_doctor_id'] ;
-      $specName = $row['doctor_specialization_name'] ;
-    
+  $q = "
+    SELECT
+      d.*,
+      GROUP_CONCAT(DISTINCT ds.doctor_specialization_name SEPARATOR ', ') AS specsString,
+      (SELECT COUNT(*) FROM doctor_hmo h WHERE h.hmo_doctor_id = d.doctor_account_id) AS hmo_count
+    FROM doctor d
+    LEFT JOIN doctor_specialization ds
+      ON d.doctor_account_id = ds.specialization_doctor_id
+    WHERE d.doctor_status = 'ACTIVE'
+      AND d.doctor_archive_status = 'VISIBLE'
+  ";
 
-      $DoctorQuery = "SELECT doctor_account_id,doctor_firstname,doctor_middlename,doctor_lastname,doctor_status FROM doctor
-      WHERE doctor_account_id = '$SpecializationID' 
-      AND doctor_status = 'ACTIVE'
-      ORDER BY doctor_lastname ASC";
-      $DoctorQueryInsert = mysqli_query($connMysqli, $DoctorQuery);
-
-      $DoctorQueryHmo = "SELECT doctor_hmo_name FROM doctor_hmo
-      WHERE hmo_doctor_id = '$SpecializationID'
-      ORDER BY doctor_hmo_name ASC";
-      $DoctorQueryHmoInsert = mysqli_query($connMysqli, $DoctorQueryHmo);
-      $CountDoctorHMO = mysqli_num_rows($DoctorQueryHmoInsert);
-
-      
-     
-
-
-      if ($DoctorQueryInsert->num_rows > 0) {
-        while ($rowDoctor = mysqli_fetch_assoc($DoctorQueryInsert)) {
-           $StatusColor = ($rowDoctor['doctor_status'] == 'ACTIVE') ? '#326932' : '#FF0000';
-          echo "<tr class='tr-doctor'> 
-                  <td class='capitalize'>" . $rowDoctor['doctor_lastname'] . ", " . $rowDoctor['doctor_firstname'] . " " . substr($rowDoctor['doctor_middlename'], 0, 1) . ".</td>
-                  <td class='TCenter'>" . $specName . "</td>
-                  <td class='TCenter'>$CountDoctorHMO</td>
-                  <td class='TCenter' style='color: ". $StatusColor ."; font-weight: bold;'>". $rowDoctor['doctor_status'] ." </td>
-                  <td><div class='td-div'><button class='Btn_1' onclick='ViewDoctor(`View`,`".$rowDoctor['doctor_account_id']."`)'><i class='fa-regular fa-eye'></i>View</button></div></td>
-                </tr>";
-        }
-      }
- 
+  if (!empty($DocSpecs) && strtoupper($DocSpecs) !== "ALL") {
+    if (ctype_digit($DocSpecs)) {
+      $q .= " AND ds.specialization_id_2 = $DocSpecs";
+    } else {
+      $q .= " AND ds.doctor_specialization_name LIKE '%$DocSpecs%'";
     }
-  }else if ($filterBySpecialization == ""|| $filterBySpecialization == null){
-    $FetchDoctor = "SELECT DISTINCT * FROM doctor WHERE doctor_archive_status = 'VISIBLE' AND doctor_status = 'ACTIVE' ORDER BY doctor_id DESC";
-    $FetchDoctor = mysqli_query($connMysqli, $FetchDoctor);
-    while ($row = mysqli_fetch_assoc($FetchDoctor)) {
-      $Status = $row['doctor_status'];
-      $StatusColor = ($Status == 'ACTIVE') ? '#326932' : '#FF0000';
+  }
 
-      $docId = $row['doctor_account_id'];
-      $CountDoctorHMO = mysqli_query($connMysqli, "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$docId'");
-      $CountDoctorHMO = mysqli_num_rows($CountDoctorHMO);
+  if (!empty($DocName)) {
+    $q .= " AND (
+      d.doctor_firstname LIKE '%$DocName%' OR
+      d.doctor_middlename LIKE '%$DocName%' OR
+      d.doctor_lastname LIKE '%$DocName%'
+    )";
+  }
+  $q .= " GROUP BY d.doctor_account_id
+          ORDER BY d.doctor_lastname ASC";
+
+  $res = mysqli_query($connMysqli, $q);
+
+  // if (!$res) {
+  //   echo "<tr><td colspan='5' class='TCenter'>bakit may error!</td></tr>";
+  //   exit;
+  // }
+
+  if (mysqli_num_rows($res) > 0) {
+    while ($row = mysqli_fetch_assoc($res)) {
+      $StatusColor = ($row['doctor_status'] == 'ACTIVE') ? '#326932' : '#FF0000';
+      $specsString = !empty($row['specsString']) ? $row['specsString'] : "N/A";
+      $CountDoctorHMO = (int)$row['hmo_count'];
+
       echo "
         <tr class='tr-doctor'>
-          <td class='capitalize'>" . $row['doctor_lastname'] . ", " . $row['doctor_firstname'] . " " . substr($row['doctor_middlename'], 0, 1) . ".</td>
-          <td class='TCenter'>
-            ";
-              $FetchDoctorSpecs = "SELECT DISTINCT * FROM doctor_specialization WHERE specialization_doctor_id = '$docId'";
-              $FetchDoctorSpecs = mysqli_query($connMysqli, $FetchDoctorSpecs);
-              while ($row2 = mysqli_fetch_assoc($FetchDoctorSpecs)) {
-                echo $row2['doctor_specialization_name'];
-              }
-              echo "
+          <td class='capitalize'>{$row['doctor_lastname']}, {$row['doctor_firstname']} " . substr($row['doctor_middlename'], 0, 1) . ".</td>
+          <td class='TCenter'>{$specsString}</td>
+          <td class='TCenter'>{$CountDoctorHMO}</td>
+          <td class='TCenter' style='color: $StatusColor; font-weight: bold;'>{$row['doctor_status']}</td>
+          <td>
+            <div class='td-div'>
+              <button class='Btn_1' onclick='ViewDoctor(`View`, `{$row['doctor_account_id']}`)'>
+                <i class='fa-regular fa-eye'></i> View
+              </button>
+            </div>
           </td>
-          <td class='TCenter'>$CountDoctorHMO</td>
-          <td class='TCenter' style='color: ". $StatusColor ."; font-weight: bold;'>". $Status ." </td>
-          <td><div class='td-div'><button class='Btn_1' onclick='ViewDoctor(`View`,`".$row['doctor_account_id']."`)'><i class='fa-regular fa-eye'></i>View</button></div></td>
         </tr>
       ";
     }
-  }else{
-    echo "<tr><td colspan='5' class='TCenter'>No Data Found</td></tr>";
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound' class='TCenter'>No Data Found.</td></tr>";
   }
-  
 }
-?>
+
+
+
+if (isset($_POST["filterBySpecialization"])) {
+  global $connMysqli;
+  $docName = $_POST["doctorName"];
+  $filterBySpecialization = $_POST["filterBySpecialization"];
+
+  if (!empty($filterBySpecialization)) {
+    $DoctorQuery = "
+      SELECT d.doctor_account_id, d.doctor_firstname, d.doctor_middlename, d.doctor_lastname, d.doctor_status, ds.doctor_specialization_name
+      FROM doctor AS d
+      INNER JOIN doctor_specialization AS ds ON ds.specialization_doctor_id = d.doctor_account_id
+      WHERE ds.specialization_id_2 = '$filterBySpecialization'
+      AND d.doctor_status = 'ACTIVE'
+      AND (
+        d.doctor_lastname LIKE '%$docName%'
+        OR d.doctor_firstname LIKE '%$docName%'
+        OR d.doctor_middlename LIKE '%$docName%'
+      )
+      ORDER BY d.doctor_lastname ASC
+    ";
+    $DoctorQueryInsert = mysqli_query($connMysqli, $DoctorQuery);
+
+    if ($DoctorQueryInsert->num_rows > 0) {
+      while ($rowDoctor = mysqli_fetch_assoc($DoctorQueryInsert)) {
+        $StatusColor = ($rowDoctor['doctor_status'] == 'ACTIVE') ? '#326932' : '#FF0000';
+        $docId = $rowDoctor['doctor_account_id'];
+
+        $CountDocHMO = mysqli_query($connMysqli, "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$docId'");
+        $CountDoctorHMO = mysqli_num_rows($CountDocHMO);
+
+        echo "
+          <tr class='tr-doctor'>
+            <td class='capitalize'>{$rowDoctor['doctor_lastname']}, {$rowDoctor['doctor_firstname']} " . substr($rowDoctor['doctor_middlename'], 0, 1) . ".</td>
+            <td class='TCenter'>{$rowDoctor['doctor_specialization_name']}</td>
+            <td class='TCenter'>$CountDoctorHMO</td>
+            <td class='TCenter' style='color:$StatusColor; font-weight:bold;'>{$rowDoctor['doctor_status']}</td>
+            <td>
+              <div class='td-div'>
+                <button class='Btn_1' onclick='ViewDoctor(`View`,`{$rowDoctor['doctor_account_id']}`)'>
+                  <i class='fa-regular fa-eye'></i>View
+                </button>
+              </div>
+            </td>
+          </tr>
+        ";
+      }
+    } else {
+      echo "<tr><td class='ResultNotFound' colspan='5' class='TCenter'>No Data Found</td></tr>";
+    }
+  } else {
+    $FetchDoctor = "
+      SELECT * FROM doctor
+      WHERE doctor_archive_status = 'VISIBLE'
+      AND doctor_status = 'ACTIVE'
+      AND (
+        doctor_lastname LIKE '%$docName%'
+        OR doctor_firstname LIKE '%$docName%'
+        OR doctor_middlename LIKE '%$docName%'
+      )
+      ORDER BY doctor_lastname ASC
+    ";
+    $FetchDoctor = mysqli_query($connMysqli, $FetchDoctor);
+
+    if ($FetchDoctor->num_rows > 0) {
+      while ($row = mysqli_fetch_assoc($FetchDoctor)) {
+        $StatusColor = ($row['doctor_status'] == 'ACTIVE') ? '#326932' : '#FF0000';
+        $docId = $row['doctor_account_id'];
+
+        $CountDoctorHMO = mysqli_num_rows(mysqli_query($connMysqli, "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$docId'"));
+
+        echo "
+          <tr class='tr-doctor'>
+            <td class='capitalize'>{$row['doctor_lastname']}, {$row['doctor_firstname']} " . substr($row['doctor_middlename'], 0, 1) . ".</td>
+            <td class='TCenter'>
+        ";
+
+        $docSpecs = [];
+        $FetchDoctorSpecs = mysqli_query($connMysqli, "SELECT doctor_specialization_name FROM doctor_specialization WHERE specialization_doctor_id = '$docId'");
+        while ($row2 = mysqli_fetch_assoc($FetchDoctorSpecs)) {
+          $docSpecs[] = $row2['doctor_specialization_name'];
+        }
+        echo implode(", ", $docSpecs);
+
+        echo "
+            </td>
+            <td class='TCenter'>$CountDoctorHMO</td>
+            <td class='TCenter' style='color:$StatusColor; font-weight:bold;'>{$row['doctor_status']}</td>
+            <td>
+              <div class='td-div'>
+                <button class='Btn_1' onclick='ViewDoctor(`View`,`{$row['doctor_account_id']}`)'>
+                  <i class='fa-regular fa-eye'></i>View
+                </button>
+              </div>
+            </td>
+          </tr>
+        ";
+      }
+    } else {
+      echo "<tr><td class='ResultNotFound' colspan='5' class='DoctorNotFound'>No Data Found</td></tr>";
+    }
+  }
+}
+
+
+if (isset($_POST["searchHMO"])) {
+  global $connMysqli;
+  $HMOName  = $_POST["searchHMO"];
+
+  if ($HMOName === ""){
+  $FetchHMO = "
+    SELECT * FROM hmo;
+  ";
+  }
+  else{
+  $FetchHMO = "
+    SELECT * FROM hmo 
+    WHERE hmo_name LIKE '%$HMOName%'
+  ";
+  }
+  $FetchHMO = mysqli_query($connMysqli, $FetchHMO);
+
+  if ($FetchHMO->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($FetchHMO)) {
+      $HMOID = $row['hmo_id'];
+      $HMO_name = $row['hmo_name'];
+    
+      echo "
+      <tr class='tr-archived'>
+        <td class='TCenter'>$HMOID</td>
+        <td class='TCenter'>$HMO_name</td>
+        <td>
+          <div class='td-div'>
+            <button class='Btn_1' onclick='EditHMO({$HMOID})'>
+              <i class='fa-solid fa-pen-to-square'></i>Edit
+            </button>
+          </div>
+        </td>
+      </tr>";
+    }
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound TCenter'>No Data Found.</td></tr>";
+  }
+}
+
+if (isset($_POST["searchRoom"])) {
+  global $connMysqli;
+  $searchRoom  = $_POST["searchRoom"];
+
+  if ($searchRoom === ""){
+  $FetchRoom = "
+    SELECT * FROM room;
+  ";
+  }
+  else{
+  $FetchRoom = "
+    SELECT * FROM room 
+    WHERE room_floor_name LIKE '%$searchRoom%'
+  ";
+  }
+  $FetchRoom = mysqli_query($connMysqli, $FetchRoom);
+
+  if ($FetchRoom->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($FetchRoom)) {
+      
+      echo "
+        <tr class='tr-archived'>
+        <td class='TCenter'>" . $row['room_id'] . " </td>
+        <td class='TCenter'>" . $row['room_floor_name'] . " </td>
+        <td> 
+            <div class='td-div'>
+            <button class='Btn_1' onclick='EditRoom(" . $row['room_id'] . ")'><i class='fa-solid fa-pen-to-square'></i>Edit</button>
+            <!-- <button class='Btn_2' onclick=''><i class='fa-solid fa-trash-arrow-up'></i>Set Inactive</button> -->
+          </div>
+        </td>
+      </tr>
+    ";
+    }
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound TCenter'>No Data Found.</td></tr>";
+  }
+}
+
+if (isset($_POST["searchSpeci"])) {
+  global $connMysqli;
+  $searchSpec  = $_POST["searchSpeci"];
+
+  if ($searchSpec === ""){
+  $FetchSpec = "
+    SELECT * FROM specialization;
+  ";
+  }
+  else{
+  $FetchSpec = "
+    SELECT * FROM specialization 
+    WHERE specialization_name LIKE '%$searchSpec%'
+  ";
+  }
+  $FetchSpec = mysqli_query($connMysqli, $FetchSpec);
+
+  if ($FetchSpec->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($FetchSpec)) {
+      
+      echo "
+        <tr class='tr-archived'>
+          <td class='TCenter'>" . $row['specialization_id'] . " </td>
+          <td class='TCenter'>" . $row['specialization_name'] . " </td>
+          <td> 
+              <div class='td-div'>
+              <button class='Btn_1' onclick='EditSpecialization(" . $row['specialization_id'] . ")'> <i class='fa-solid fa-pen-to-square'></i> Edit</button>
+            </div>
+          </td>
+        </tr>
+      ";
+    }
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound TCenter'>No Data Found.</td></tr>";
+  }
+}
+
+if (isset($_POST["searchSubSpeci"])) {
+  global $connMysqli;
+  $searchSubSpeci  = $_POST["searchSubSpeci"];
+
+  if ($searchSubSpeci === ""){
+  $FetchSubSpec = "
+    SELECT * FROM sub_specialization
+    INNER JOIN specialization ON sub_specialization.sub_specs_id = specialization.specialization_id
+  ";
+  }
+  else{
+  $FetchSubSpec = "
+    SELECT * FROM sub_specialization 
+    INNER JOIN specialization ON sub_specialization.sub_specs_id = specialization.specialization_id
+    WHERE sub_specialization_name LIKE '%$searchSubSpeci%'
+  ";
+  }
+  $FetchSubSpec = mysqli_query($connMysqli, $FetchSubSpec);
+
+  if ($FetchSubSpec->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($FetchSubSpec)) {
+      
+      echo "
+        <tr class='tr-archived'>
+          <td class='TCenter'>" . $row['sub_specialization_id'] . " </td>
+          <td class='TCenter'>" . $row['sub_specialization_name'] . " </td>
+          <td class='TCenter'>" . $row['specialization_name'] . " </td>
+          <td> 
+              <div class='td-div'>
+              <button class='Btn_1' onclick='EditSubSpecialization(" . $row['sub_specialization_id'] . ")'><i class='fa-solid fa-pen-to-square'></i>Edit</button>
+            </div>
+          </td>
+        </tr>
+      ";
+    }
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound TCenter'>No Data Found.</td></tr>";
+  }
+}
+
+if (isset($_POST["searchAcc"])) {
+  global $connMysqli;
+  $searchAcc  = $_POST["searchAcc"];
+
+  if ($searchAcc === ""){
+  $FetchAcc = "
+    SELECT * FROM admin_accounts;
+  ";
+  }
+  else{
+  $FetchAcc = "
+    SELECT * FROM admin_accounts 
+    WHERE admin_username LIKE '%$searchAcc%'
+  ";
+  }
+  $FetchAcc = mysqli_query($connMysqli, $FetchAcc);
+
+  if ($FetchAcc->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($FetchAcc)) {
+      $AdminStatus = $row['admin_status'];
+      $StatusColor = ($AdminStatus == 'Active') ? '#326932' : '#FF0000';
+      
+      echo "
+        <tr class='tr-center account-tr'>
+          <td>" . $row['admin_username'] . "</td>
+          <td class='td-center'> " . $row['account_access'] . " </td>
+          <td class='td-center'><span style='color: $StatusColor; font-weight: bold; text-transform: uppercase;'>" . $AdminStatus . "</span></td>
+          <td><div class='td-div'><button class='Btn_1' onclick='View_Admin(" . $row['admin_id'] . ")'><i class='fa-regular fa-eye'></i> View</button></div></td>
+        </tr>
+      ";
+    }
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound TCenter'>No Data Found.</td></tr>";
+  }
+}
+
+if (isset($_POST["searchArch"])) {
+  global $connMysqli;
+  $searchArch  = $_POST["searchArch"];
+
+  if ($searchArch === ""){
+  $FetchArch = "
+    SELECT * FROM doctor WHERE doctor_status = 'INACTIVE'
+  ";
+  }
+  else{
+  $FetchArch = "
+    SELECT * FROM doctor WHERE doctor_status = 'INACTIVE' 
+    AND (
+        doctor_lastname LIKE '%$searchArch%'
+        OR doctor_firstname LIKE '%$searchArch%'
+        OR doctor_middlename LIKE '%$searchArch%'
+      )
+      ORDER BY doctor_lastname ASC
+  ";
+  }
+  $FetchArch = mysqli_query($connMysqli, $FetchArch);
+
+  if ($FetchArch->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($FetchArch)) {
+      $Status = $row['doctor_status'];
+      $StatusColor = ($Status == 'ACTIVE') ? '#326932' : '#FF0000';
+      
+      echo "
+        <tr class='tr-archived'>
+          <td class='TCenter'>" . $row['doctor_account_id'] . " </td>
+          <td class='capitalize'>" . $row['doctor_lastname'] . ", " . $row['doctor_firstname'] . " " . substr($row['doctor_middlename'], 0, 1) . ".</td>
+          <td class='TCenter' style='color:" . $StatusColor . "; font-weight: bold; '>" . $Status . " </td>
+          <td >
+            <div class='td-div'>
+              <button class='Btn_1' onclick='ViewDoctor(`ArchivedView`,`" . $row['doctor_account_id'] . "`)'><i class='fa-regular fa-eye'></i>View</button>
+              <button class='Btn_2 green' onclick='PromptDoctor(`RestoreDoctor`,`" . $row['doctor_account_id'] . "`)'><i class='fa-solid fa-trash-arrow-up'></i>Activate</button>
+              <button class='Btn_2' onclick='PromptDoctor(`RemoveDoctor`,`" . $row['doctor_account_id'] . "`)'><i class='fa-solid fa-trash-arrow-up'></i>Delete</button>
+            </div>
+          </td>
+        </tr>
+      ";
+    }
+  } else {
+    echo "<tr><td colspan='5' class='ResultNotFound TCenter'>No Data Found.</td></tr>";
+  }
+}

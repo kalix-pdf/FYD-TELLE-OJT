@@ -8,71 +8,75 @@ $Day = date('l');
 
 
 // VIEW ALL DOCTORS
-if(isset($_POST["DoctorID"])){
+if (isset($_POST["DoctorID"])) {
   global $connMysqli;
   $DoctorID = $_POST["DoctorID"];
 
 
   $DoctorDetails = "SELECT * FROM doctor WHERE doctor_account_id = '$DoctorID'";
-  $DoctorDetails = mysqli_query($connMysqli,$DoctorDetails);
+  $DoctorDetails = mysqli_query($connMysqli, $DoctorDetails);
 
-  while($row = mysqli_fetch_assoc($DoctorDetails)){
+  while ($row = mysqli_fetch_assoc($DoctorDetails)) {
     $DID = $row['doctor_account_id'];
     $DSex1 = $row['doctor_sex'];
-    if($DSex1 == "Male"){$DR_SexColor = "ModalContainerProfileBorder1";} else{$DR_SexColor = "ModalContainerProfileBorder2";}
+    if ($DSex1 == "Male") {
+      $DR_SexColor = "ModalContainerProfileBorder1";
+    } else {
+      $DR_SexColor = "ModalContainerProfileBorder2";
+    }
     echo "
       <div class='HomeMain-ModalContainer'>
         <div class='ModalContainer1'>
           <div class='ModalContainerDiv1'>
             <div class='ModalContainerDiv1Flex'>
-              <div class='ModalContainerDiv1Img ".$DR_SexColor." '><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
+              <div class='ModalContainerDiv1Img " . $DR_SexColor . " '><img src='./Uploaded/" . $row['profile_image'] . "' alt=''></div>
               <div class='ModalContainerDiv1Names'>
-                <h1 class='Capitalize'>Dr. ".$row['doctor_lastname'].".  ".substr($row['doctor_middlename'], 0, 1)." ".$row['doctor_firstname']."</h1>
+                <h1 class='Capitalize'>Dr. " . $row['doctor_lastname'] . ".  " . substr($row['doctor_middlename'], 0, 1) . " " . $row['doctor_firstname'] . "</h1>
                   <div class='SpecList'>";
-                  $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID'";
-                  $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-                  while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){
-                    echo "
+    $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID'";
+    $DoctorsSpecs1 = mysqli_query($connMysqli, $DoctorsSpecs1);
+    while ($row3 = mysqli_fetch_assoc($DoctorsSpecs1)) {
+      echo "
                     
-                    <h5>"."|&nbsp"."".$row3['doctor_specialization_name']."&nbsp|"."&nbsp&nbsp"."</h5>
+                    <h5>" . "|&nbsp" . "" . $row3['doctor_specialization_name'] . "&nbsp|" . "&nbsp&nbsp" . "</h5>
                     
-                    ";};
-                
-                    echo"
+                    ";
+    };
+
+    echo "
                   </div>
                 
 
-                ";  
-                    
-                  $DoctorTelConsult1 = "SELECT * 
+                ";
+
+    $DoctorTelConsult1 = "SELECT * 
                                         FROM doctor_teleconsult 
                                         WHERE teleconsult_doctor_id = '$DID'";
-                  $DoctorTelConsult1 = mysqli_query($connMysqli, $DoctorTelConsult1);
-                  
-                  
-                  while($row9 = mysqli_fetch_assoc($DoctorTelConsult1)){
-                    if ($row9 && !empty($row9['teleconsult_link'])) {
+    $DoctorTelConsult1 = mysqli_query($connMysqli, $DoctorTelConsult1);
 
-                        echo "
+
+    while ($row9 = mysqli_fetch_assoc($DoctorTelConsult1)) {
+      if ($row9 && !empty($row9['teleconsult_link'])) {
+
+        echo "
                         <div class='TeleDiv'>
                             <p class='TelecastSpanP'>
                                 <i class='fa-solid fa-arrow-up-right-from-square'></i>
-                                <span class='TelecastSpan' onclick='telecastDiv(\" ".$row9['teleconsult_link']."\")'>
+                                <span class='TelecastSpan' onclick='telecastDiv(\" " . $row9['teleconsult_link'] . "\")'>
                                     Click here for teleconsultation
                                 </span>
                                 
                             </p>
                         </div>
                         ";
-                    } else {
-                        
-                        echo "<p class='TelecastSpanP'>No teleconsultation link available</p>
+      } else {
+
+        echo "<p class='TelecastSpanP'>No teleconsultation link available</p>
                               ";
-                    }
-                  
-                  }
-                    
-                  echo"
+      }
+    }
+
+    echo "
 
                 
               </div>
@@ -89,14 +93,16 @@ if(isset($_POST["DoctorID"])){
             </div>
             <div class='ModalContainer2Div1List'>
               ";
-              $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID'";
-              $DoctorsSubSpecs1 = mysqli_query($connMysqli,$DoctorsSubSpecs1);
-              while($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)){echo "
+    $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID'";
+    $DoctorsSubSpecs1 = mysqli_query($connMysqli, $DoctorsSubSpecs1);
+    while ($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)) {
+      echo "
                 <div class='SubsSpecList'>
-                  <p>".$row4['doctor_sub_specialization_name']."</p>
+                  <p>" . $row4['doctor_sub_specialization_name'] . "</p>
                 </div>
-              ";};
-              echo"
+              ";
+    };
+    echo "
             </div>
           </div>
           <br>
@@ -107,12 +113,14 @@ if(isset($_POST["DoctorID"])){
             <div class='ScheduleDiv'>
               <ul>
                 ";
-                $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
-                $DoctorsSchedule2 = mysqli_query($connMysqli,$DoctorsSchedule2);
-                while($row2 = mysqli_fetch_assoc($DoctorsSchedule2)){echo "
-                  <li><i>".$row2['doctor_schedule_day'].": </i> <p>".$row2['doctor_schedule_time']."</p></li>
-                ";};
-                  echo"
+    $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
+    $DoctorsSchedule2 = mysqli_query($connMysqli, $DoctorsSchedule2);
+    while ($row2 = mysqli_fetch_assoc($DoctorsSchedule2)) {
+      echo "
+                  <li><i>" . $row2['doctor_schedule_day'] . ": </i> <p>" . $row2['doctor_schedule_time'] . "</p></li>
+                ";
+    };
+    echo "
               </ul>
             </div>
           </div>
@@ -123,26 +131,29 @@ if(isset($_POST["DoctorID"])){
                 <p>Clinic Secretary:</p>          
               </div>
               ";
-              $DoctorSecretary1 = "SELECT * FROM doctor_secretary WHERE secretary_doctor_id = '$DID'";
-              $DoctorSecretary1 = mysqli_query($connMysqli,$DoctorSecretary1);
-              while($row7 = mysqli_fetch_assoc($DoctorSecretary1)){
-                
-                $SecID= $row7['doctor_secretary_id'];
-                echo "
+    $DoctorSecretary1 = "SELECT * FROM doctor_secretary WHERE secretary_doctor_id = '$DID'";
+    $DoctorSecretary1 = mysqli_query($connMysqli, $DoctorSecretary1);
+    while ($row7 = mysqli_fetch_assoc($DoctorSecretary1)) {
+
+      $SecID = $row7['doctor_secretary_id'];
+      echo "
                 <div class='SecretaryDiv'>
-                  <h4>".$row7['doctor_secretary_first_name']."</h4>
+                  <h4>" . $row7['doctor_secretary_first_name'] . "</h4>
                   ";
-                  $DoctorsSecNumber1 = "SELECT * FROM doctor_secretary WHERE doctor_secretary_id = '$SecID'";
-                  $DoctorsSecNumber1 = mysqli_query($connMysqli,$DoctorsSecNumber1);
-                  while($row8 = mysqli_fetch_assoc($DoctorsSecNumber1)){echo "
-                    <p>".$row8['doctor_secretary_first_network']." - ".$row8['doctor_secretary_first_number']."</p>
-                    <p>".$row8['doctor_secretary_second_network']." - ".$row8['doctor_secretary_second_number']."</p>
-                  ";};
-                    echo"
+      $DoctorsSecNumber1 = "SELECT * FROM doctor_secretary WHERE doctor_secretary_id = '$SecID'";
+      $DoctorsSecNumber1 = mysqli_query($connMysqli, $DoctorsSecNumber1);
+      while ($row8 = mysqli_fetch_assoc($DoctorsSecNumber1)) {
+        echo "
+                    <p>" . $row8['doctor_secretary_first_network'] . " - " . $row8['doctor_secretary_first_number'] . "</p>
+                    <p>" . $row8['doctor_secretary_second_network'] . " - " . $row8['doctor_secretary_second_number'] . "</p>
+                  ";
+      };
+      echo "
 
                 </div>
-              ";};
-                echo"
+              ";
+    };
+    echo "
             </div>
             <br>
 
@@ -153,12 +164,14 @@ if(isset($_POST["DoctorID"])){
               <div class='doctor_roomDiv'>
 
               ";
-              $DoctorsRoom1 = "SELECT * FROM doctor_room WHERE room_doctor_id = '$DID'";
-              $DoctorsRoom1 = mysqli_query($connMysqli,$DoctorsRoom1);
-              while($row5 = mysqli_fetch_assoc($DoctorsRoom1)){echo "
-                <div class='doctor_room'><h4>".$row5['doctor_room_number']."</h4></div>
-              ";};
-                echo"
+    $DoctorsRoom1 = "SELECT * FROM doctor_room WHERE room_doctor_id = '$DID'";
+    $DoctorsRoom1 = mysqli_query($connMysqli, $DoctorsRoom1);
+    while ($row5 = mysqli_fetch_assoc($DoctorsRoom1)) {
+      echo "
+                <div class='doctor_room'><h4>" . $row5['doctor_room_number'] . "</h4></div>
+              ";
+    };
+    echo "
               </div>
             </div>
           </div>
@@ -169,21 +182,23 @@ if(isset($_POST["DoctorID"])){
 
 
                 ";
-                $CountDoctorHMO = mysqli_query($connMysqli, "SELECT * FROM doctor_hmo WHERE  hmo_doctor_id = '$DID'");
-                $CountDoctorHMO = mysqli_num_rows($CountDoctorHMO);
-                  echo"
+    $CountDoctorHMO = mysqli_query($connMysqli, "SELECT * FROM doctor_hmo WHERE  hmo_doctor_id = '$DID'");
+    $CountDoctorHMO = mysqli_num_rows($CountDoctorHMO);
+    echo "
                 <h4 class='TotalHMOH'>Total HMO/s Accredited: $CountDoctorHMO</h4>
                 
                 <h4 class='TotalHMOS'>$CountDoctorHMO HMO Accreditation/s:</h4>
               </div>
               <div class='HMOAccreditationDiv'>
                 ";
-                $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID'";
-                $DoctorsHMO1 = mysqli_query($connMysqli,$DoctorsHMO1);
-                while($row5 = mysqli_fetch_assoc($DoctorsHMO1)){echo "
-                  <h4><i class='fa-solid fa-circle-check'></i> ".$row5['doctor_hmo_name']."</h4>
-                ";};
-                  echo"
+    $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID'";
+    $DoctorsHMO1 = mysqli_query($connMysqli, $DoctorsHMO1);
+    while ($row5 = mysqli_fetch_assoc($DoctorsHMO1)) {
+      echo "
+                  <h4><i class='fa-solid fa-circle-check'></i> " . $row5['doctor_hmo_name'] . "</h4>
+                ";
+    };
+    echo "
 
               </div>
             </div>
@@ -196,13 +211,15 @@ if(isset($_POST["DoctorID"])){
               <h4><?php include './Assets/SVG/RemarksIcon.svg'?> Notes:</h4> 
               <div class='ModalContainer3Div1RemarksDiv'>
                 ";
-                $DoctorsNotes1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
-                $DoctorsNotes1 = mysqli_query($connMysqli,$DoctorsNotes1);
-                while($row6 = mysqli_fetch_assoc($DoctorsNotes1)){echo "
+    $DoctorsNotes1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
+    $DoctorsNotes1 = mysqli_query($connMysqli, $DoctorsNotes1);
+    while ($row6 = mysqli_fetch_assoc($DoctorsNotes1)) {
+      echo "
           
-                  <p>".$row6['doctor_notes_details']." </p>
-                ";};
-                  echo"
+                  <p>" . $row6['doctor_notes_details'] . " </p>
+                ";
+    };
+    echo "
               </div>
             </div>
           </div>
@@ -213,14 +230,13 @@ if(isset($_POST["DoctorID"])){
 }
 
 // SEARCH DOCTOR
-if(isset($_POST["SearchDoc"])){
+if (isset($_POST["SearchDoc"])) {
   global $connMysqli;
   $DocID = $_POST["SearchDocID"];
-  if($DocID == ""){
+  if ($DocID == "") {
     $SearchResult = "SELECT * FROM doctor";
     $SearchResult = mysqli_query($connMysqli, $SearchResult);
-  }
-  else{  
+  } else {
     // $SearchResult = "SELECT * FROM doctor WHERE doctor_name LIKE '%$DocID%' ";
     $SearchResult = "SELECT * FROM doctor WHERE 
                     doctor_firstname LIKE '%$DocID%' OR 
@@ -229,35 +245,39 @@ if(isset($_POST["SearchDoc"])){
     $SearchResult = mysqli_query($connMysqli, $SearchResult);
   }
 
-  if($SearchResult->num_rows > 0){
-    while($row = mysqli_fetch_assoc($SearchResult)){
+  if ($SearchResult->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($SearchResult)) {
       $DID = $row['doctor_account_id'];
       $DSex = $row['doctor_sex'];
-      if($DSex == "Male"){
+      if ($DSex == "Male") {
         $DR_SexColor = "ImgBColor1";
-      } else{
+      } else {
         $DR_SexColor = "ImgBColor2";
       }
       echo "
-      <div class='Main_Div1-Box' onclick='ViewDoctor(`".$DID."`)'>
+      <div class='Main_Div1-Box' onclick='ViewDoctor(`" . $DID . "`)'>
         <div class='Main_Div1-Box1'>
-        <div class='Img ".$DR_SexColor."'><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
+        <div class='Img " . $DR_SexColor . "'><img src='./Uploaded/" . $row['profile_image'] . "' alt=''></div>
           <div class=''>
-            <h1 class='Capitalize'>Dr. ".$row['doctor_lastname'].".  ".substr($row['doctor_middlename'], 0, 1)." ".$row['doctor_firstname']."</h1>
+            <h1 class='Capitalize'>Dr. " . $row['doctor_lastname'] . ".  " . substr($row['doctor_middlename'], 0, 1) . " " . $row['doctor_firstname'] . "</h1>
             ";
-            $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
-            $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-            while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){echo "
-              <h4>".$row3['doctor_specialization_name']."</h4>
-            ";};
-            echo"
+      $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
+      $DoctorsSpecs1 = mysqli_query($connMysqli, $DoctorsSpecs1);
+      while ($row3 = mysqli_fetch_assoc($DoctorsSpecs1)) {
+        echo "
+              <h4>" . $row3['doctor_specialization_name'] . "</h4>
             ";
-            $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
-            $DoctorsSubSpecs1 = mysqli_query($connMysqli,$DoctorsSubSpecs1);
-            while($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)){echo "
-              <p>".$row4['doctor_sub_specialization_name']."</p>
-            ";};
-            echo"
+      };
+      echo "
+            ";
+      $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
+      $DoctorsSubSpecs1 = mysqli_query($connMysqli, $DoctorsSubSpecs1);
+      while ($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)) {
+        echo "
+              <p>" . $row4['doctor_sub_specialization_name'] . "</p>
+            ";
+      };
+      echo "
           </div>
         </div>
         <div class='Main_Div1-Box2'>
@@ -267,12 +287,14 @@ if(isset($_POST["SearchDoc"])){
               <ul class='Main_Div1-Box2Flex1Schedule'>
   
               ";
-              $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
-              $DoctorsSchedule2 = mysqli_query($connMysqli,$DoctorsSchedule2);
-              while($row2 = mysqli_fetch_assoc($DoctorsSchedule2)){echo "
-                <li><i>".$row2['doctor_schedule_day']."</i> <p>".$row2['doctor_schedule_time']."</p></li>
-              ";};
-                echo"
+      $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
+      $DoctorsSchedule2 = mysqli_query($connMysqli, $DoctorsSchedule2);
+      while ($row2 = mysqli_fetch_assoc($DoctorsSchedule2)) {
+        echo "
+                <li><i>" . $row2['doctor_schedule_day'] . "</i> <p>" . $row2['doctor_schedule_time'] . "</p></li>
+              ";
+      };
+      echo "
   
               </ul>
             </div>
@@ -282,12 +304,14 @@ if(isset($_POST["SearchDoc"])){
               <div class='Flex'>
   
               ";
-              $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
-              $DoctorsHMO1 = mysqli_query($connMysqli,$DoctorsHMO1);
-              while($row5 = mysqli_fetch_assoc($DoctorsHMO1)){echo "
-                <div class='Box2Flex1Border'><p>".$row5['doctor_hmo_name']."</p></div>
-              ";};
-                echo"
+      $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
+      $DoctorsHMO1 = mysqli_query($connMysqli, $DoctorsHMO1);
+      while ($row5 = mysqli_fetch_assoc($DoctorsHMO1)) {
+        echo "
+                <div class='Box2Flex1Border'><p>" . $row5['doctor_hmo_name'] . "</p></div>
+              ";
+      };
+      echo "
       
               </div>
             </div>
@@ -295,12 +319,14 @@ if(isset($_POST["SearchDoc"])){
             <div class='Box2Flex1Div2'>
               <h4>Notes</h4>
               ";
-              $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
-              $DoctorsRemarks1 = mysqli_query($connMysqli,$DoctorsRemarks1);
-              while($row6 = mysqli_fetch_assoc($DoctorsRemarks1)){echo "
-                <div class='Box2Flex1Border'><p>".$row6['doctor_notes_details']."</p></div>
-              ";};
-                echo"
+      $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
+      $DoctorsRemarks1 = mysqli_query($connMysqli, $DoctorsRemarks1);
+      while ($row6 = mysqli_fetch_assoc($DoctorsRemarks1)) {
+        echo "
+                <div class='Box2Flex1Border'><p>" . $row6['doctor_notes_details'] . "</p></div>
+              ";
+      };
+      echo "
             </div>
           </div>
           <div class='Main_Div1-Box2Flex2'>
@@ -308,47 +334,46 @@ if(isset($_POST["SearchDoc"])){
           </div>
         </div>
       </div>
-    ";}
-
-  }
-  else{
+    ";
+    }
+  } else {
     echo "<div class='NotFoundDiv'><h1>No results found for the specified doctor's name</h1></div>";
   }
 }
 
 // SEARCH SPECIALIZATION
-if(isset($_POST["SearchDocSpecs"])){
+if (isset($_POST["SearchDocSpecs"])) {
   global $connMysqli;
   $SearchDocSpecs = $_POST["SearchDocSpecs"];
 
   $DoctorSpecialization = "SELECT * FROM specialization WHERE specialization_name LIKE '%$SearchDocSpecs%'";
-  $DoctorSpecialization = mysqli_query($connMysqli,$DoctorSpecialization);
+  $DoctorSpecialization = mysqli_query($connMysqli, $DoctorSpecialization);
 
-  if($DoctorSpecialization->num_rows > 0){
-    while($row = mysqli_fetch_assoc($DoctorSpecialization)){echo "
-      <li onclick='SelectSpecs(".$row['specialization_id'].")'><i class='fa-solid fa-circle-dot'></i> <p id='SpecsID_".$row['specialization_id']."'>".$row['specialization_name']."</p></li>
-  ";}
-
-  }else{
+  if ($DoctorSpecialization->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($DoctorSpecialization)) {
+      echo "
+      <li onclick='SelectSpecs(" . $row['specialization_id'] . ")'><i class='fa-solid fa-circle-dot'></i> <p id='SpecsID_" . $row['specialization_id'] . "'>" . $row['specialization_name'] . "</p></li>
+  ";
+    }
+  } else {
     echo "<p>Nothing found!</p>";
   }
 }
 
 // SEARCH SUB SPECIALIZATION
-if(isset($_POST["SearchSubSpecs2"])){
+if (isset($_POST["SearchSubSpecs2"])) {
   global $connMysqli;
   $SearchSubSpecs2 = $_POST["SearchSubSpecs2"];
   $InputSpecialization = $_POST["InputSpecialization"];
   $refSpecsID = $_POST["refSpecsID"];
 
 
-  if($InputSpecialization == ""){
+  if ($InputSpecialization == "") {
     $DoctorSubSpecialization2 = "SELECT * FROM sub_specialization WHERE sub_specialization_name LIKE '%$SearchSubSpecs2%'";
-    $DoctorSubSpecialization2 = mysqli_query($connMysqli,$DoctorSubSpecialization2);
-  }
-  else{
+    $DoctorSubSpecialization2 = mysqli_query($connMysqli, $DoctorSubSpecialization2);
+  } else {
     $DoctorSubSpecialization2 = "SELECT * FROM sub_specialization WHERE sub_specs_id = '$refSpecsID' AND sub_specialization_name LIKE '%$SearchSubSpecs2%'";
-    $DoctorSubSpecialization2 = mysqli_query($connMysqli,$DoctorSubSpecialization2);
+    $DoctorSubSpecialization2 = mysqli_query($connMysqli, $DoctorSubSpecialization2);
     // Prepare the SQL query
     // $sql = "SELECT * FROM sub_specialization WHERE sub_specs_id LIKE ? AND sub_specialization_name LIKE ?";
     // $stmt = $connMysqli->prepare($sql);
@@ -364,73 +389,81 @@ if(isset($_POST["SearchSubSpecs2"])){
 
 
 
-  if($DoctorSubSpecialization2->num_rows > 0){
-    while($row = mysqli_fetch_assoc($DoctorSubSpecialization2)){echo "
-      <li onclick='SelectSubSpecs(".$row['sub_specialization_id'].")'><i class='fa-solid fa-circle-dot'></i> <span id='SubsSpecsID_".$row['sub_specialization_id']."'>".$row['sub_specialization_name']."</span></li>
-  ";}
-  }else{
+  if ($DoctorSubSpecialization2->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($DoctorSubSpecialization2)) {
+      echo "
+      <li onclick='SelectSubSpecs(" . $row['sub_specialization_id'] . ")'><i class='fa-solid fa-circle-dot'></i> <span id='SubsSpecsID_" . $row['sub_specialization_id'] . "'>" . $row['sub_specialization_name'] . "</span></li>
+  ";
+    }
+  } else {
     echo "<p>Nothing found!</p>";
   }
 }
 
 // SEARCH HMO
-if(isset($_POST["SearchHMO"])){
+if (isset($_POST["SearchHMO"])) {
   global $connMysqli;
   $SearchHMO = $_POST["SearchHMO"];
 
 
-  
-  $DoctorSpecialization = "SELECT * FROM hmo WHERE hmo_name LIKE '%$SearchHMO%' ";
-  $DoctorSpecialization = mysqli_query($connMysqli,$DoctorSpecialization);
 
-  if($DoctorSpecialization->num_rows > 0){
-    while($row = mysqli_fetch_assoc($DoctorSpecialization)){echo "
-      <div class='ModalDivConPanelDiv2 HMO_ID_".$row['hmo_id']."' onclick='functionHMO( ".$row['hmo_id'].")'>
+  $DoctorSpecialization = "SELECT * FROM hmo WHERE hmo_name LIKE '%$SearchHMO%' ";
+  $DoctorSpecialization = mysqli_query($connMysqli, $DoctorSpecialization);
+
+  if ($DoctorSpecialization->num_rows > 0) {
+    while ($row = mysqli_fetch_assoc($DoctorSpecialization)) {
+      echo "
+      <div class='ModalDivConPanelDiv2 HMO_ID_" . $row['hmo_id'] . "' onclick='functionHMO( " . $row['hmo_id'] . ")'>
         <i class='fa-regular fa-square'></i> 
-        <i>".$row['hmo_name']."</i> 
-        <input type='checkbox' class='HMOOName ScheduleDay1' value='".$row['hmo_id']."'>      
-        <input type='checkbox' class='HMOOName2 ScheduleDay1' value='".$row['hmo_name']."'>
+        <i>" . $row['hmo_name'] . "</i> 
+        <input type='checkbox' class='HMOOName ScheduleDay1' value='" . $row['hmo_id'] . "'>      
+        <input type='checkbox' class='HMOOName2 ScheduleDay1' value='" . $row['hmo_name'] . "'>
       </div>
-  ";}
-  }else{
+  ";
+    }
+  } else {
     echo "<p>Nothing found!</p>";
   }
 }
 
 // RESET FILTER
-if(isset($_POST["Clear1"])){
+if (isset($_POST["Clear1"])) {
   global $connMysqli;
   $SearchResult2 = "SELECT * FROM doctor";
   $SearchResult2 = mysqli_query($connMysqli, $SearchResult2);
 
-  while($row = mysqli_fetch_assoc($SearchResult2)){
+  while ($row = mysqli_fetch_assoc($SearchResult2)) {
     $DID = $row['doctor_account_id'];
     $DSex = $row['doctor_sex'];
-    if($DSex == "Male"){
+    if ($DSex == "Male") {
       $DR_SexColor = "ImgBColor1";
-    } else{
+    } else {
       $DR_SexColor = "ImgBColor2";
     }
     echo "
-    <div class='Main_Div1-Box' onclick='ViewDoctor(`".$DID."`)'>
+    <div class='Main_Div1-Box' onclick='ViewDoctor(`" . $DID . "`)'>
       <div class='Main_Div1-Box1'>
-      <div class='Img ".$DR_SexColor."'><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
+      <div class='Img " . $DR_SexColor . "'><img src='./Uploaded/" . $row['profile_image'] . "' alt=''></div>
         <div class=''>
-          <h1 class='Capitalize'>Dr. ".$row['doctor_lastname'].".  ".substr($row['doctor_middlename'], 0, 1)." ".$row['doctor_firstname']."</h1>
+          <h1 class='Capitalize'>Dr. " . $row['doctor_lastname'] . ".  " . substr($row['doctor_middlename'], 0, 1) . " " . $row['doctor_firstname'] . "</h1>
           ";
-          $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
-          $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-          while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){echo "
-            <h4>".$row3['doctor_specialization_name']."</h4>
-          ";};
-          echo"
+    $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
+    $DoctorsSpecs1 = mysqli_query($connMysqli, $DoctorsSpecs1);
+    while ($row3 = mysqli_fetch_assoc($DoctorsSpecs1)) {
+      echo "
+            <h4>" . $row3['doctor_specialization_name'] . "</h4>
           ";
-          $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
-          $DoctorsSubSpecs1 = mysqli_query($connMysqli,$DoctorsSubSpecs1);
-          while($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)){echo "
-            <p>".$row4['doctor_sub_specialization_name']."</p>
-          ";};
-          echo"
+    };
+    echo "
+          ";
+    $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
+    $DoctorsSubSpecs1 = mysqli_query($connMysqli, $DoctorsSubSpecs1);
+    while ($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)) {
+      echo "
+            <p>" . $row4['doctor_sub_specialization_name'] . "</p>
+          ";
+    };
+    echo "
         </div>
       </div>
       <div class='Main_Div1-Box2'>
@@ -440,12 +473,14 @@ if(isset($_POST["Clear1"])){
             <ul class='Main_Div1-Box2Flex1Schedule'>
 
             ";
-            $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
-            $DoctorsSchedule2 = mysqli_query($connMysqli,$DoctorsSchedule2);
-            while($row2 = mysqli_fetch_assoc($DoctorsSchedule2)){echo "
-              <li><i>".$row2['doctor_schedule_day']."</i> <p>".$row2['doctor_schedule_time']."</p></li>
-            ";};
-              echo"
+    $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
+    $DoctorsSchedule2 = mysqli_query($connMysqli, $DoctorsSchedule2);
+    while ($row2 = mysqli_fetch_assoc($DoctorsSchedule2)) {
+      echo "
+              <li><i>" . $row2['doctor_schedule_day'] . "</i> <p>" . $row2['doctor_schedule_time'] . "</p></li>
+            ";
+    };
+    echo "
 
             </ul>
           </div>
@@ -455,12 +490,14 @@ if(isset($_POST["Clear1"])){
             <div class='Flex'>
 
             ";
-            $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
-            $DoctorsHMO1 = mysqli_query($connMysqli,$DoctorsHMO1);
-            while($row5 = mysqli_fetch_assoc($DoctorsHMO1)){echo "
-              <div class='Box2Flex1Border'><p>".$row5['doctor_hmo_name']."</p></div>
-            ";};
-              echo"
+    $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
+    $DoctorsHMO1 = mysqli_query($connMysqli, $DoctorsHMO1);
+    while ($row5 = mysqli_fetch_assoc($DoctorsHMO1)) {
+      echo "
+              <div class='Box2Flex1Border'><p>" . $row5['doctor_hmo_name'] . "</p></div>
+            ";
+    };
+    echo "
     
             </div>
           </div>
@@ -468,12 +505,14 @@ if(isset($_POST["Clear1"])){
           <div class='Box2Flex1Div2'>
             <h4>Notes</h4>
             ";
-            $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
-            $DoctorsRemarks1 = mysqli_query($connMysqli,$DoctorsRemarks1);
-            while($row6 = mysqli_fetch_assoc($DoctorsRemarks1)){echo "
-              <div class='Box2Flex1Border'><p>".$row6['doctor_notes_details']."</p></div>
-            ";};
-              echo"
+    $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
+    $DoctorsRemarks1 = mysqli_query($connMysqli, $DoctorsRemarks1);
+    while ($row6 = mysqli_fetch_assoc($DoctorsRemarks1)) {
+      echo "
+              <div class='Box2Flex1Border'><p>" . $row6['doctor_notes_details'] . "</p></div>
+            ";
+    };
+    echo "
           </div>
         </div>
         <div class='Main_Div1-Box2Flex2'>
@@ -481,69 +520,76 @@ if(isset($_POST["Clear1"])){
         </div>
       </div>
     </div>
-  ";}
+  ";
+  }
 }
 
 // SELECT SPECS ID
-if(isset($_POST["SelectSpecsID"])){
+if (isset($_POST["SelectSpecsID"])) {
   global $connMysqli;
   $SelectSpecsID = $_POST["SelectSpecsID"];
   // echo $SelectSpecsID;
 
   $DoctorSubSpecialization = "SELECT * FROM sub_specialization WHERE sub_specs_id = '$SelectSpecsID' ";
-  $DoctorSubSpecialization = mysqli_query($connMysqli,$DoctorSubSpecialization);
-  while($row = mysqli_fetch_assoc($DoctorSubSpecialization)){echo
+  $DoctorSubSpecialization = mysqli_query($connMysqli, $DoctorSubSpecialization);
+  while ($row = mysqli_fetch_assoc($DoctorSubSpecialization)) {
+    echo
     "
-    <li onclick='SelectSubSpecs(".$row['sub_specialization_id'].")'><i class='fa-solid fa-circle-dot'></i> <span id='SubsSpecsID_".$row['sub_specialization_id']."'>".$row['sub_specialization_name']."</span></li>
+    <li onclick='SelectSubSpecs(" . $row['sub_specialization_id'] . ")'><i class='fa-solid fa-circle-dot'></i> <span id='SubsSpecsID_" . $row['sub_specialization_id'] . "'>" . $row['sub_specialization_name'] . "</span></li>
 
-  ";}
+  ";
+  }
 }
 
 // FILTER DOCTOR / TODAY AND ALL
-if(isset($_POST["BtnDocFill"])){
+if (isset($_POST["BtnDocFill"])) {
   global $connMysqli;
 
-  if($_POST["BtnDocFill"] == "TodayDoctor"){
+  if ($_POST["BtnDocFill"] == "TodayDoctor") {
 
     $BtnFilter1 = "SELECT * FROM doctor_schedule WHERE doctor_schedule_day LIKE '$Day'";
-    $BtnFilter1 = mysqli_query($connMysqli,$BtnFilter1);
+    $BtnFilter1 = mysqli_query($connMysqli, $BtnFilter1);
 
-    if($BtnFilter1->num_rows > 0){
+    if ($BtnFilter1->num_rows > 0) {
 
-      while($row = mysqli_fetch_assoc($BtnFilter1)){
+      while ($row = mysqli_fetch_assoc($BtnFilter1)) {
         $BtnScheduleID = $row["schedule_doctor_id"];
-    
+
         $SearchResult2 = "SELECT * FROM doctor WHERE doctor_account_id = '$BtnScheduleID'";
         $SearchResult2 = mysqli_query($connMysqli, $SearchResult2);
-    
-        while($row = mysqli_fetch_assoc($SearchResult2)){
+
+        while ($row = mysqli_fetch_assoc($SearchResult2)) {
           $DID = $row['doctor_account_id'];
           $DSex = $row['doctor_sex'];
-          if($DSex == "Male"){
+          if ($DSex == "Male") {
             $DR_SexColor = "ImgBColor1";
-          } else{
+          } else {
             $DR_SexColor = "ImgBColor2";
           }
           echo "
-          <div class='Main_Div1-Box' onclick='ViewDoctor(`".$DID."`)'>
+          <div class='Main_Div1-Box' onclick='ViewDoctor(`" . $DID . "`)'>
             <div class='Main_Div1-Box1'>
-            <div class='Img ".$DR_SexColor."'><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
+            <div class='Img " . $DR_SexColor . "'><img src='./Uploaded/" . $row['profile_image'] . "' alt=''></div>
               <div class=''>
-                <h1 class='Capitalize'>Dr. ".$row['doctor_lastname'].".  ".substr($row['doctor_middlename'], 0, 1)." ".$row['doctor_firstname']."</h1>
+                <h1 class='Capitalize'>Dr. " . $row['doctor_lastname'] . ".  " . substr($row['doctor_middlename'], 0, 1) . " " . $row['doctor_firstname'] . "</h1>
                 ";
-                $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
-                $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-                while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){echo "
-                  <h4>".$row3['doctor_specialization_name']."</h4>
-                ";};
-                echo"
+          $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
+          $DoctorsSpecs1 = mysqli_query($connMysqli, $DoctorsSpecs1);
+          while ($row3 = mysqli_fetch_assoc($DoctorsSpecs1)) {
+            echo "
+                  <h4>" . $row3['doctor_specialization_name'] . "</h4>
                 ";
-                $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
-                $DoctorsSubSpecs1 = mysqli_query($connMysqli,$DoctorsSubSpecs1);
-                while($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)){echo "
-                  <p>".$row4['doctor_sub_specialization_name']."</p>
-                ";};
-                echo"
+          };
+          echo "
+                ";
+          $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
+          $DoctorsSubSpecs1 = mysqli_query($connMysqli, $DoctorsSubSpecs1);
+          while ($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)) {
+            echo "
+                  <p>" . $row4['doctor_sub_specialization_name'] . "</p>
+                ";
+          };
+          echo "
               </div>
             </div>
             <div class='Main_Div1-Box2'>
@@ -553,12 +599,14 @@ if(isset($_POST["BtnDocFill"])){
                   <ul class='Main_Div1-Box2Flex1Schedule'>
     
                   ";
-                  $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
-                  $DoctorsSchedule2 = mysqli_query($connMysqli,$DoctorsSchedule2);
-                  while($row2 = mysqli_fetch_assoc($DoctorsSchedule2)){echo "
-                    <li><i>".$row2['doctor_schedule_day']."</i> <p>".$row2['doctor_schedule_time']."</p></li>
-                  ";};
-                    echo"
+          $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
+          $DoctorsSchedule2 = mysqli_query($connMysqli, $DoctorsSchedule2);
+          while ($row2 = mysqli_fetch_assoc($DoctorsSchedule2)) {
+            echo "
+                    <li><i>" . $row2['doctor_schedule_day'] . "</i> <p>" . $row2['doctor_schedule_time'] . "</p></li>
+                  ";
+          };
+          echo "
     
                   </ul>
                 </div>
@@ -568,12 +616,14 @@ if(isset($_POST["BtnDocFill"])){
                   <div class='Flex'>
     
                   ";
-                  $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
-                  $DoctorsHMO1 = mysqli_query($connMysqli,$DoctorsHMO1);
-                  while($row5 = mysqli_fetch_assoc($DoctorsHMO1)){echo "
-                    <div class='Box2Flex1Border'><p>".$row5['doctor_hmo_name']."</p></div>
-                  ";};
-                    echo"
+          $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
+          $DoctorsHMO1 = mysqli_query($connMysqli, $DoctorsHMO1);
+          while ($row5 = mysqli_fetch_assoc($DoctorsHMO1)) {
+            echo "
+                    <div class='Box2Flex1Border'><p>" . $row5['doctor_hmo_name'] . "</p></div>
+                  ";
+          };
+          echo "
           
                   </div>
                 </div>
@@ -581,12 +631,14 @@ if(isset($_POST["BtnDocFill"])){
                 <div class='Box2Flex1Div2'>
                   <h4>Notes</h4>
                   ";
-                  $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
-                  $DoctorsRemarks1 = mysqli_query($connMysqli,$DoctorsRemarks1);
-                  while($row6 = mysqli_fetch_assoc($DoctorsRemarks1)){echo "
-                    <div class='Box2Flex1Border'><p>".$row6['doctor_notes_details']."</p></div>
-                  ";};
-                    echo"
+          $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
+          $DoctorsRemarks1 = mysqli_query($connMysqli, $DoctorsRemarks1);
+          while ($row6 = mysqli_fetch_assoc($DoctorsRemarks1)) {
+            echo "
+                    <div class='Box2Flex1Border'><p>" . $row6['doctor_notes_details'] . "</p></div>
+                  ";
+          };
+          echo "
                 </div>
               </div>
               <div class='Main_Div1-Box2Flex2'>
@@ -594,45 +646,48 @@ if(isset($_POST["BtnDocFill"])){
               </div>
             </div>
           </div>
-        ";}
+        ";
+        }
       }
-
-    }else{
+    } else {
       echo "<div class='NotFoundDiv'><h1>No Doctor/s available today</h1></div>";
     }
-  }
-  else{
+  } else {
     $SearchResult2 = "SELECT * FROM doctor";
     $SearchResult2 = mysqli_query($connMysqli, $SearchResult2);
 
-    while($row = mysqli_fetch_assoc($SearchResult2)){
+    while ($row = mysqli_fetch_assoc($SearchResult2)) {
       $DID = $row['doctor_account_id'];
       $DSex = $row['doctor_sex'];
-      if($DSex == "Male"){
+      if ($DSex == "Male") {
         $DR_SexColor = "ImgBColor1";
-      } else{
+      } else {
         $DR_SexColor = "ImgBColor2";
       }
       echo "
-      <div class='Main_Div1-Box' onclick='ViewDoctor(`".$DID."`)'>
+      <div class='Main_Div1-Box' onclick='ViewDoctor(`" . $DID . "`)'>
         <div class='Main_Div1-Box1'>
-        <div class='Img ".$DR_SexColor."'><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
+        <div class='Img " . $DR_SexColor . "'><img src='./Uploaded/" . $row['profile_image'] . "' alt=''></div>
           <div class=''>
-            <h1 class='Capitalize'>Dr. ".$row['doctor_lastname'].".  ".substr($row['doctor_middlename'], 0, 1)." ".$row['doctor_firstname']."</h1>
+            <h1 class='Capitalize'>Dr. " . $row['doctor_lastname'] . ".  " . substr($row['doctor_middlename'], 0, 1) . " " . $row['doctor_firstname'] . "</h1>
             ";
-            $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
-            $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-            while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){echo "
-              <h4>".$row3['doctor_specialization_name']."</h4>
-            ";};
-            echo"
+      $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
+      $DoctorsSpecs1 = mysqli_query($connMysqli, $DoctorsSpecs1);
+      while ($row3 = mysqli_fetch_assoc($DoctorsSpecs1)) {
+        echo "
+              <h4>" . $row3['doctor_specialization_name'] . "</h4>
             ";
-            $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
-            $DoctorsSubSpecs1 = mysqli_query($connMysqli,$DoctorsSubSpecs1);
-            while($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)){echo "
-              <p>".$row4['doctor_sub_specialization_name']."</p>
-            ";};
-            echo"
+      };
+      echo "
+            ";
+      $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
+      $DoctorsSubSpecs1 = mysqli_query($connMysqli, $DoctorsSubSpecs1);
+      while ($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)) {
+        echo "
+              <p>" . $row4['doctor_sub_specialization_name'] . "</p>
+            ";
+      };
+      echo "
           </div>
         </div>
         <div class='Main_Div1-Box2'>
@@ -642,12 +697,14 @@ if(isset($_POST["BtnDocFill"])){
               <ul class='Main_Div1-Box2Flex1Schedule'>
 
               ";
-              $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
-              $DoctorsSchedule2 = mysqli_query($connMysqli,$DoctorsSchedule2);
-              while($row2 = mysqli_fetch_assoc($DoctorsSchedule2)){echo "
-                <li><i>".$row2['doctor_schedule_day']."</i> <p>".$row2['doctor_schedule_time']."</p></li>
-              ";};
-                echo"
+      $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
+      $DoctorsSchedule2 = mysqli_query($connMysqli, $DoctorsSchedule2);
+      while ($row2 = mysqli_fetch_assoc($DoctorsSchedule2)) {
+        echo "
+                <li><i>" . $row2['doctor_schedule_day'] . "</i> <p>" . $row2['doctor_schedule_time'] . "</p></li>
+              ";
+      };
+      echo "
 
               </ul>
             </div>
@@ -657,12 +714,14 @@ if(isset($_POST["BtnDocFill"])){
               <div class='Flex'>
 
               ";
-              $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
-              $DoctorsHMO1 = mysqli_query($connMysqli,$DoctorsHMO1);
-              while($row5 = mysqli_fetch_assoc($DoctorsHMO1)){echo "
-                <div class='Box2Flex1Border'><p>".$row5['doctor_hmo_name']."</p></div>
-              ";};
-                echo"
+      $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
+      $DoctorsHMO1 = mysqli_query($connMysqli, $DoctorsHMO1);
+      while ($row5 = mysqli_fetch_assoc($DoctorsHMO1)) {
+        echo "
+                <div class='Box2Flex1Border'><p>" . $row5['doctor_hmo_name'] . "</p></div>
+              ";
+      };
+      echo "
       
               </div>
             </div>
@@ -670,12 +729,14 @@ if(isset($_POST["BtnDocFill"])){
             <div class='Box2Flex1Div2'>
               <h4>Notes</h4>
               ";
-              $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
-              $DoctorsRemarks1 = mysqli_query($connMysqli,$DoctorsRemarks1);
-              while($row6 = mysqli_fetch_assoc($DoctorsRemarks1)){echo "
-                <div class='Box2Flex1Border'><p>".$row6['doctor_notes_details']."</p></div>
-              ";};
-                echo"
+      $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
+      $DoctorsRemarks1 = mysqli_query($connMysqli, $DoctorsRemarks1);
+      while ($row6 = mysqli_fetch_assoc($DoctorsRemarks1)) {
+        echo "
+                <div class='Box2Flex1Border'><p>" . $row6['doctor_notes_details'] . "</p></div>
+              ";
+      };
+      echo "
             </div>
           </div>
           <div class='Main_Div1-Box2Flex2'>
@@ -683,15 +744,16 @@ if(isset($_POST["BtnDocFill"])){
           </div>
         </div>
       </div>
-    ";}
+    ";
+    }
   }
 }
 
 // FILTER ALL DOCTOR
-if(isset($_POST["Filter_All"])){
+if (isset($_POST["Filter_All"])) {
   global $connMysqli;
-  $Text1Fill = $_POST["Text1Fill"]; 
-  $Text2Fill = $_POST["Text2Fill"]; 
+  $Text1Fill = $_POST["Text1Fill"];
+  $Text2Fill = $_POST["Text2Fill"];
   $Text3Fill = $_POST["Text3Fill"];
   $Text4Fill = $_POST["Text4Fill"];
   $Text5Fill = $_POST["Text5Fill"];
@@ -701,32 +763,42 @@ if(isset($_POST["Filter_All"])){
   $Days = str_replace("-", ",", $Text6Fill);
   // $Array = array("Tuesday","Wednesday");
   // $days = implode("','", $Array);
-  if($Text6Fill == ""){$A6 = "OR"; }
-  else{$A6 = "AND";}
-
-  if($Text4Fill == ""){$A4 = "OR"; }
-  else{$A4 = "AND";}
-  
-  if($A6 == "OR"){$Result = "$A4 hmo_id_2 IN ('$HMO')$A6 doctor_schedule_day IN ('$Days')";}
-  else{$Result = "$A6 doctor_schedule_day IN ('$Days')$A4 hmo_id_2 IN ('$HMO')";}
-
-  if($A4 == "OR"){ $Result = " $A6 doctor_schedule_day IN ('$Days') $A4 hmo_id_2 IN ('$HMO')";}
-  else{ $Result = " $A4 hmo_id_2 IN ('$HMO') $A6 doctor_schedule_day IN ('$Days')";}
-
-
-  if($Text5Fill != ""){
-    if($Text5Fill == "YES"){
-      $TelResult1 = "INNER JOIN doctor_teleconsult ON doctor.doctor_account_id = doctor_teleconsult.teleconsult_doctor_id"; 
-      $TelResult2 = "AND teleconsult_link IS NOT NULL AND teleconsult_link <> ''"; 
-    }
-    elseif($Text5Fill == "NO"){
-      $TelResult1 = "INNER JOIN doctor_teleconsult ON doctor.doctor_account_id = doctor_teleconsult.teleconsult_doctor_id"; 
-      $TelResult2 = "AND teleconsult_link IS NULL OR teleconsult_link = ''"; 
-    }
+  if ($Text6Fill == "") {
+    $A6 = "OR";
+  } else {
+    $A6 = "AND";
   }
-  else{
-    $TelResult1 = ""; 
-    $TelResult2 = ""; 
+
+  if ($Text4Fill == "") {
+    $A4 = "OR";
+  } else {
+    $A4 = "AND";
+  }
+
+  if ($A6 == "OR") {
+    $Result = "$A4 hmo_id_2 IN ('$HMO')$A6 doctor_schedule_day IN ('$Days')";
+  } else {
+    $Result = "$A6 doctor_schedule_day IN ('$Days')$A4 hmo_id_2 IN ('$HMO')";
+  }
+
+  if ($A4 == "OR") {
+    $Result = " $A6 doctor_schedule_day IN ('$Days') $A4 hmo_id_2 IN ('$HMO')";
+  } else {
+    $Result = " $A4 hmo_id_2 IN ('$HMO') $A6 doctor_schedule_day IN ('$Days')";
+  }
+
+
+  if ($Text5Fill != "") {
+    if ($Text5Fill == "YES") {
+      $TelResult1 = "INNER JOIN doctor_teleconsult ON doctor.doctor_account_id = doctor_teleconsult.teleconsult_doctor_id";
+      $TelResult2 = "AND teleconsult_link IS NOT NULL AND teleconsult_link <> ''";
+    } elseif ($Text5Fill == "NO") {
+      $TelResult1 = "INNER JOIN doctor_teleconsult ON doctor.doctor_account_id = doctor_teleconsult.teleconsult_doctor_id";
+      $TelResult2 = "AND teleconsult_link IS NULL OR teleconsult_link = ''";
+    }
+  } else {
+    $TelResult1 = "";
+    $TelResult2 = "";
   }
 
   $SearchResult = "SELECT DISTINCT doctor.*FROM doctor
@@ -741,36 +813,40 @@ if(isset($_POST["Filter_All"])){
         AND doctor_sex LIKE '$Text3Fill%'
         $TelResult2
         $Result
-        ";  
+        ";
   $SearchResult5 = mysqli_query($connMysqli, $SearchResult);
-  while($row = mysqli_fetch_assoc($SearchResult5)){
+  while ($row = mysqli_fetch_assoc($SearchResult5)) {
     $DID = $row['doctor_account_id'];
     $DSex = $row['doctor_sex'];
-    if($DSex == "Male"){
+    if ($DSex == "Male") {
       $DR_SexColor = "ImgBColor1";
-    } else{
+    } else {
       $DR_SexColor = "ImgBColor2";
-    } 
+    }
     echo "
-    <div class='Main_Div1-Box' onclick='ViewDoctor(`".$DID."`)'>
+    <div class='Main_Div1-Box' onclick='ViewDoctor(`" . $DID . "`)'>
       <div class='Main_Div1-Box1'>
-      <div class='Img ".$DR_SexColor."'><img src='./Uploaded/".$row['profile_image']."' alt=''></div>
+      <div class='Img " . $DR_SexColor . "'><img src='./Uploaded/" . $row['profile_image'] . "' alt=''></div>
         <div class=''>
-          <h1 class='Capitalize'>Dr. ".$row['doctor_firstname']." ".$row['doctor_middlename']." ".$row['doctor_lastname']."</h1>
+          <h1 class='Capitalize'>Dr. " . $row['doctor_firstname'] . " " . $row['doctor_middlename'] . " " . $row['doctor_lastname'] . "</h1>
           ";
-          $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
-          $DoctorsSpecs1 = mysqli_query($connMysqli,$DoctorsSpecs1);
-          while($row3 = mysqli_fetch_assoc($DoctorsSpecs1)){echo "
-            <h4>".$row3['doctor_specialization_name']."</h4>
-          ";};
-          echo"
+    $DoctorsSpecs1 = "SELECT * FROM doctor_specialization WHERE specialization_doctor_id = '$DID' LIMIT 1";
+    $DoctorsSpecs1 = mysqli_query($connMysqli, $DoctorsSpecs1);
+    while ($row3 = mysqli_fetch_assoc($DoctorsSpecs1)) {
+      echo "
+            <h4>" . $row3['doctor_specialization_name'] . "</h4>
           ";
-          $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
-          $DoctorsSubSpecs1 = mysqli_query($connMysqli,$DoctorsSubSpecs1);
-          while($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)){echo "
-            <p>".$row4['doctor_sub_specialization_name']."</p>
-          ";};
-          echo"
+    };
+    echo "
+          ";
+    $DoctorsSubSpecs1 = "SELECT * FROM doctor_sub_specialization WHERE sub_specialization_doctor_id = '$DID' LIMIT 2";
+    $DoctorsSubSpecs1 = mysqli_query($connMysqli, $DoctorsSubSpecs1);
+    while ($row4 = mysqli_fetch_assoc($DoctorsSubSpecs1)) {
+      echo "
+            <p>" . $row4['doctor_sub_specialization_name'] . "</p>
+          ";
+    };
+    echo "
         </div>
       </div>
       <div class='Main_Div1-Box2'>
@@ -780,12 +856,14 @@ if(isset($_POST["Filter_All"])){
             <ul class='Main_Div1-Box2Flex1Schedule'>
 
             ";
-            $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
-            $DoctorsSchedule2 = mysqli_query($connMysqli,$DoctorsSchedule2);
-            while($row2 = mysqli_fetch_assoc($DoctorsSchedule2)){echo "
-              <li><i>".$row2['doctor_schedule_day']."</i> <p>".$row2['doctor_schedule_time']."</p></li>
-            ";};
-              echo"
+    $DoctorsSchedule2 = "SELECT * FROM doctor_schedule WHERE schedule_doctor_id = '$DID'";
+    $DoctorsSchedule2 = mysqli_query($connMysqli, $DoctorsSchedule2);
+    while ($row2 = mysqli_fetch_assoc($DoctorsSchedule2)) {
+      echo "
+              <li><i>" . $row2['doctor_schedule_day'] . "</i> <p>" . $row2['doctor_schedule_time'] . "</p></li>
+            ";
+    };
+    echo "
 
             </ul>
           </div>
@@ -795,12 +873,14 @@ if(isset($_POST["Filter_All"])){
             <div class='Flex'>
 
             ";
-            $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
-            $DoctorsHMO1 = mysqli_query($connMysqli,$DoctorsHMO1);
-            while($row5 = mysqli_fetch_assoc($DoctorsHMO1)){echo "
-              <div class='Box2Flex1Border'><p>".$row5['doctor_hmo_name']."</p></div>
-            ";};
-              echo"
+    $DoctorsHMO1 = "SELECT * FROM doctor_hmo WHERE hmo_doctor_id = '$DID' LIMIT 3";
+    $DoctorsHMO1 = mysqli_query($connMysqli, $DoctorsHMO1);
+    while ($row5 = mysqli_fetch_assoc($DoctorsHMO1)) {
+      echo "
+              <div class='Box2Flex1Border'><p>" . $row5['doctor_hmo_name'] . "</p></div>
+            ";
+    };
+    echo "
     
             </div>
           </div>
@@ -808,12 +888,14 @@ if(isset($_POST["Filter_All"])){
           <div class='Box2Flex1Div2'>
             <h4>Notes</h4>
             ";
-            $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
-            $DoctorsRemarks1 = mysqli_query($connMysqli,$DoctorsRemarks1);
-            while($row6 = mysqli_fetch_assoc($DoctorsRemarks1)){echo "
-              <div class='Box2Flex1Border'><p>".$row6['doctor_notes_details']."</p></div>
-            ";};
-              echo"
+    $DoctorsRemarks1 = "SELECT * FROM doctor_notes WHERE notes_doctor_id = '$DID'";
+    $DoctorsRemarks1 = mysqli_query($connMysqli, $DoctorsRemarks1);
+    while ($row6 = mysqli_fetch_assoc($DoctorsRemarks1)) {
+      echo "
+              <div class='Box2Flex1Border'><p>" . $row6['doctor_notes_details'] . "</p></div>
+            ";
+    };
+    echo "
           </div>
         </div>
         <div class='Main_Div1-Box2Flex2'>
@@ -821,24 +903,6 @@ if(isset($_POST["Filter_All"])){
         </div>
       </div>
     </div>
-  ";}
+  ";
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-?>

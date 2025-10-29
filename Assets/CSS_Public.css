@@ -313,10 +313,19 @@ table{
   width: 100%;
   background-color: var(--BGColor1);
 }
-
+/* nandito ako */
 .TCenter{
   text-align: center;
   justify-content: center;
+}
+
+.ResultNotFound{
+  width: 100%;
+  background-color: var(--BGColor1);
+  border: 1px solid var(--BorderColor1);
+  text-align: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 thead{

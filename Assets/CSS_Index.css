@@ -163,8 +163,11 @@ svg{
 }
 
 
-.InputSearchPlaceholder{
-  border: 2px solid black;
+#InputSearchPlaceholder{
+  /* border: 1px solid black; */
+  cursor: auto;
+  text-transform: capitalize;
+  
 }
 
 .SearchDoctorModal{
